@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Chat Website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fffc00, #ffdd00);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      color: #333;
+    }
+    header {
+      background: #fffc00;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 600;
+      color: #000;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    main h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    main p {
+      font-size: 1.1em;
+      max-width: 500px;
+      margin-bottom: 40px;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1em;
+      border: none;
+      border-radius: 25px;
+      background-color: #fffc00;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+    }
+    button:hover {
+      background-color: #ffe600;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255,255,255,0.8);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SnapChat-Style Chat Hub</h1>
+  </header>
+
+  <main>
+    <h2>Welcome!</h2>
+    <p>Chat with me and my friends using the chat widget at the bottom-right corner. Fast, fun, and easy!</p>
+    <button onclick="alert('Website is live!')">Say Hello!</button>
+  </main>
+
+  <footer>
+    &copy; 2025 My Chat Website
+  </footer>
+
+  <!-- Tawk.to Embed Code -->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/YOUR_WIDGET_ID/1abcdefg';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+</body>
+</html>
 
