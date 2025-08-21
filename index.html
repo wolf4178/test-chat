@@ -1,98 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snapchat-Style Chat</title>
-<style>
-  /* Basic Reset */
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
-  
-  body {
-    background: linear-gradient(135deg, #fffc00, #ffda00);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapChat-Style Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #fff8e1;
+            color: #333;
+        }
 
-  .chat-container {
-    width: 400px;
-    max-width: 90%;
-    height: 700px;
-    background: white;
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  }
+        header {
+            background-color: #fffc00;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
 
-  .header {
-    background: #fffc00;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.5rem;
-    border-bottom: 2px solid #ffd700;
-  }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            padding: 10px 0;
+        }
 
-  .chat-area {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-  }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
 
-  .footer {
-    padding: 10px;
-    border-top: 1px solid #ddd;
-  }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
 
-  .footer input {
-    width: 80%;
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-  }
+        .profile-card {
+            display: inline-block;
+            background: #fff;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
 
-  .footer button {
-    padding: 10px 15px;
-    border: none;
-    background: #ffda00;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-</style>
+        .profile-card img {
+            width: 100px;
+            border-radius: 50%;
+        }
+
+        .profile-card h3 {
+            margin: 10px 0 5px 0;
+        }
+
+        .profile-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
 
-<div class="chat-container">
-  <div class="header">My Chat</div>
-  <div class="chat-area">
-    <!-- Messages will appear here -->
-  </div>
-  <div class="footer">
-    <input type="text" placeholder="Type a message..." disabled>
-    <button disabled>Send</button>
-  </div>
-</div>
+    <header>
+        My Chat World
+    </header>
 
-<!-- Tawk.to Embed Code -->
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/68a718211229991923dac976/1j36bch94';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Friends</a>
+        <a href="#">Profile</a>
+    </nav>
+
+    <div class="content">
+        <h2>Welcome to your Snapchat-style chat!</h2>
+        <p>Click the chat bubble at the bottom-right to start chatting with your friends.</p>
+
+        <div class="profile-card">
+            <img src="https://via.placeholder.com/100" alt="Friend 1">
+            <h3>Friend 1</h3>
+            <p>Online</p>
+        </div>
+
+        <div class="profile-card">
+            <img src="https://via.placeholder.com/100" alt="Friend 2">
+            <h3>Friend 2</h3>
+            <p>Online</p>
+        </div>
+    </div>
+
+    <!-- Start of Tawk.to Script -->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/68a718211229991923dac976/1j36bch94';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!-- End of Tawk.to Script -->
 
 </body>
 </html>
