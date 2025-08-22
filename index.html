@@ -86,14 +86,71 @@
       z-index: 1000;
     }
 
-    /* Disappearing Message Animation */
-    .disappear {
+    /* Chat Box */
+    .chat-box {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      height: 400px;
+      background: #1e1e1e;
+      border-radius: 15px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #fffc00;
+      color: #000;
+      padding: 10px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .chat-message {
+      background: #fffc00;
+      color: #000;
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin: 5px 0;
+      display: inline-block;
       animation: fadeout 5s forwards;
     }
+
     @keyframes fadeout {
       0% { opacity: 1; }
       80% { opacity: 1; }
       100% { opacity: 0; display: none; }
+    }
+
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #333;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+      background: #222;
+      color: #fff;
+    }
+    .chat-input button {
+      padding: 10px 15px;
+      border: none;
+      background: #fffc00;
+      cursor: pointer;
+      font-weight: bold;
     }
 
     /* Footer */
@@ -109,17 +166,17 @@
 <header>My SnapChat-Style Website</header>
 
 <section class="friends">
-  <div class="friend" onclick="showMessage('Alice')">
+  <div class="friend" onclick="openChat('Alice')">
     <img src="https://i.pravatar.cc/80?img=1" alt="Alice">
     <div>Alice</div>
     <div class="status online"></div>
   </div>
-  <div class="friend" onclick="showMessage('Bob')">
+  <div class="friend" onclick="openChat('Bob')">
     <img src="https://i.pravatar.cc/80?img=2" alt="Bob">
     <div>Bob</div>
     <div class="status offline"></div>
   </div>
-  <div class="friend" onclick="showMessage('Charlie')">
+  <div class="friend" onclick="openChat('Charlie')">
     <img src="https://i.pravatar.cc/80?img=3" alt="Charlie">
     <div>Charlie</div>
     <div class="status online"></div>
@@ -128,6 +185,19 @@
 
 <!-- Floating Chat Button -->
 <div class="chat-btn" onclick="openTawk()">💬</div>
+
+<!-- Chat Box -->
+<div class="chat-box" id="chatBox">
+  <div class="chat-header">
+    <span id="chatFriend">Chat</span>
+    <button onclick="closeChat()">✖</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
 
 <footer>Made with ❤️ using free tools</footer>
 
@@ -148,23 +218,34 @@ function openTawk() {
     Tawk_API.maximize();
 }
 
-// Simulate disappearing messages (visual only)
-function showMessage(name) {
-    let msg = document.createElement('div');
-    msg.textContent = `Hi ${name}! This message will disappear...`;
-    msg.classList.add('disappear');
-    msg.style.position = 'fixed';
-    msg.style.bottom = '100px';
-    msg.style.right = '20px';
-    msg.style.background = '#fffc00';
-    msg.style.color = '#000';
-    msg.style.padding = '10px 15px';
-    msg.style.borderRadius = '10px';
-    msg.style.boxShadow = '0 4px 10px rgba(0,0,0,0.3)';
-    document.body.appendChild(msg);
+// Custom Chat
+let currentFriend = "";
 
-    // Remove after animation
-    setTimeout(() => msg.remove(), 5000);
+function openChat(name) {
+  document.getElementById("chatBox").style.display = "flex";
+  document.getElementById("chatFriend").textContent = name;
+  currentFriend = name;
+}
+
+function closeChat() {
+  document.getElementById("chatBox").style.display = "none";
+}
+
+function sendMessage() {
+  let input = document.getElementById("chatInput");
+  let text = input.value.trim();
+  if(text === "") return;
+
+  let msg = document.createElement("div");
+  msg.classList.add("chat-message");
+  msg.textContent = text;
+  document.getElementById("chatMessages").appendChild(msg);
+
+  // Auto-remove after 5s
+  setTimeout(() => msg.remove(), 5000);
+
+  input.value = "";
+  document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
 }
 </script>
 
