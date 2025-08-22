@@ -5,20 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wolf Chat</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-    header { background: #333; color: white; padding: 10px; text-align: center; }
-    .container { padding: 20px; }
+    body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; }
+    header { background: #333; color: #fff; padding: 1rem; text-align: center; }
+    main { padding: 1rem; }
     .hidden { display: none; }
-    #chat-box { border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 10px; margin-bottom: 10px; background: #fff; }
-    #message-input { width: 80%; padding: 8px; }
-    #send-btn { padding: 8px 12px; }
-    nav { position: fixed; bottom: 0; width: 100%; background: #333; display: flex; }
-    nav button { flex: 1; padding: 15px; color: white; background: #444; border: none; cursor: pointer; }
-    nav button.active { background: #007bff; }
-    section { display: none; }
-    section.active { display: block; }
-    form input { display: block; margin: 10px 0; padding: 8px; width: 100%; }
-    form button { padding: 10px; background: #007bff; color: #fff; border: none; cursor: pointer; }
+    .chat-box { border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: .5rem; background: #fff; margin-bottom: .5rem; }
+    input, button { padding: .5rem; margin: .2rem; }
+    nav { margin: 1rem 0; }
+    nav button { margin-right: .5rem; }
   </style>
 </head>
 <body>
@@ -26,173 +20,158 @@
     <h1>🐺 Wolf Chat</h1>
   </header>
 
-  <div class="container">
-    <!-- Auth Section -->
-    <section id="auth-section" class="active">
+  <main>
+    <!-- Login form -->
+    <section id="login-section">
       <h2>Login / Signup</h2>
-      <form id="signup-form">
-        <h3>Sign Up</h3>
-        <input type="email" id="signup-email" placeholder="Email" required>
-        <input type="password" id="signup-password" placeholder="Password" required>
-        <button type="submit">Sign Up</button>
-      </form>
-      <form id="login-form">
-        <h3>Login</h3>
-        <input type="email" id="login-email" placeholder="Email" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <button type="submit">Login</button>
-      </form>
+      <input type="email" id="email" placeholder="Email"><br>
+      <input type="password" id="password" placeholder="Password"><br>
+      <button id="loginBtn">Login</button>
+      <button id="signupBtn">Sign Up</button>
+      <p id="authMessage" style="color:red;"></p>
     </section>
 
-    <!-- Chat Section -->
-    <section id="chat-section">
-      <h2>Chat Room</h2>
-      <div id="chat-box"></div>
-      <input type="text" id="message-input" placeholder="Type a message...">
-      <button id="send-btn">Send</button>
+    <!-- Chat app -->
+    <section id="chat-section" class="hidden">
+      <nav>
+        <button onclick="showTab('chatTab')">Chat</button>
+        <button onclick="showTab('friendsTab')">Friends</button>
+        <button onclick="showTab('communityTab')">Community</button>
+        <button onclick="showTab('profileTab')">Profile</button>
+        <button id="logoutBtn">Logout</button>
+      </nav>
+
+      <!-- Chat Tab -->
+      <div id="chatTab" class="tab">
+        <h3>Chat Room</h3>
+        <div class="chat-box" id="chatBox"></div>
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button id="sendBtn">Send</button>
+      </div>
+
+      <!-- Friends Tab -->
+      <div id="friendsTab" class="tab hidden">
+        <h3>Friends</h3>
+        <p>Add and view your friends here (coming soon).</p>
+      </div>
+
+      <!-- Community Tab -->
+      <div id="communityTab" class="tab hidden">
+        <h3>Community</h3>
+        <p>Explore groups and communities (coming soon).</p>
+      </div>
+
+      <!-- Profile Tab -->
+      <div id="profileTab" class="tab hidden">
+        <h3>Profile</h3>
+        <input type="text" id="usernameInput" placeholder="Enter username">
+        <button id="saveProfileBtn">Save</button>
+        <p id="profileMessage" style="color:green;"></p>
+      </div>
     </section>
+  </main>
 
-    <!-- Profile Section -->
-    <section id="profile-section">
-      <h2>Profile</h2>
-      <p id="user-email"></p>
-      <button id="logout-btn">Logout</button>
-    </section>
-  </div>
-
-  <!-- Bottom Navigation -->
-  <nav>
-    <button id="chat-tab" class="active">Chat</button>
-    <button id="profile-tab">Profile</button>
-  </nav>
-
-  <!-- Firebase -->
+  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, push, onChildAdded, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // ✅ Your Firebase Config
+    // ✅ Correct Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
       authDomain: "meaww-chat-4f6bd.firebaseapp.com",
       databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
       projectId: "meaww-chat-4f6bd",
-      storageBucket: "meaww-chat-4f6bd.firebasestorage.app",
+      storageBucket: "meaww-chat-4f6bd.appspot.com",
       messagingSenderId: "162714330727",
       appId: "1:162714330727:web:926dd1ce1da5806c0316c2",
       measurementId: "G-L7Y3NV8L88"
     };
 
+    // Init Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
     // DOM Elements
-    const authSection = document.getElementById("auth-section");
+    const loginSection = document.getElementById("login-section");
     const chatSection = document.getElementById("chat-section");
-    const profileSection = document.getElementById("profile-section");
-    const signupForm = document.getElementById("signup-form");
-    const loginForm = document.getElementById("login-form");
-    const logoutBtn = document.getElementById("logout-btn");
-    const userEmail = document.getElementById("user-email");
-    const chatBox = document.getElementById("chat-box");
-    const msgInput = document.getElementById("message-input");
-    const sendBtn = document.getElementById("send-btn");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const authMessage = document.getElementById("authMessage");
+    const chatBox = document.getElementById("chatBox");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const usernameInput = document.getElementById("usernameInput");
+    const saveProfileBtn = document.getElementById("saveProfileBtn");
+    const profileMessage = document.getElementById("profileMessage");
 
     // Tabs
-    const chatTab = document.getElementById("chat-tab");
-    const profileTab = document.getElementById("profile-tab");
-
-    chatTab.addEventListener("click", () => switchTab("chat"));
-    profileTab.addEventListener("click", () => switchTab("profile"));
-
-    function switchTab(tab) {
-      chatTab.classList.remove("active");
-      profileTab.classList.remove("active");
-      chatSection.classList.remove("active");
-      profileSection.classList.remove("active");
-      if (tab === "chat") {
-        chatTab.classList.add("active");
-        chatSection.classList.add("active");
-      } else {
-        profileTab.classList.add("active");
-        profileSection.classList.add("active");
-      }
+    function showTab(tabId) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.add("hidden"));
+      document.getElementById(tabId).classList.remove("hidden");
     }
+    window.showTab = showTab;
 
-    // Signup
-    signupForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert("Signup successful!");
-      } catch (error) {
-        alert(error.message);
-      }
+    // Auth - Signup
+    signupBtn.addEventListener("click", () => {
+      createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+        .then(() => {
+          authMessage.textContent = "Signup successful!";
+          loginSection.classList.add("hidden");
+          chatSection.classList.remove("hidden");
+        })
+        .catch(err => authMessage.textContent = err.message);
     });
 
-    // Login
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (error) {
-        alert(error.message);
-      }
+    // Auth - Login
+    loginBtn.addEventListener("click", () => {
+      signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
+        .then(() => {
+          authMessage.textContent = "";
+          loginSection.classList.add("hidden");
+          chatSection.classList.remove("hidden");
+        })
+        .catch(err => authMessage.textContent = err.message);
     });
 
     // Logout
     logoutBtn.addEventListener("click", () => {
-      signOut(auth);
-    });
-
-    // Auth state
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        authSection.classList.remove("active");
-        authSection.classList.add("hidden");
-        chatSection.classList.add("active");
-        userEmail.innerText = "Logged in as: " + user.email;
-        loadMessages();
-      } else {
-        authSection.classList.add("active");
-        authSection.classList.remove("hidden");
-        chatSection.classList.remove("active");
-        profileSection.classList.remove("active");
-        chatBox.innerHTML = "";
-      }
-    });
-
-    // Send Message
-    sendBtn.addEventListener("click", () => {
-      const msg = msgInput.value.trim();
-      if (msg !== "") {
-        push(ref(db, "messages"), {
-          text: msg,
-          user: auth.currentUser.email,
-          time: Date.now()
-        });
-        msgInput.value = "";
-      }
-    });
-
-    // Load Messages
-    function loadMessages() {
-      const messagesRef = ref(db, "messages");
-      chatBox.innerHTML = "";
-      onChildAdded(messagesRef, (data) => {
-        const msg = data.val();
-        const div = document.createElement("div");
-        div.textContent = `${msg.user}: ${msg.text}`;
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
+      signOut(auth).then(() => {
+        loginSection.classList.remove("hidden");
+        chatSection.classList.add("hidden");
       });
-    }
+    });
+
+    // Chat
+    sendBtn.addEventListener("click", () => {
+      const msg = messageInput.value.trim();
+      if (msg) {
+        push(ref(db, "messages"), { text: msg, time: Date.now() });
+        messageInput.value = "";
+      }
+    });
+
+    onChildAdded(ref(db, "messages"), (snapshot) => {
+      const msg = snapshot.val();
+      const div = document.createElement("div");
+      div.textContent = msg.text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    // Profile save
+    saveProfileBtn.addEventListener("click", () => {
+      const username = usernameInput.value.trim();
+      if (username) {
+        set(ref(db, "profiles/" + auth.currentUser.uid), { username });
+        profileMessage.textContent = "Profile saved!";
+      }
+    });
   </script>
 </body>
 </html>
