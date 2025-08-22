@@ -31,8 +31,10 @@
   <header>
     <div class="title">QuickChat</div>
     <div style="flex:1"></div>
-    <button id="themeBtn" class="btn ghost" title="Toggle Theme">Theme</button>
-    <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" />
+    <div style="display:flex;align-items:center;gap:0.5rem">
+      <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
+      <button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
+    </div>
   </header>
 
   <div id="globalBanner" class="hidden" style="background:#0c2140;border-bottom:1px solid var(--border);padding:.5rem;text-align:center;color:#dfefff"></div>
@@ -56,14 +58,55 @@
       <div style="display:flex;gap:1rem;align-items:flex-start">
         <div style="flex:1">
 
-          <!-- Profile editor -->
-          <div class="card" style="margin-bottom:.8rem">
+          <!-- Profile and Admin Panel Container -->
+          <div id="profileAdminPanel" class="card" style="margin-bottom:.8rem; display:none;">
             <strong>My Profile</strong>
             <input id="profName" class="input" placeholder="Display name" />
             <input id="profAvatarUrl" class="input" placeholder="Avatar URL (optional)" />
-            <div style="display:flex;gap:.5rem">
+            <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
               <button id="saveProfileBtn" class="btn">Save</button>
               <button id="resetAvatarBtn" class="btn ghost">Reset Avatar</button>
+            </div>
+
+            <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:10px; margin-top: 8px;">
+              <div style="font-weight:700; margin-bottom:8px;">Admin Panel 👑</div>
+
+              <div style="display:flex;gap:6px;margin-bottom:8px">
+                <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="padding:.4rem" />
+                <button id="adminLookupBtn" class="btn ghost">Lookup</button>
+              </div>
+
+              <div style="display:flex;gap:6px;margin-bottom:8px">
+                <button id="adminVerifyBtn" class="btn">Verify</button>
+                <button id="adminUnverifyBtn" class="btn ghost">Unverify</button>
+              </div>
+
+              <div style="display:flex;gap:6px;margin-bottom:8px">
+                <button id="adminBanBtn" class="btn ghost">Ban</button>
+                <button id="adminUnbanBtn" class="btn ghost">Unban</button>
+              </div>
+
+              <div style="margin-bottom:8px">
+                <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:6px;padding:.4rem" />
+                <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.4rem" />
+                <div style="display:flex;gap:6px;margin-top:6px">
+                  <button id="adminDelMsgBtn" class="btn secondary">Delete Message</button>
+                </div>
+              </div>
+
+              <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;margin-bottom:8px;">
+                <div style="font-weight:700;margin-bottom:6px">Global Announcement</div>
+                <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.4rem" />
+                <div style="display:flex;gap:6px;margin-top:6px">
+                  <button id="adminAnnSet" class="btn">Set</button>
+                  <button id="adminAnnClear" class="btn ghost">Clear</button>
+                </div>
+              </div>
+
+              <div>
+                <button id="adminRefreshUsers" class="btn ghost">Refresh Users</button>
+                <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
+              </div>
             </div>
           </div>
 
@@ -116,9 +159,6 @@
     </section>
   </main>
 </div>
-
-<!-- Admin panel will be injected when you (admin) log in -->
-<div id="adminPanelWrap" class="admin-floating"></div>
 
 <!-- Toast area -->
 <div id="toasts" style="position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:9999"></div>
@@ -246,53 +286,8 @@ $('#googleBtn').onclick = async () => {
 
 /* ========================== ADMIN UI + ACTIONS ========================== */
 async function injectAdminPanel(){
-  if(document.getElementById('adminPanel')) return;
-  const wrap = document.getElementById('adminPanelWrap');
-  const panel = document.createElement('div');
-  panel.id = 'adminPanel';
-  panel.style.background = '#071226';
-  panel.style.border = '1px solid #123';
-  panel.style.padding = '12px';
-  panel.style.borderRadius = '10px';
-  panel.style.maxWidth = '340px';
-  panel.style.boxShadow = '0 8px 20px rgba(0,0,0,.5)';
-  panel.innerHTML = `
-    <div style="font-weight:800;margin-bottom:8px">Admin Panel 👑</div>
-    <div style="display:flex;gap:6px;margin-bottom:8px">
-      <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="padding:.4rem" />
-      <button id="adminLookupBtn" class="btn ghost">Lookup</button>
-    </div>
-    <div style="display:flex;gap:6px;margin-bottom:8px">
-      <button id="adminVerifyBtn" class="btn">Verify</button>
-      <button id="adminUnverifyBtn" class="btn ghost">Unverify</button>
-    </div>
-    <div style="display:flex;gap:6px;margin-bottom:8px">
-      <button id="adminBanBtn" class="btn ghost">Ban</button>
-      <button id="adminUnbanBtn" class="btn ghost">Unban</button>
-    </div>
-    <div style="margin-bottom:8px">
-      <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:6px;padding:.4rem" />
-      <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.4rem" />
-      <div style="display:flex;gap:6px;margin-top:6px">
-        <button id="adminDelMsgBtn" class="btn secondary">Delete Message</button>
-      </div>
-    </div>
-    <div style="margin-top:8px;border-top:1px solid #123;padding-top:8px">
-      <div style="font-weight:700;margin-bottom:6px">Global Announcement</div>
-      <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.4rem" />
-      <div style="display:flex;gap:6px;margin-top:6px">
-        <button id="adminAnnSet" class="btn">Set</button>
-        <button id="adminAnnClear" class="btn ghost">Clear</button>
-      </div>
-    </div>
-    <div style="margin-top:8px">
-      <button id="adminRefreshUsers" class="btn ghost">Refresh Users</button>
-      <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
-    </div>
-  `;
-  wrap.appendChild(panel);
-
-  /* Admin button functionality */
+  if(!isAdminUser) return;
+  // Attach buttons inside #adminControls
   $('#adminLookupBtn').onclick = async () => {
     const v = $('#adminTarget').value.trim();
     if(!v){ toast('Enter UID or 5-digit ID'); return; }
@@ -640,9 +635,10 @@ onAuthStateChanged(auth, async (user) => {
   if(!user){
     $('#auth').classList.remove('hidden');
     $('#appUI').classList.add('hidden');
-    $('#adminPanelWrap').innerHTML = '';
     isAdminUser = false;
     me = null;
+    // hide profileAdminPanel
+    document.getElementById('profileAdminPanel').style.display = 'none';
     return;
   }
 
@@ -687,7 +683,7 @@ onAuthStateChanged(auth, async (user) => {
   $('#profName').value = me.name || '';
   $('#profAvatarUrl').value = me.avatar || '';
 
-  // save/reset profile
+  // profile buttons wired as before...
   $('#saveProfileBtn').onclick = async ()=>{
     const name = $('#profName').value.trim() || me.email?.split('@')[0] || 'user';
     const avatar = $('#profAvatarUrl').value.trim() || me.avatar || defaultAvatar(me.uid);
@@ -697,6 +693,7 @@ onAuthStateChanged(auth, async (user) => {
     toast('Profile updated');
     await refreshFriends();
   };
+
   $('#resetAvatarBtn').onclick = async ()=>{
     const avatar = defaultAvatar(me.uid);
     $('#profAvatarUrl').value = avatar;
@@ -706,19 +703,23 @@ onAuthStateChanged(auth, async (user) => {
     toast('Avatar reset');
   };
 
-  // refresh data
-  await refreshFriends();
-  await loadCommunities();
-
-  // show admin UI
+  // Manage admin controls visibility
   if(user.email && user.email.toLowerCase() === adminEmail.toLowerCase()){
     isAdminUser = true;
+    $('#adminControls').style.display = 'block';
     await injectAdminPanel();
     toast('Admin access granted');
   } else {
     isAdminUser = false;
-    $('#adminPanelWrap').innerHTML = '';
+    $('#adminControls').style.display = 'none';
   }
+
+  // hide profileAdminPanel by default on login
+  document.getElementById('profileAdminPanel').style.display = 'none';
+
+  // refresh rest of app UI...
+  await refreshFriends();
+  await loadCommunities();
 
   // subscribe global announcement
   onValue(ref(db,'announcements/global'), snap=>{
@@ -733,8 +734,17 @@ onAuthStateChanged(auth, async (user) => {
   });
 });
 
-/* ========================== SIGN OUT ========================== */
-$('#navAvatar').onclick = async () => {
+/* ========================== PROFILE PANEL TOGGLE + LOGOUT ========================== */
+$('#navAvatar').onclick = () => {
+  const panel = document.getElementById('profileAdminPanel');
+  if(panel.style.display === 'none' || panel.style.display === ''){
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+};
+
+$('#logoutBtn').onclick = async () => {
   const ok = confirm('Sign out?');
   if(ok) await signOut(auth);
 };
