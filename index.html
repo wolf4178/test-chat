@@ -5,160 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SnapChat Style Chat Website</title>
   <style>
-    /* General Reset */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-
     body { background: #121212; color: #fff; }
-
-    /* Header */
     header {
-      background: #fffc00;
-      color: #000;
-      padding: 1rem;
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.5rem;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      background: #fffc00; color: #000; padding: 1rem; text-align: center;
+      font-weight: bold; font-size: 1.5rem; position: sticky; top: 0; z-index: 1000;
       box-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
-
-    /* Friends Grid */
     .friends {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem; padding: 1rem;
     }
-
     .friend {
-      background: #1e1e1e;
-      padding: 1rem;
-      border-radius: 15px;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
-      position: relative;
-      cursor: pointer;
+      background: #1e1e1e; padding: 1rem; border-radius: 15px; text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s; position: relative; cursor: pointer;
     }
-
-    .friend:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
-    }
-
-    .friend img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Online Status */
-    .status {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      border: 2px solid #121212;
-    }
+    .friend:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); }
+    .friend img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 0.5rem; }
+    .status { width: 15px; height: 15px; border-radius: 50%; position: absolute; top: 10px; right: 10px; border: 2px solid #121212; }
     .online { background: #00ff00; }
     .offline { background: #888; }
-
-    /* Floating Chat Button */
-    .chat-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #fffc00;
-      color: #000;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.8rem;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      z-index: 1000;
-    }
-
-    /* Chat Box */
     .chat-box {
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      width: 300px;
-      height: 400px;
-      background: #1e1e1e;
-      border-radius: 15px;
-      display: none;
-      flex-direction: column;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-      overflow: hidden;
+      position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: #1e1e1e;
+      border-radius: 15px; display: none; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.4); overflow: hidden;
     }
-
     .chat-header {
-      background: #fffc00;
-      color: #000;
-      padding: 10px;
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: #fffc00; color: #000; padding: 10px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;
     }
-
-    .chat-messages {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-    }
-
+    .chat-messages { flex: 1; padding: 10px; overflow-y: auto; }
     .chat-message {
-      background: #fffc00;
-      color: #000;
-      padding: 8px 12px;
-      border-radius: 10px;
-      margin: 5px 0;
-      display: inline-block;
-      animation: fadeout 5s forwards;
+      background: #fffc00; color: #000; padding: 8px 12px; border-radius: 10px; margin: 5px 0; display: inline-block;
     }
-
-    @keyframes fadeout {
-      0% { opacity: 1; }
-      80% { opacity: 1; }
-      100% { opacity: 0; display: none; }
-    }
-
-    .chat-input {
-      display: flex;
-      border-top: 1px solid #333;
-    }
-    .chat-input input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      outline: none;
-      background: #222;
-      color: #fff;
-    }
-    .chat-input button {
-      padding: 10px 15px;
-      border: none;
-      background: #fffc00;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 1rem;
-      color: #888;
-    }
+    .chat-input { display: flex; border-top: 1px solid #333; }
+    .chat-input input { flex: 1; padding: 10px; border: none; outline: none; background: #222; color: #fff; }
+    .chat-input button { padding: 10px 15px; border: none; background: #fffc00; cursor: pointer; font-weight: bold; }
+    footer { text-align: center; padding: 1rem; color: #888; }
   </style>
 </head>
 <body>
@@ -183,9 +64,6 @@
   </div>
 </section>
 
-<!-- Floating Chat Button -->
-<div class="chat-btn" onclick="openTawk()">💬</div>
-
 <!-- Chat Box -->
 <div class="chat-box" id="chatBox">
   <div class="chat-header">
@@ -199,54 +77,65 @@
   </div>
 </div>
 
-<footer>Made with ❤️ using free tools</footer>
+<footer>Made with ❤️ using Firebase</footer>
 
-<!-- Tawk.to Script -->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/68a718211229991923dac976/1j36bch94';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+<!-- Firebase + Chat Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// Open chat programmatically
-function openTawk() {
-    Tawk_API.maximize();
-}
+  // ✅ Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
+    authDomain: "meaww-chat-4f6bd.firebaseapp.com",
+    databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
+    projectId: "meaww-chat-4f6bd",
+    storageBucket: "meaww-chat-4f6bd.firebasestorage.app",
+    messagingSenderId: "162714330727",
+    appId: "1:162714330727:web:926dd1ce1da5806c0316c2",
+    measurementId: "G-L7Y3NV8L88"
+  };
 
-// Custom Chat
-let currentFriend = "";
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-function openChat(name) {
-  document.getElementById("chatBox").style.display = "flex";
-  document.getElementById("chatFriend").textContent = name;
-  currentFriend = name;
-}
+  let currentFriend = "";
 
-function closeChat() {
-  document.getElementById("chatBox").style.display = "none";
-}
+  window.openChat = function(name) {
+    document.getElementById("chatBox").style.display = "flex";
+    document.getElementById("chatFriend").textContent = name;
+    currentFriend = name;
 
-function sendMessage() {
-  let input = document.getElementById("chatInput");
-  let text = input.value.trim();
-  if(text === "") return;
+    const messagesDiv = document.getElementById("chatMessages");
+    messagesDiv.innerHTML = "";
 
-  let msg = document.createElement("div");
-  msg.classList.add("chat-message");
-  msg.textContent = text;
-  document.getElementById("chatMessages").appendChild(msg);
+    // Listen for new messages in Firebase
+    onChildAdded(ref(db, "messages/" + name), (snapshot) => {
+      const msg = document.createElement("div");
+      msg.classList.add("chat-message");
+      msg.textContent = snapshot.val().text;
+      messagesDiv.appendChild(msg);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  };
 
-  // Auto-remove after 5s
-  setTimeout(() => msg.remove(), 5000);
+  window.closeChat = function() {
+    document.getElementById("chatBox").style.display = "none";
+  };
 
-  input.value = "";
-  document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
-}
+  window.sendMessage = function() {
+    let input = document.getElementById("chatInput");
+    let text = input.value.trim();
+    if (text === "") return;
+
+    // Save to Firebase
+    push(ref(db, "messages/" + currentFriend), {
+      text: text,
+      time: Date.now()
+    });
+
+    input.value = "";
+  };
 </script>
 
 </body>
