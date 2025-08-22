@@ -6,6 +6,9 @@
 <title>QuickChat — Admin Edition</title>
 <style>
   :root{--bg:#0b0f14;--elev:#111723;--border:#1b2435;--text:#e6eefc;--muted:#98a7c0;--brand:#4f8cff}
+  body.theme-high { --bg:#05070b; --elev:#0a1120; --border:#172135; --text:#eaf2ff; --muted:#9fb1cc; --brand:#4f8cff }
+  body.theme-dim { --bg:#0b0f14; --elev:#111723; --border:#1b2435; --text:#e6eefc; --muted:#98a7c0; --brand:#4f8cff }
+
   html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
   .app{display:flex;flex-direction:column;height:100%}
   header{display:flex;align-items:center;gap:.6rem;padding:.7rem;background:linear-gradient(180deg,var(--elev),#0e1420);border-bottom:1px solid var(--border)}
@@ -28,8 +31,11 @@
   <header>
     <div class="title">QuickChat</div>
     <div style="flex:1"></div>
-    <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border)">
+    <button id="themeBtn" class="btn ghost" title="Toggle Theme">Theme</button>
+    <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" />
   </header>
+
+  <div id="globalBanner" class="hidden" style="background:#0c2140;border-bottom:1px solid var(--border);padding:.5rem;text-align:center;color:#dfefff"></div>
 
   <main>
     <!-- AUTH CARD -->
@@ -49,6 +55,18 @@
     <section id="appUI" class="hidden" style="max-width:1100px;margin:16px auto 80px">
       <div style="display:flex;gap:1rem;align-items:flex-start">
         <div style="flex:1">
+
+          <!-- Profile editor -->
+          <div class="card" style="margin-bottom:.8rem">
+            <strong>My Profile</strong>
+            <input id="profName" class="input" placeholder="Display name" />
+            <input id="profAvatarUrl" class="input" placeholder="Avatar URL (optional)" />
+            <div style="display:flex;gap:.5rem">
+              <button id="saveProfileBtn" class="btn">Save</button>
+              <button id="resetAvatarBtn" class="btn ghost">Reset Avatar</button>
+            </div>
+          </div>
+
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center">
               <strong>Friends</strong>
@@ -72,15 +90,17 @@
                 <div id="chatPresence" style="color:var(--muted);font-size:.85rem">—</div>
               </div>
               <div>
-                <button id="audioCallBtn" class="btn ghost">Audio</button>
-                <button id="videoCallBtn" class="btn ghost">Video</button>
+                <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">Audio</button>
+                <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">Video</button>
               </div>
             </div>
 
             <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.6rem;border-radius:8px"></div>
 
             <div style="display:flex;gap:.5rem;margin-top:.6rem">
-              <input id="msgInput" class="input" placeholder="Message..." style="flex:1" />
+              <input id="msgInput" class="input" placeholder="Message..." style="flex:1" autocomplete="off" />
+              <input id="fileInput" type="file" accept="image/*" style="display:none" />
+              <button id="attachBtn" class="btn ghost" title="Attach image">Attach</button>
               <button id="sendBtn" class="btn">Send</button>
             </div>
             <div id="typingIndicator" style="color:var(--muted);margin-top:.4rem;display:none">Someone is typing…</div>
@@ -106,10 +126,9 @@
 <!-- Firebase + logic -->
 <script type="module">
 /* ========================== CONFIG ========================== */
-/* Your Firebase config (the project you shared earlier) */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
-import { getDatabase, ref, set, push, onValue, get, child, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
+import { getDatabase, ref, set, push, onValue, get, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
 import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js';
 
 const firebaseConfig = {
@@ -123,7 +142,7 @@ const firebaseConfig = {
   measurementId: "G-L7Y3NV8L88"
 };
 
-const adminEmail = "flashdc4178@gmail.com"; // <- YOU asked to be admin; this is your admin email
+const adminEmail = "flashdc4178@gmail.com";
 
 /* ========================== INIT ========================== */
 const app = initializeApp(firebaseConfig);
@@ -134,10 +153,42 @@ const storage = getStorage(app);
 /* ========================== HELPERS ========================== */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
-function toast(msg, t = 2500){ const d = document.createElement('div'); d.style.padding='8px 12px'; d.style.background='#0e2238'; d.style.border='1px solid #12233b'; d.style.borderRadius='10px'; d.style.color='#dfefff'; d.style.marginTop='6px'; d.textContent=msg; $('#toasts').appendChild(d); setTimeout(()=>d.remove(), t); }
+function toast(msg, t = 2500){
+  const d = document.createElement('div');
+  d.style.padding='8px 12px';
+  d.style.background='#0e2238';
+  d.style.border='1px solid #12233b';
+  d.style.borderRadius='10px';
+  d.style.color='#dfefff';
+  d.style.marginTop='6px';
+  d.textContent=msg;
+  $('#toasts').appendChild(d);
+  setTimeout(() => d.remove(), t);
+}
+function defaultAvatar(seed){
+  return `https://api.dicebear.com/8.x/thumbs/svg?seed=${(seed||'quick').slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+}
+function timeAgo(ts){
+  if(!ts) return '—';
+  const d = Math.floor((Date.now()-ts)/1000);
+  if(d<60) return d+'s';
+  if(d<3600) return Math.floor(d/60)+'m';
+  if(d<86400) return Math.floor(d/3600)+'h';
+  return Math.floor(d/86400)+'d';
+}
+function typingRef(chatId, uid){
+  return ref(db, `typing/${chatId}/${uid}`);
+}
 
-function defaultAvatar(seed){ return `https://api.dicebear.com/8.x/thumbs/svg?seed=${(seed||'quick').slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`; }
-function timeAgo(ts){ if(!ts) return '—'; const d=Math.floor((Date.now()-ts)/1000); if(d<60) return d+'s'; if(d<3600) return Math.floor(d/60)+'m'; if(d<86400) return Math.floor(d/3600)+'h'; return Math.floor(d/86400)+'d'; }
+/* ========================== VARIABLES ========================== */
+let isAdminUser = false;
+let me = null;
+let currentChat = null;
+let unsubMessages = null;
+let typingTimer = null;
+let pendingFile = null;
+let lastSendAt = 0;
+const SEND_COOLDOWN_MS = 1200;
 
 /* ========================== AUTH UI HANDLERS ========================== */
 $('#loginBtn').onclick = async () => {
@@ -148,14 +199,23 @@ $('#loginBtn').onclick = async () => {
 };
 $('#registerBtn').onclick = async () => {
   try {
-    const email = $('#loginEmail').value;
+    const email = $('#loginEmail').value.trim();
     const pass = $('#loginPass').value;
     if(!email||!pass){ $('#authMsg').textContent='Enter email & password'; return; }
+    if(pass.length < 6){ $('#authMsg').textContent='Password must be at least 6 characters'; return; }
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    // set default user row
     const uid = cred.user.uid;
     const short = String(10000 + Math.floor(Math.random()*90000));
-    await set(ref(db, 'users/' + uid), { uid, email, name: cred.user.displayName||email.split('@')[0], avatar: defaultAvatar(uid), shortId: short, createdAt: Date.now(), online: true, lastSeen: Date.now() });
+    await set(ref(db, 'users/' + uid), {
+      uid,
+      email,
+      name: cred.user.displayName || email.split('@')[0],
+      avatar: defaultAvatar(uid),
+      shortId: short,
+      createdAt: Date.now(),
+      online: true,
+      lastSeen: Date.now()
+    });
     await set(ref(db, 'shortIds/' + short), { uid });
     toast('Registered — check profile to edit');
   } catch (e){ $('#authMsg').textContent = e.message; }
@@ -169,17 +229,23 @@ $('#googleBtn').onclick = async () => {
     const s = await get(uref);
     if(!s.exists()){
       const short = String(10000 + Math.floor(Math.random()*90000));
-      await set(uref, { uid, email: cred.user.email, name: cred.user.displayName||cred.user.email, avatar: cred.user.photoURL || defaultAvatar(uid), shortId: short, createdAt: Date.now(), online: true, lastSeen: Date.now() });
+      await set(uref, {
+        uid,
+        email: cred.user.email,
+        name: cred.user.displayName || cred.user.email,
+        avatar: cred.user.photoURL || defaultAvatar(uid),
+        shortId: short,
+        createdAt: Date.now(),
+        online: true,
+        lastSeen: Date.now()
+      });
       await set(ref(db, 'shortIds/' + short), { uid });
     }
   } catch (e){ $('#authMsg').textContent = e.message; }
 };
 
 /* ========================== ADMIN UI + ACTIONS ========================== */
-let isAdminUser = false;
-
 async function injectAdminPanel(){
-  // If already present, skip
   if(document.getElementById('adminPanel')) return;
   const wrap = document.getElementById('adminPanelWrap');
   const panel = document.createElement('div');
@@ -211,6 +277,14 @@ async function injectAdminPanel(){
         <button id="adminDelMsgBtn" class="btn secondary">Delete Message</button>
       </div>
     </div>
+    <div style="margin-top:8px;border-top:1px solid #123;padding-top:8px">
+      <div style="font-weight:700;margin-bottom:6px">Global Announcement</div>
+      <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.4rem" />
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <button id="adminAnnSet" class="btn">Set</button>
+        <button id="adminAnnClear" class="btn ghost">Clear</button>
+      </div>
+    </div>
     <div style="margin-top:8px">
       <button id="adminRefreshUsers" class="btn ghost">Refresh Users</button>
       <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
@@ -218,7 +292,7 @@ async function injectAdminPanel(){
   `;
   wrap.appendChild(panel);
 
-  // Buttons
+  /* Admin button functionality */
   $('#adminLookupBtn').onclick = async () => {
     const v = $('#adminTarget').value.trim();
     if(!v){ toast('Enter UID or 5-digit ID'); return; }
@@ -237,7 +311,11 @@ async function injectAdminPanel(){
   $('#adminVerifyBtn').onclick = async () => {
     const v = $('#adminTarget').value.trim(); if(!v){ toast('Enter UID or 5-digit ID'); return; }
     let uid = v;
-    if(v.length===5){ const s = await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No such shortId'); return; } uid = s.val().uid; }
+    if(v.length===5){
+      const s = await get(ref(db,'shortIds/'+v));
+      if(!s.exists()){ toast('No such shortId'); return; }
+      uid = s.val().uid;
+    }
     await update(ref(db, 'users/' + uid), { verified: true });
     toast('User verified');
     await refreshAdminUsers();
@@ -265,6 +343,16 @@ async function injectAdminPanel(){
   };
   $('#adminRefreshUsers').onclick = refreshAdminUsers;
 
+  $('#adminAnnSet').onclick = async ()=>{
+    const t = $('#adminAnnText').value.trim();
+    await set(ref(db, 'announcements/global'), { text: t, ts: Date.now(), by: me.uid });
+    toast('Announcement set');
+  };
+  $('#adminAnnClear').onclick = async ()=>{
+    await remove(ref(db, 'announcements/global'));
+    toast('Announcement cleared');
+  };
+
   await refreshAdminUsers();
 }
 
@@ -289,9 +377,8 @@ async function refreshAdminUsers(){
     `;
     wrap.appendChild(div);
   }
-  // attach actions
   wrap.querySelectorAll('button[data-action]').forEach(b=>{
-    b.onclick = async (ev)=>{
+    b.onclick = async ()=>{
       const uid = b.dataset.uid; const action = b.dataset.action;
       if(action==='verify'){ await update(ref(db,'users/'+uid), { verified: true }); toast('Verified'); }
       if(action==='ban'){ await set(ref(db,'banned/'+uid), true); toast('Banned'); }
@@ -306,24 +393,37 @@ async function isBanned(uid){
   return s.exists();
 }
 
-/* ========================== APP CORE (minimal chat pieces) ========================== */
-let me = null;
-let currentChat = null;
-let unsubMessages = null;
+/* ========================== APP CORE ========================== */
+function roomIdFor(a,b){ return [a,b].sort().join('_'); }
 
-// helper: render list of friends (very basic)
+async function getUnreadCount(chatId){
+  const readsSnap = await get(ref(db, `reads/${chatId}`));
+  if(!readsSnap.exists()) return 0;
+  const reads = readsSnap.val();
+  let count = 0;
+  for(const mk in reads){
+    if(!reads[mk] || !reads[mk][me.uid]) count++;
+  }
+  return count;
+}
+
 async function refreshFriends(){
   if(!me) return;
   const wrap = $('#friendsList'); wrap.innerHTML = '';
   const s = await get(ref(db, 'friends/' + me.uid));
   const ids = s.exists()? Object.keys(s.val()): [];
   for(const fid of ids){
-    const u = (await get(ref(db, 'users/' + fid))).val();
-    if(!u) continue;
+    const uSnap = await get(ref(db, 'users/' + fid));
+    const u = uSnap.val(); if(!u) continue;
+    const id = roomIdFor(me.uid, u.uid);
+    const unread = await getUnreadCount(id);
     const it = document.createElement('div'); it.className = 'item';
     it.innerHTML = `<img class="avatar" src="${u.avatar||defaultAvatar(u.uid)}" />
       <div style="flex:1">
-        <div style="font-weight:700">${u.name||u.email}</div>
+        <div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">
+          <span>${u.name||u.email}</span>
+          ${unread>0? `<span style="background:#1b3d74;color:#dfefff;font-size:.75rem;padding:2px 8px;border-radius:999px">${unread}</span>`:''}
+        </div>
         <div style="color:var(--muted);font-size:.85rem">${u.online? 'online':'last '+timeAgo(u.lastSeen)}</div>
       </div>`;
     it.onclick = ()=> openDM(u);
@@ -331,7 +431,6 @@ async function refreshFriends(){
   }
 }
 
-// communities quick load
 async function loadCommunities(){
   const wrap = $('#communitiesList'); wrap.innerHTML = '';
   const cs = await get(ref(db, 'communities'));
@@ -339,88 +438,211 @@ async function loadCommunities(){
   const data = cs.val();
   for(const id in data){
     const c = data[id];
+    const unread = await getUnreadCount(c.id);
     const it = document.createElement('div'); it.className='item';
-    it.innerHTML = `<div style="flex:1"><div style="font-weight:700">${c.name}</div><div style="color:var(--muted)">${c.id}</div></div><button class="btn ghost">Open</button>`;
+    it.innerHTML = `<div style="flex:1">
+        <div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">
+          <span>${c.name}</span>
+          ${unread>0? `<span style="background:#1b3d74;color:#dfefff;font-size:.75rem;padding:2px 8px;border-radius:999px">${unread}</span>`:''}
+        </div>
+        <div style="color:var(--muted)">${c.id}</div></div>
+      <button class="btn ghost">Open</button>`;
     it.querySelector('button').onclick = ()=> openGroup(c);
     wrap.appendChild(it);
   }
 }
 
-// open DM
-function roomIdFor(a,b){ return [a,b].sort().join('_'); }
 function openChatPanel(peer){
   currentChat = peer;
   $('#chatTitle').textContent = peer.name || peer.id || 'Chat';
   $('#chatAvatar').src = peer.avatar || defaultAvatar(peer.uid || peer.id);
   $('#messages').innerHTML = '';
 }
+
 async function openDM(u){
   openChatPanel(u);
   const id = roomIdFor(me.uid, u.uid);
   subscribeMessages('chats/' + id + '/messages', id, 'dm', u);
 }
+
 async function openGroup(c){
   openChatPanel(c);
   subscribeMessages('communityMessages/' + c.id, c.id, 'group', c);
 }
 
 function subscribeMessages(path, chatId, kind, peer){
-  if(unsubMessages) unsubMessages(); // noop
+  if(unsubMessages) unsubMessages();
   const r = ref(db, path);
-  const handler = onValue(r, async snap => {
+  onValue(r, async snap => {
     const data = snap.val() || {};
     $('#messages').innerHTML = '';
     const entries = Object.entries(data).sort((a,b)=>a[1].ts - b[1].ts);
     for(const [key,m] of entries){
       const div = document.createElement('div'); div.className = 'item';
       div.style.background = m.from===me.uid? '#08263f':'#071328';
-      div.innerHTML = `<div style="flex:1"><div style="font-weight:700">${m.fromName||''}</div><div>${m.text||''}</div><div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div></div>`;
-      // show message key (helpful for admin)
+      div.innerHTML = `<div style="flex:1"><div style="font-weight:700">${m.fromName||''}${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> • edited</span>':''}</div><div>${m.text||''}</div><div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div></div>`;
       const keyEl = document.createElement('div'); keyEl.style.color='var(--muted)'; keyEl.style.fontSize='.7rem'; keyEl.textContent = key;
       div.appendChild(keyEl);
-      // append
+
+      if(m.imageURL){
+        const img = document.createElement('img');
+        img.src = m.imageURL;
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        img.style.marginTop = '6px';
+        div.querySelector('div[style*="flex:1"]').appendChild(img);
+      }
+
+      if(m.from === me.uid){
+        const row = document.createElement('div');
+        row.style.display='flex'; row.style.gap='6px'; row.style.marginTop='6px';
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn ghost'; delBtn.textContent = 'Delete';
+        delBtn.onclick = async ()=>{
+          const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
+          await remove(ref(db, basePath));
+          toast('Deleted');
+        };
+        row.appendChild(delBtn);
+
+        const EDIT_WINDOW_MS = 120000;
+        if(Date.now() - m.ts <= EDIT_WINDOW_MS){
+          const editBtn = document.createElement('button');
+          editBtn.className = 'btn ghost'; editBtn.textContent = 'Edit';
+          editBtn.onclick = async ()=>{
+            const newText = prompt('Edit message:', m.text||'');
+            if(newText===null) return;
+            const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
+            await update(ref(db, basePath), { text: newText, editedAt: Date.now() });
+            toast('Edited');
+          };
+          row.appendChild(editBtn);
+        }
+
+        div.appendChild(row);
+      }
+
+      // read-by badge
+      const readsSnap = await get(ref(db, `reads/${chatId}/${key}`));
+      if(readsSnap.exists()){
+        const readers = Object.keys(readsSnap.val() || {});
+        if(readers.length){
+          const readBadge = document.createElement('div');
+          readBadge.style.color='var(--muted)'; readBadge.style.fontSize='.7rem'; readBadge.style.marginTop='4px';
+          readBadge.textContent = `Read by ${readers.length}`;
+          div.appendChild(readBadge);
+        }
+      }
       $('#messages').appendChild(div);
-      // mark read
       if(m.from !== me.uid){
         await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
       }
     }
     $('#messages').scrollTop = $('#messages').scrollHeight;
   });
-  // store unsubscribe
-  unsubMessages = ()=> handler();
+
+  // typing observer
+  const tRef = ref(db, `typing/${chatId}`);
+  const offTyping = onValue(tRef, snap=>{
+    const obj = snap.val() || {};
+    const someoneElseTyping = Object.keys(obj).some(uid => uid !== me.uid && obj[uid] === true);
+    $('#typingIndicator').style.display = someoneElseTyping ? 'block' : 'none';
+  });
+
+  unsubMessages = ()=>{
+    offTyping();
+  };
 }
 
-/* send message */
-$('#sendBtn').onclick = async () => {
-  const text = $('#msgInput').value.trim(); if(!text || !currentChat) return;
-  const payload = { from: me.uid, fromName: me.name, text, ts: Date.now() };
-  const key = push(ref(db)).key;
-  if(currentChat.uid){ // DM
-    const id = roomIdFor(me.uid, currentChat.uid);
-    await set(ref(db, `chats/${id}/messages/${key}`), payload);
-    await set(ref(db, `reads/${id}/${key}/${me.uid}`), true);
-  } else if(currentChat.id){ // group
-    await set(ref(db, `communityMessages/${currentChat.id}/${key}`), payload);
-    await set(ref(db, `reads/${currentChat.id}/${key}/${me.uid}`), true);
-  }
-  $('#msgInput').value = '';
+$('#msgInput').addEventListener('input', async ()=>{
+  if(!currentChat || !me) return;
+  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+  try{
+    await set(typingRef(chatId, me.uid), true);
+  }catch{}
+  if(typingTimer) clearTimeout(typingTimer);
+  typingTimer = setTimeout(async ()=>{
+    try{ await remove(typingRef(chatId, me.uid)); }catch{}
+  }, 1800);
+});
+
+$('#attachBtn').onclick = ()=> $('#fileInput').click();
+$('#fileInput').onchange = (e)=> {
+  pendingFile = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+  if(pendingFile) toast('Image selected: '+pendingFile.name);
 };
 
-/* ========================== INCOMING CALL / PRESENCE (light) ========================== */
-// presence: set/update user row when login
+$('#sendBtn').onclick = async () => {
+  const now = Date.now();
+  if(now - lastSendAt < SEND_COOLDOWN_MS){ toast('Slow down a bit…'); return; }
+  lastSendAt = now;
+
+  const text = $('#msgInput').value.trim();
+  if(!currentChat || (!text && !pendingFile)) return;
+
+  let imageURL = null;
+  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+
+  if(pendingFile){
+    try {
+      const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile.name}`;
+      const sr = sref(storage, filePath);
+      await uploadBytes(sr, pendingFile);
+      imageURL = await getDownloadURL(sr);
+    } catch(e) {
+      toast('Upload failed');
+      console.error(e);
+    }
+  }
+
+  const payload = { from: me.uid, fromName: me.name, text: text || '', ts: Date.now(), imageURL: imageURL || null };
+  const key = push(ref(db)).key;
+
+  if(currentChat.uid){
+    await set(ref(db, `chats/${chatId}/messages/${key}`), payload);
+    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
+  } else if(currentChat.id){
+    await set(ref(db, `communityMessages/${chatId}/${key}`), payload);
+    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
+  }
+
+  $('#msgInput').value = '';
+  if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Sent'); }
+};
+
+/* ========================== PRESENCE ========================== */
 async function setPresence(uid){
   await update(ref(db, 'users/' + uid), { online: true, lastSeen: Date.now() });
 }
 
+window.addEventListener('beforeunload', () => {
+  if(me && me.uid){
+    navigator.sendBeacon(
+      `https://meaww-chat-4f6bd-default-rtdb.firebaseio.com/users/${me.uid}.json`,
+      JSON.stringify({ online:false, lastSeen: Date.now() })
+    );
+  }
+});
+document.addEventListener('visibilitychange', async () => {
+  if(!me) return;
+  if(document.hidden) {
+    await update(ref(db,'users/'+me.uid), { online:false, lastSeen: Date.now() });
+  } else {
+    await update(ref(db,'users/'+me.uid), { online:true, lastSeen: Date.now() });
+  }
+});
+
 /* ========================== ON AUTH CHANGE ========================== */
 onAuthStateChanged(auth, async (user) => {
   if(!user){
-    // show auth
     $('#auth').classList.remove('hidden');
     $('#appUI').classList.add('hidden');
     $('#adminPanelWrap').innerHTML = '';
     isAdminUser = false;
+    me = null;
     return;
   }
 
@@ -432,15 +654,22 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // load/create user row
   const uref = ref(db, 'users/' + user.uid);
   const s = await get(uref);
   if(!s.exists()){
     const short = String(10000 + Math.floor(Math.random()*90000));
-    await set(uref, { uid: user.uid, email: user.email, name: user.displayName || user.email.split('@')[0], avatar: user.photoURL || defaultAvatar(user.uid), shortId: short, createdAt: Date.now(), online: true, lastSeen: Date.now() });
+    await set(uref, {
+      uid: user.uid,
+      email: user.email,
+      name: user.displayName || user.email.split('@')[0],
+      avatar: user.photoURL || defaultAvatar(user.uid),
+      shortId: short,
+      createdAt: Date.now(),
+      online: true,
+      lastSeen: Date.now()
+    });
     await set(ref(db, 'shortIds/' + short), { uid: user.uid });
   } else {
-    // ensure presence and some fields
     const data = s.val();
     const upd = { online: true, lastSeen: Date.now() };
     if(!data.avatar) upd.avatar = defaultAvatar(user.uid);
@@ -448,16 +677,40 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   me = (await get(uref)).val();
+
   $('#navAvatar').src = me.avatar || defaultAvatar(me.uid);
   $('#myShort').textContent = 'ID: ' + (me.shortId || '');
   $('#auth').classList.add('hidden');
   $('#appUI').classList.remove('hidden');
 
-  // refresh lists
+  // fill profile editor
+  $('#profName').value = me.name || '';
+  $('#profAvatarUrl').value = me.avatar || '';
+
+  // save/reset profile
+  $('#saveProfileBtn').onclick = async ()=>{
+    const name = $('#profName').value.trim() || me.email?.split('@')[0] || 'user';
+    const avatar = $('#profAvatarUrl').value.trim() || me.avatar || defaultAvatar(me.uid);
+    await update(ref(db, 'users/'+me.uid), { name, avatar });
+    try { await updateProfile(auth.currentUser, { displayName: name, photoURL: avatar }); } catch(_) {}
+    $('#navAvatar').src = avatar;
+    toast('Profile updated');
+    await refreshFriends();
+  };
+  $('#resetAvatarBtn').onclick = async ()=>{
+    const avatar = defaultAvatar(me.uid);
+    $('#profAvatarUrl').value = avatar;
+    await update(ref(db, 'users/'+me.uid), { avatar });
+    try { await updateProfile(auth.currentUser, { photoURL: avatar }); } catch(_) {}
+    $('#navAvatar').src = avatar;
+    toast('Avatar reset');
+  };
+
+  // refresh data
   await refreshFriends();
   await loadCommunities();
 
-  // show admin UI if logged in user email matches adminEmail
+  // show admin UI
   if(user.email && user.email.toLowerCase() === adminEmail.toLowerCase()){
     isAdminUser = true;
     await injectAdminPanel();
@@ -466,14 +719,27 @@ onAuthStateChanged(auth, async (user) => {
     isAdminUser = false;
     $('#adminPanelWrap').innerHTML = '';
   }
+
+  // subscribe global announcement
+  onValue(ref(db,'announcements/global'), snap=>{
+    const b = $('#globalBanner');
+    if(snap.exists()){
+      b.textContent = snap.val().text || '';
+      b.classList.remove('hidden');
+    } else {
+      b.classList.add('hidden');
+      b.textContent = '';
+    }
+  });
 });
 
-/* quick sign out button for convenience (top-right avatar click) */
+/* ========================== SIGN OUT ========================== */
 $('#navAvatar').onclick = async () => {
-  const ok = confirm('Sign out?'); if(ok) await signOut(auth);
+  const ok = confirm('Sign out?');
+  if(ok) await signOut(auth);
 };
 
-/* ========================== EXTRA: helper to display call history (basic) ========================== */
+/* ========================== CALL HISTORY LOADER ========================== */
 async function loadCallHistory(){
   if(!me) return;
   const s = await get(ref(db, 'callHistory/' + me.uid));
@@ -487,9 +753,21 @@ async function loadCallHistory(){
     wrap.appendChild(it);
   }
 }
-
-/* call load on demand - basic timeout loop to refresh */
 setInterval(()=>{ if(me) loadCallHistory(); }, 15000);
+
+/* ========================== THEME TOGGLE ========================== */
+function applyTheme(){
+  const t = localStorage.getItem('theme') || 'dim';
+  document.body.classList.remove('theme-high','theme-dim');
+  document.body.classList.add('theme-'+t);
+}
+applyTheme();
+$('#themeBtn').onclick = ()=> {
+  const cur = localStorage.getItem('theme') || 'dim';
+  const next = cur==='dim' ? 'high' : 'dim';
+  localStorage.setItem('theme', next);
+  applyTheme();
+};
 
 </script>
 </body>
