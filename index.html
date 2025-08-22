@@ -24,6 +24,18 @@
   .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover}
   .admin-floating{position:fixed;left:12px;top:72px;z-index:9999}
   pre{white-space:pre-wrap;word-break:break-word}
+
+  /* Fullscreen chat mode */
+  .fullscreen-chat #appUI > div {
+    display: flex;
+    flex-direction: column;
+  }
+  .fullscreen-chat #appUI > div > div:first-child {
+    display: none; /* Hide sidebar */
+  }
+  .fullscreen-chat #appUI > div > div:last-child {
+    width: 100% !important; /* Expand chat */
+  }
 </style>
 </head>
 <body>
@@ -126,8 +138,9 @@
 
         <div style="width:420px">
           <div class="card" id="chatCard">
-            <div style="display:flex;align-items:center;gap:.6rem">
-              <img id="chatAvatar" class="avatar" src="" alt="">
+            <div style="display:flex;align-items:center;gap:.6rem;position:relative">
+              <button id="chatBackBtn" class="btn ghost" style="display:none;position:absolute;left:0;">Back</button>
+              <img id="chatAvatar" class="avatar" src="" alt="" style="margin-left:30px">
               <div style="flex:1">
                 <div id="chatTitle" style="font-weight:800">No chat</div>
                 <div id="chatPresence" style="color:var(--muted);font-size:.85rem">—</div>
@@ -454,14 +467,32 @@ function openChatPanel(peer){
   $('#messages').innerHTML = '';
 }
 
+const chatBackBtn = $('#chatBackBtn');
+chatBackBtn.onclick = () => {
+  document.getElementById('appUI').classList.remove('fullscreen-chat');
+  chatBackBtn.style.display = 'none';
+  currentChat = null;
+  $('#chatTitle').textContent = 'No chat';
+  $('#chatAvatar').src = '';
+  $('#messages').innerHTML = '';
+};
+
 async function openDM(u){
   openChatPanel(u);
+
+  document.getElementById('appUI').classList.add('fullscreen-chat');
+  chatBackBtn.style.display = 'inline-block';
+
   const id = roomIdFor(me.uid, u.uid);
   subscribeMessages('chats/' + id + '/messages', id, 'dm', u);
 }
 
 async function openGroup(c){
   openChatPanel(c);
+
+  document.getElementById('appUI').classList.remove('fullscreen-chat');
+  chatBackBtn.style.display = 'none';
+
   subscribeMessages('communityMessages/' + c.id, c.id, 'group', c);
 }
 
@@ -599,7 +630,7 @@ $('#sendBtn').onclick = async () => {
     await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
     try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
   } else if(currentChat.id){
-    await set(ref(db, `communityMessages/${chatId}/${key}`), payload);
+    await set(ref(db, `communityMessages/${chatId}/messages/${key}`), payload);
     await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
     try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
   }
@@ -637,12 +668,10 @@ onAuthStateChanged(auth, async (user) => {
     $('#appUI').classList.add('hidden');
     isAdminUser = false;
     me = null;
-    // hide profileAdminPanel
     document.getElementById('profileAdminPanel').style.display = 'none';
     return;
   }
 
-  // check ban
   const bannedSnap = await get(ref(db, 'banned/' + user.uid));
   if(bannedSnap.exists()){
     toast('Your account is banned. Signing out.');
@@ -679,6 +708,7 @@ onAuthStateChanged(auth, async (user) => {
   $('#auth').classList.add('hidden');
   $('#appUI').classList.remove('hidden');
 
+
   // fill profile editor
   $('#profName').value = me.name || '';
   $('#profAvatarUrl').value = me.avatar || '';
@@ -714,7 +744,6 @@ onAuthStateChanged(auth, async (user) => {
     $('#adminControls').style.display = 'none';
   }
 
-  // hide profileAdminPanel by default on login
   document.getElementById('profileAdminPanel').style.display = 'none';
 
   // refresh rest of app UI...
@@ -747,36 +776,6 @@ $('#navAvatar').onclick = () => {
 $('#logoutBtn').onclick = async () => {
   const ok = confirm('Sign out?');
   if(ok) await signOut(auth);
-};
-
-/* ========================== CALL HISTORY LOADER ========================== */
-async function loadCallHistory(){
-  if(!me) return;
-  const s = await get(ref(db, 'callHistory/' + me.uid));
-  const wrap = $('#callHistory'); wrap.innerHTML = '';
-  if(!s.exists()) return;
-  const arr = Object.values(s.val()).sort((a,b)=>b.time - a.time);
-  for(const h of arr){
-    const it = document.createElement('div'); it.className='item';
-    it.innerHTML = `<img class="avatar" src="${h.peerAvatar||defaultAvatar(h.peerId)}" />
-      <div style="flex:1"><div style="font-weight:700">${h.peerName}</div><div style="color:var(--muted);font-size:.85rem">${new Date(h.time).toLocaleString()} • ${h.type} • ${h.status}</div></div>`;
-    wrap.appendChild(it);
-  }
-}
-setInterval(()=>{ if(me) loadCallHistory(); }, 15000);
-
-/* ========================== THEME TOGGLE ========================== */
-function applyTheme(){
-  const t = localStorage.getItem('theme') || 'dim';
-  document.body.classList.remove('theme-high','theme-dim');
-  document.body.classList.add('theme-'+t);
-}
-applyTheme();
-$('#themeBtn').onclick = ()=> {
-  const cur = localStorage.getItem('theme') || 'dim';
-  const next = cur==='dim' ? 'high' : 'dim';
-  localStorage.setItem('theme', next);
-  applyTheme();
 };
 
 </script>
