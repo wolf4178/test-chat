@@ -979,6 +979,16 @@ if (localStorage.getItem('darkMode') === 'enabled') {
 }
 
 updateToggleButtonText();
+  const msgInput = document.getElementById('msgInput');
+const typingIndicator = document.getElementById('typingIndicator');
+
+msgInput.addEventListener('input', () => {
+  typingIndicator.style.display = 'block';
+  clearTimeout(msgInput._typingTimeout);
+  msgInput._typingTimeout = setTimeout(() => {
+    typingIndicator.style.display = 'none';
+  }, 1000);
+});
 </script>
 </body>
 </html>
