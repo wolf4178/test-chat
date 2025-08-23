@@ -4,8 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>QuickChat — Admin Edition</title>
-<!-- FontAwesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   :root{--bg:#0b0f14;--elev:#111723;--border:#1b2435;--text:#e6eefc;--muted:#98a7c0;--brand:#4f8cff}
   body.theme-high { --bg:#05070b; --elev:#0a1120; --border:#172135; --text:#eaf2ff; --muted:#9fb1cc; --brand:#4f8cff }
@@ -19,69 +17,50 @@
   .card{background:#0e1420;border:1px solid var(--border);border-radius:12px;padding:.75rem}
   .hidden{display:none}
   .input{width:100%;padding:.6rem;border-radius:10px;border:1px solid var(--border);background:#0b1220;color:var(--text);margin:.4rem 0}
-  .input:focus{outline:2px solid var(--brand);}
-  .btn{background:var(--brand);border:none;color:#fff;padding:.6rem .8rem;border-radius:10px;cursor:pointer;transition:background 0.2s,opacity 0.2s;}
+  .btn{background:var(--brand);border:none;color:#fff;padding:.6rem .8rem;border-radius:10px;cursor:pointer}
   .btn.ghost{background:transparent;border:1px solid var(--border)}
-  .btn:focus{outline:2px solid #357ae8;}
-  .btn:hover{opacity:0.85;background:#357ae8;}
   .list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
-  .item{display:flex;align-items:center;gap:.5rem;padding:.5rem;border-radius:10px;background:#0b1424;border:1px solid var(--border);transition:background 0.2s;}
-  .item:hover{background:#112040;cursor:pointer;}
+  .item{display:flex;align-items:center;gap:.5rem;padding:.5rem;border-radius:10px;background:#0b1424;border:1px solid var(--border)}
   .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover}
   .admin-floating{position:fixed;left:12px;top:72px;z-index:9999}
   pre{white-space:pre-wrap;word-break:break-word}
 
   /* Fullscreen chat mode */
-  .fullscreen-chat #appUI > div { display: flex; flex-direction: column; }
-  .fullscreen-chat #appUI > div > div:first-child { display: none; }
-  .fullscreen-chat #appUI > div > div:last-child { width: 100% !important; }
-
-  /* Loading spinner */
-  #loadingSpinner{ text-align:center; margin:24px 0;}
-  #loadingSpinner > div{ border:3px solid #4f8cff; border-top:3px solid #fff; border-radius:50%; width:32px; height:32px; animation:spin 1s linear infinite;}
-  @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
-
-  /* Toast area positioning (mobile friendly) */
-  #toasts{ position:fixed; left:6%; width:88%; max-width:400px; bottom:22px; z-index:9999; transform:none; }
-
-  /* Responsive for mobile */
-  @media(max-width:700px){
-    #appUI > div { flex-direction: column !important; }
-    #appUI > div > div { width: 100% !important; }
-    .card { margin-bottom: .9rem; }
-    header .title { font-size:1.2rem; }
-    #navAvatar { width:30px;height:30px;}
-    #chatAvatar {margin-left:10px;}
+  .fullscreen-chat #appUI > div {
+    display: flex;
+    flex-direction: column;
+  }
+  .fullscreen-chat #appUI > div > div:first-child {
+    display: none; /* Hide sidebar */
+  }
+  .fullscreen-chat #appUI > div > div:last-child {
+    width: 100% !important; /* Expand chat */
   }
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <header>
-    <div class="title">QuickChat <span style="font-weight:400;font-size:0.93em;color:var(--muted)">Admin Edition</span></div>
+    <div class="title">QuickChat</div>
     <div style="flex:1"></div>
     <div style="display:flex;align-items:center;gap:0.5rem">
-      <img id="navAvatar" class="avatar" src="" alt="Profile Avatar" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
-      <button id="logoutBtn" class="btn ghost" title="Logout" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
+      <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
+      <button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
     </div>
   </header>
 
   <div id="globalBanner" class="hidden" style="background:#0c2140;border-bottom:1px solid var(--border);padding:.5rem;text-align:center;color:#dfefff"></div>
 
   <main>
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" class="hidden">
-      <div></div>
-    </div>
     <!-- AUTH CARD -->
     <section id="auth" class="card" style="max-width:720px;margin:auto">
       <h3>Sign in / Register</h3>
       <input id="loginEmail" class="input" placeholder="Email" type="email" />
       <input id="loginPass" class="input" placeholder="Password" type="password" />
       <div style="display:flex;gap:.5rem;margin-top:.5rem">
-        <button id="loginBtn" class="btn" aria-label="Log in">Log in</button>
-        <button id="registerBtn" class="btn ghost" aria-label="Register">Register</button>
-        <button id="googleBtn" class="btn ghost" aria-label="Sign in with Google"><i class="fab fa-google"></i></button>
+        <button id="loginBtn" class="btn">Log in</button>
+        <button id="registerBtn" class="btn ghost">Register</button>
+        <button id="googleBtn" class="btn ghost">Sign in with Google</button>
       </div>
       <div id="authMsg" style="color:var(--muted);margin-top:.5rem"></div>
     </section>
@@ -96,10 +75,9 @@
             <strong>My Profile</strong>
             <input id="profName" class="input" placeholder="Display name" />
             <input id="profAvatarUrl" class="input" placeholder="Avatar URL (optional)" />
-            <div id="avatarPreview" style="margin-top:10px"></div>
             <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-              <button id="saveProfileBtn" class="btn" aria-label="Save Profile">Save</button>
-              <button id="resetAvatarBtn" class="btn ghost" aria-label="Reset Avatar">Reset Avatar</button>
+              <button id="saveProfileBtn" class="btn">Save</button>
+              <button id="resetAvatarBtn" class="btn ghost">Reset Avatar</button>
             </div>
 
             <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:10px; margin-top: 8px;">
@@ -107,24 +85,24 @@
 
               <div style="display:flex;gap:6px;margin-bottom:8px">
                 <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="padding:.4rem" />
-                <button id="adminLookupBtn" class="btn ghost" aria-label="Lookup"><i class="fas fa-search"></i></button>
+                <button id="adminLookupBtn" class="btn ghost">Lookup</button>
               </div>
 
               <div style="display:flex;gap:6px;margin-bottom:8px">
-                <button id="adminVerifyBtn" class="btn" aria-label="Verify"><i class="fas fa-check"></i> Verify</button>
-                <button id="adminUnverifyBtn" class="btn ghost" aria-label="Unverify"><i class="fas fa-times"></i> Unverify</button>
+                <button id="adminVerifyBtn" class="btn">Verify</button>
+                <button id="adminUnverifyBtn" class="btn ghost">Unverify</button>
               </div>
 
               <div style="display:flex;gap:6px;margin-bottom:8px">
-                <button id="adminBanBtn" class="btn ghost" aria-label="Ban"><i class="fas fa-ban"></i> Ban</button>
-                <button id="adminUnbanBtn" class="btn ghost" aria-label="Unban"><i class="fas fa-unlock"></i> Unban</button>
+                <button id="adminBanBtn" class="btn ghost">Ban</button>
+                <button id="adminUnbanBtn" class="btn ghost">Unban</button>
               </div>
 
               <div style="margin-bottom:8px">
                 <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:6px;padding:.4rem" />
                 <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.4rem" />
                 <div style="display:flex;gap:6px;margin-top:6px">
-                  <button id="adminDelMsgBtn" class="btn secondary" aria-label="Delete Message"><i class="fas fa-trash"></i></button>
+                  <button id="adminDelMsgBtn" class="btn secondary">Delete Message</button>
                 </div>
               </div>
 
@@ -132,13 +110,13 @@
                 <div style="font-weight:700;margin-bottom:6px">Global Announcement</div>
                 <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.4rem" />
                 <div style="display:flex;gap:6px;margin-top:6px">
-                  <button id="adminAnnSet" class="btn" aria-label="Set Announcement"><i class="fas fa-bullhorn"></i> Set</button>
-                  <button id="adminAnnClear" class="btn ghost" aria-label="Clear Announcement"><i class="fas fa-eraser"></i> Clear</button>
+                  <button id="adminAnnSet" class="btn">Set</button>
+                  <button id="adminAnnClear" class="btn ghost">Clear</button>
                 </div>
               </div>
 
               <div>
-                <button id="adminRefreshUsers" class="btn ghost" aria-label="Refresh Users"><i class="fas fa-sync"></i> Refresh Users</button>
+                <button id="adminRefreshUsers" class="btn ghost">Refresh Users</button>
                 <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
               </div>
             </div>
@@ -161,25 +139,25 @@
         <div style="width:420px">
           <div class="card" id="chatCard">
             <div style="display:flex;align-items:center;gap:.6rem;position:relative">
-              <button id="chatBackBtn" class="btn ghost" style="display:none;position:absolute;left:0;" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
-              <img id="chatAvatar" class="avatar" src="" alt="Chat Avatar" style="margin-left:30px">
+              <button id="chatBackBtn" class="btn ghost" style="display:none;position:absolute;left:0;">Back</button>
+              <img id="chatAvatar" class="avatar" src="" alt="" style="margin-left:30px">
               <div style="flex:1">
                 <div id="chatTitle" style="font-weight:800">No chat</div>
                 <div id="chatPresence" style="color:var(--muted);font-size:.85rem">—</div>
               </div>
               <div>
-                <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)" aria-label="Audio Call"><i class="fas fa-phone"></i></button>
-                <button id="videoCallBtn" class="btn ghost" title="Video call (planned)" aria-label="Video Call"><i class="fas fa-video"></i></button>
+                <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">Audio</button>
+                <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">Video</button>
               </div>
             </div>
 
             <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.6rem;border-radius:8px"></div>
 
             <div style="display:flex;gap:.5rem;margin-top:.6rem">
-              <input id="msgInput" class="input" placeholder="Message..." style="flex:1" autocomplete="off" aria-label="Type your message" />
+              <input id="msgInput" class="input" placeholder="Message..." style="flex:1" autocomplete="off" />
               <input id="fileInput" type="file" accept="image/*" style="display:none" />
-              <button id="attachBtn" class="btn ghost" title="Attach image" aria-label="Attach Image"><i class="fas fa-paperclip"></i></button>
-              <button id="sendBtn" class="btn" aria-label="Send"><i class="fas fa-paper-plane"></i></button>
+              <button id="attachBtn" class="btn ghost" title="Attach image">Attach</button>
+              <button id="sendBtn" class="btn">Send</button>
             </div>
             <div id="typingIndicator" style="color:var(--muted);margin-top:.4rem;display:none">Someone is typing…</div>
           </div>
@@ -196,40 +174,610 @@
 </div>
 
 <!-- Toast area -->
-<div id="toasts"></div>
+<div id="toasts" style="position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:9999"></div>
 
-<!-- Firebase + logic + UI enhancements -->
+<!-- Firebase + logic -->
 <script type="module">
-/* ...==== your existing Firebase logic goes here ==== ... */
-/* The same code you pasted to me for authentication, chat, admin, etc. remains unchanged except for below enhancements: */
-
-/* ========================== INTERFACE ENHANCEMENTS ========================== */
-// Avatar preview for profile editor
-document.getElementById('profAvatarUrl').addEventListener('input', function(){
-  const url = this.value.trim();
-  document.getElementById('avatarPreview').innerHTML = url ?
-    `<img src="${url}" class="avatar" style="width:48px;height:48px;border:2px solid var(--border);" alt="Avatar Preview">` : '';
-});
-
-// "Enter" sends message in chat unless Shift is held
-document.getElementById('msgInput').addEventListener('keydown', function(e){
-  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); document.getElementById('sendBtn').click(); }
-});
-
-// Loading spinner example (show/hide during heavy tasks)
-function showSpinner() { document.getElementById('loadingSpinner').classList.remove('hidden'); }
-function hideSpinner() { document.getElementById('loadingSpinner').classList.add('hidden'); }
-
-/* ========================== REST OF YOUR SCRIPT ========================== */
-/* Copy-paste your entire script from before: authentication, chat, admin, etc. below. */
-
-/* ========================== Firebase init, helpers, etc. ========================== */
+/* ========================== CONFIG ========================== */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
 import { getDatabase, ref, set, push, onValue, get, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
 import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js';
 
-/* ... ALL your previous JS CODE goes below ... */
+const firebaseConfig = {
+  apiKey: "AIzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
+  authDomain: "meaww-chat-4f6bd.firebaseapp.com",
+  databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
+  projectId: "meaww-chat-4f6bd",
+  storageBucket: "meaww-chat-4f6bd.appspot.com",
+  messagingSenderId: "162714330727",
+  appId: "1:162714330727:web:926dd1ce1da5806c0316c2",
+  measurementId: "G-L7Y3NV8L88"
+};
+
+const adminEmail = "flashdc4178@gmail.com";
+
+/* ========================== INIT ========================== */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+/* ========================== HELPERS ========================== */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function toast(msg, t = 2500){
+  const d = document.createElement('div');
+  d.style.padding='8px 12px';
+  d.style.background='#0e2238';
+  d.style.border='1px solid #12233b';
+  d.style.borderRadius='10px';
+  d.style.color='#dfefff';
+  d.style.marginTop='6px';
+  d.textContent=msg;
+  $('#toasts').appendChild(d);
+  setTimeout(() => d.remove(), t);
+}
+function defaultAvatar(seed){
+  return `https://api.dicebear.com/8.x/thumbs/svg?seed=${(seed||'quick').slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+}
+function timeAgo(ts){
+  if(!ts) return '—';
+  const d = Math.floor((Date.now()-ts)/1000);
+  if(d<60) return d+'s';
+  if(d<3600) return Math.floor(d/60)+'m';
+  if(d<86400) return Math.floor(d/3600)+'h';
+  return Math.floor(d/86400)+'d';
+}
+function typingRef(chatId, uid){
+  return ref(db, `typing/${chatId}/${uid}`);
+}
+
+/* ========================== VARIABLES ========================== */
+let isAdminUser = false;
+let me = null;
+let currentChat = null;
+let unsubMessages = null;
+let typingTimer = null;
+let pendingFile = null;
+let lastSendAt = 0;
+const SEND_COOLDOWN_MS = 1200;
+
+/* ========================== AUTH UI HANDLERS ========================== */
+$('#loginBtn').onclick = async () => {
+  try {
+    await signInWithEmailAndPassword(auth, $('#loginEmail').value, $('#loginPass').value);
+    $('#authMsg').textContent = '';
+  } catch (e) { $('#authMsg').textContent = e.message; }
+};
+$('#registerBtn').onclick = async () => {
+  try {
+    const email = $('#loginEmail').value.trim();
+    const pass = $('#loginPass').value;
+    if(!email||!pass){ $('#authMsg').textContent='Enter email & password'; return; }
+    if(pass.length < 6){ $('#authMsg').textContent='Password must be at least 6 characters'; return; }
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    const uid = cred.user.uid;
+    const short = String(10000 + Math.floor(Math.random()*90000));
+    await set(ref(db, 'users/' + uid), {
+      uid,
+      email,
+      name: cred.user.displayName || email.split('@')[0],
+      avatar: defaultAvatar(uid),
+      shortId: short,
+      createdAt: Date.now(),
+      online: true,
+      lastSeen: Date.now()
+    });
+    await set(ref(db, 'shortIds/' + short), { uid });
+    toast('Registered — check profile to edit');
+  } catch (e){ $('#authMsg').textContent = e.message; }
+};
+$('#googleBtn').onclick = async () => {
+  try {
+    const prov = new GoogleAuthProvider();
+    const cred = await signInWithPopup(auth, prov);
+    const uid = cred.user.uid;
+    const uref = ref(db, 'users/' + uid);
+    const s = await get(uref);
+    if(!s.exists()){
+      const short = String(10000 + Math.floor(Math.random()*90000));
+      await set(uref, {
+        uid,
+        email: cred.user.email,
+        name: cred.user.displayName || cred.user.email,
+        avatar: cred.user.photoURL || defaultAvatar(uid),
+        shortId: short,
+        createdAt: Date.now(),
+        online: true,
+        lastSeen: Date.now()
+      });
+      await set(ref(db, 'shortIds/' + short), { uid });
+    }
+  } catch (e){ $('#authMsg').textContent = e.message; }
+};
+
+/* ========================== ADMIN UI + ACTIONS ========================== */
+async function injectAdminPanel(){
+  if(!isAdminUser) return;
+  // Attach buttons inside #adminControls
+  $('#adminLookupBtn').onclick = async () => {
+    const v = $('#adminTarget').value.trim();
+    if(!v){ toast('Enter UID or 5-digit ID'); return; }
+    let uid = v;
+    if(v.length === 5){
+      const s = await get(ref(db, 'shortIds/' + v));
+      if(!s.exists()){ toast('No such shortId'); return; }
+      uid = s.val().uid;
+    }
+    const u = await get(ref(db, 'users/' + uid));
+    if(!u.exists()){ toast('User not found'); return; }
+    const data = u.val();
+    toast('Found: ' + (data.name || data.email || uid));
+  };
+
+  $('#adminVerifyBtn').onclick = async () => {
+    const v = $('#adminTarget').value.trim(); if(!v){ toast('Enter UID or 5-digit ID'); return; }
+    let uid = v;
+    if(v.length===5){
+      const s = await get(ref(db,'shortIds/'+v));
+      if(!s.exists()){ toast('No such shortId'); return; }
+      uid = s.val().uid;
+    }
+    await update(ref(db, 'users/' + uid), { verified: true });
+    toast('User verified');
+    await refreshAdminUsers();
+  };
+  $('#adminUnverifyBtn').onclick = async ()=> {
+    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID');
+    let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
+    await update(ref(db,'users/'+uid), { verified: false });
+    toast('User unverified'); await refreshAdminUsers();
+  };
+  $('#adminBanBtn').onclick = async () => {
+    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID'); let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
+    await set(ref(db,'banned/'+uid), true); toast('User banned'); await refreshAdminUsers();
+  };
+  $('#adminUnbanBtn').onclick = async () => {
+    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID'); let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
+    await remove(ref(db,'banned/'+uid)); toast('User unbanned'); await refreshAdminUsers();
+  };
+  $('#adminDelMsgBtn').onclick = async () => {
+    const chatId = $('#adminChatId').value.trim(); const msgKey = $('#adminMsgKey').value.trim();
+    if(!chatId || !msgKey){ toast('Enter chat id and message key'); return; }
+    await remove(ref(db, `chats/${chatId}/messages/${msgKey}`));
+    await remove(ref(db, `communityMessages/${chatId}/${msgKey}`));
+    toast('Message removed (if existed)');
+  };
+  $('#adminRefreshUsers').onclick = refreshAdminUsers;
+
+  $('#adminAnnSet').onclick = async ()=>{
+    const t = $('#adminAnnText').value.trim();
+    await set(ref(db, 'announcements/global'), { text: t, ts: Date.now(), by: me.uid });
+    toast('Announcement set');
+  };
+  $('#adminAnnClear').onclick = async ()=>{
+    await remove(ref(db, 'announcements/global'));
+    toast('Announcement cleared');
+  };
+
+  await refreshAdminUsers();
+}
+
+async function refreshAdminUsers(){
+  const wrap = $('#adminUsersList'); wrap.innerHTML = '';
+  const s = await get(ref(db, 'users'));
+  if(!s.exists()){ wrap.textContent = 'No users yet'; return; }
+  const users = s.val();
+  for(const uid in users){
+    const u = users[uid];
+    const div = document.createElement('div'); div.className='item';
+    div.innerHTML = `
+      <img src="${u.avatar||defaultAvatar(uid)}" class="avatar" />
+      <div style="flex:1">
+        <div style="font-weight:700">${u.name || u.email || uid}</div>
+        <div style="color:var(--muted);font-size:.85rem">${u.email||''} • ${u.shortId||''} • ${u.verified? '✅ verified':''}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn ghost" data-uid="${uid}" data-action="verify">Verify</button>
+        <button class="btn ghost" data-uid="${uid}" data-action="ban">Ban</button>
+      </div>
+    `;
+    wrap.appendChild(div);
+  }
+  wrap.querySelectorAll('button[data-action]').forEach(b=>{
+    b.onclick = async ()=>{
+      const uid = b.dataset.uid; const action = b.dataset.action;
+      if(action==='verify'){ await update(ref(db,'users/'+uid), { verified: true }); toast('Verified'); }
+      if(action==='ban'){ await set(ref(db,'banned/'+uid), true); toast('Banned'); }
+      await refreshAdminUsers();
+    };
+  });
+}
+
+/* ========================== BAN CHECK ========================== */
+async function isBanned(uid){
+  const s = await get(ref(db, 'banned/' + uid));
+  return s.exists();
+}
+
+/* ========================== APP CORE ========================== */
+function roomIdFor(a,b){ return [a,b].sort().join('_'); }
+
+async function getUnreadCount(chatId){
+  const readsSnap = await get(ref(db, `reads/${chatId}`));
+  if(!readsSnap.exists()) return 0;
+  const reads = readsSnap.val();
+  let count = 0;
+  for(const mk in reads){
+    if(!reads[mk] || !reads[mk][me.uid]) count++;
+  }
+  return count;
+}
+
+async function refreshFriends(){
+  if(!me) return;
+  const wrap = $('#friendsList'); wrap.innerHTML = '';
+  const s = await get(ref(db, 'friends/' + me.uid));
+  const ids = s.exists()? Object.keys(s.val()): [];
+  for(const fid of ids){
+    const uSnap = await get(ref(db, 'users/' + fid));
+    const u = uSnap.val(); if(!u) continue;
+    const id = roomIdFor(me.uid, u.uid);
+    const unread = await getUnreadCount(id);
+    const it = document.createElement('div'); it.className = 'item';
+    it.innerHTML = `<img class="avatar" src="${u.avatar||defaultAvatar(u.uid)}" />
+      <div style="flex:1">
+        <div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">
+          <span>${u.name||u.email}</span>
+          ${unread>0? `<span style="background:#1b3d74;color:#dfefff;font-size:.75rem;padding:2px 8px;border-radius:999px">${unread}</span>`:''}
+        </div>
+        <div style="color:var(--muted);font-size:.85rem">${u.online? 'online':'last '+timeAgo(u.lastSeen)}</div>
+      </div>`;
+    it.onclick = ()=> openDM(u);
+    wrap.appendChild(it);
+  }
+}
+
+async function loadCommunities(){
+  const wrap = $('#communitiesList'); wrap.innerHTML = '';
+  const cs = await get(ref(db, 'communities'));
+  if(!cs.exists()) return;
+  const data = cs.val();
+  for(const id in data){
+    const c = data[id];
+    const unread = await getUnreadCount(c.id);
+    const it = document.createElement('div'); it.className='item';
+    it.innerHTML = `<div style="flex:1">
+        <div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">
+          <span>${c.name}</span>
+          ${unread>0? `<span style="background:#1b3d74;color:#dfefff;font-size:.75rem;padding:2px 8px;border-radius:999px">${unread}</span>`:''}
+        </div>
+        <div style="color:var(--muted)">${c.id}</div></div>
+      <button class="btn ghost">Open</button>`;
+    it.querySelector('button').onclick = ()=> openGroup(c);
+    wrap.appendChild(it);
+  }
+}
+
+function openChatPanel(peer){
+  currentChat = peer;
+  $('#chatTitle').textContent = peer.name || peer.id || 'Chat';
+  $('#chatAvatar').src = peer.avatar || defaultAvatar(peer.uid || peer.id);
+  $('#messages').innerHTML = '';
+}
+
+const chatBackBtn = $('#chatBackBtn');
+chatBackBtn.onclick = () => {
+  document.getElementById('appUI').classList.remove('fullscreen-chat');
+  chatBackBtn.style.display = 'none';
+  currentChat = null;
+  $('#chatTitle').textContent = 'No chat';
+  $('#chatAvatar').src = '';
+  $('#messages').innerHTML = '';
+};
+
+async function openDM(u){
+  openChatPanel(u);
+
+  document.getElementById('appUI').classList.add('fullscreen-chat');
+  chatBackBtn.style.display = 'inline-block';
+
+  const id = roomIdFor(me.uid, u.uid);
+  subscribeMessages('chats/' + id + '/messages', id, 'dm', u);
+}
+
+async function openGroup(c){
+  openChatPanel(c);
+
+  document.getElementById('appUI').classList.remove('fullscreen-chat');
+  chatBackBtn.style.display = 'none';
+
+  subscribeMessages('communityMessages/' + c.id, c.id, 'group', c);
+}
+
+function subscribeMessages(path, chatId, kind, peer){
+  if(unsubMessages) unsubMessages();
+  const r = ref(db, path);
+  onValue(r, async snap => {
+    const data = snap.val() || {};
+    $('#messages').innerHTML = '';
+    const entries = Object.entries(data).sort((a,b)=>a[1].ts - b[1].ts);
+    for(const [key,m] of entries){
+      const div = document.createElement('div'); div.className = 'item';
+      div.style.background = m.from===me.uid? '#08263f':'#071328';
+      div.innerHTML = `<div style="flex:1"><div style="font-weight:700">${m.fromName||''}${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> • edited</span>':''}</div><div>${m.text||''}</div><div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div></div>`;
+      const keyEl = document.createElement('div'); keyEl.style.color='var(--muted)'; keyEl.style.fontSize='.7rem'; keyEl.textContent = key;
+      div.appendChild(keyEl);
+
+      if(m.imageURL){
+        const img = document.createElement('img');
+        img.src = m.imageURL;
+        img.style.maxWidth = '100%';
+        img.style.borderRadius = '8px';
+        img.style.marginTop = '6px';
+        div.querySelector('div[style*="flex:1"]').appendChild(img);
+      }
+
+      if(m.from === me.uid){
+        const row = document.createElement('div');
+        row.style.display='flex'; row.style.gap='6px'; row.style.marginTop='6px';
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn ghost'; delBtn.textContent = 'Delete';
+        delBtn.onclick = async ()=>{
+          const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
+          await remove(ref(db, basePath));
+          toast('Deleted');
+        };
+        row.appendChild(delBtn);
+
+        const EDIT_WINDOW_MS = 120000;
+        if(Date.now() - m.ts <= EDIT_WINDOW_MS){
+          const editBtn = document.createElement('button');
+          editBtn.className = 'btn ghost'; editBtn.textContent = 'Edit';
+          editBtn.onclick = async ()=>{
+            const newText = prompt('Edit message:', m.text||'');
+            if(newText===null) return;
+            const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
+            await update(ref(db, basePath), { text: newText, editedAt: Date.now() });
+            toast('Edited');
+          };
+          row.appendChild(editBtn);
+        }
+
+        div.appendChild(row);
+      }
+
+      // read-by badge
+      const readsSnap = await get(ref(db, `reads/${chatId}/${key}`));
+      if(readsSnap.exists()){
+        const readers = Object.keys(readsSnap.val() || {});
+        if(readers.length){
+          const readBadge = document.createElement('div');
+          readBadge.style.color='var(--muted)'; readBadge.style.fontSize='.7rem'; readBadge.style.marginTop='4px';
+          readBadge.textContent = `Read by ${readers.length}`;
+          div.appendChild(readBadge);
+        }
+      }
+      $('#messages').appendChild(div);
+      if(m.from !== me.uid){
+        await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+      }
+    }
+    $('#messages').scrollTop = $('#messages').scrollHeight;
+  });
+
+  // typing observer
+  const tRef = ref(db, `typing/${chatId}`);
+  const offTyping = onValue(tRef, snap=>{
+    const obj = snap.val() || {};
+    const someoneElseTyping = Object.keys(obj).some(uid => uid !== me.uid && obj[uid] === true);
+    $('#typingIndicator').style.display = someoneElseTyping ? 'block' : 'none';
+  });
+
+  unsubMessages = ()=>{
+    offTyping();
+  };
+}
+
+$('#msgInput').addEventListener('input', async ()=>{
+  if(!currentChat || !me) return;
+  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+  try{
+    await set(typingRef(chatId, me.uid), true);
+  }catch{}
+  if(typingTimer) clearTimeout(typingTimer);
+  typingTimer = setTimeout(async ()=>{
+    try{ await remove(typingRef(chatId, me.uid)); }catch{}
+  }, 1800);
+});
+
+$('#attachBtn').onclick = ()=> $('#fileInput').click();
+$('#fileInput').onchange = (e)=> {
+  pendingFile = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+  if(pendingFile) toast('Image selected: '+pendingFile.name);
+};
+
+$('#sendBtn').onclick = async () => {
+  const now = Date.now();
+  if(now - lastSendAt < SEND_COOLDOWN_MS){ toast('Slow down a bit…'); return; }
+  lastSendAt = now;
+
+  const text = $('#msgInput').value.trim();
+  if(!currentChat || (!text && !pendingFile)) return;
+
+  let imageURL = null;
+  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+
+  if(pendingFile){
+    try {
+      const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile.name}`;
+      const sr = sref(storage, filePath);
+      await uploadBytes(sr, pendingFile);
+      imageURL = await getDownloadURL(sr);
+    } catch(e) {
+      toast('Upload failed');
+      console.error(e);
+    }
+  }
+
+  const payload = { from: me.uid, fromName: me.name, text: text || '', ts: Date.now(), imageURL: imageURL || null };
+  const key = push(ref(db)).key;
+
+  if(currentChat.uid){
+    await set(ref(db, `chats/${chatId}/messages/${key}`), payload);
+    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
+  } else if(currentChat.id){
+    await set(ref(db, `communityMessages/${chatId}/messages/${key}`), payload);
+    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
+  }
+
+  $('#msgInput').value = '';
+  if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Sent'); }
+};
+
+/* ========================== PRESENCE ========================== */
+async function setPresence(uid){
+  await update(ref(db, 'users/' + uid), { online: true, lastSeen: Date.now() });
+}
+
+window.addEventListener('beforeunload', () => {
+  if(me && me.uid){
+    navigator.sendBeacon(
+      `https://meaww-chat-4f6bd-default-rtdb.firebaseio.com/users/${me.uid}.json`,
+      JSON.stringify({ online:false, lastSeen: Date.now() })
+    );
+  }
+});
+document.addEventListener('visibilitychange', async () => {
+  if(!me) return;
+  if(document.hidden) {
+    await update(ref(db,'users/'+me.uid), { online:false, lastSeen: Date.now() });
+  } else {
+    await update(ref(db,'users/'+me.uid), { online:true, lastSeen: Date.now() });
+  }
+});
+
+/* ========================== ON AUTH CHANGE ========================== */
+onAuthStateChanged(auth, async (user) => {
+  if(!user){
+    $('#auth').classList.remove('hidden');
+    $('#appUI').classList.add('hidden');
+    isAdminUser = false;
+    me = null;
+    document.getElementById('profileAdminPanel').style.display = 'none';
+    return;
+  }
+
+  const bannedSnap = await get(ref(db, 'banned/' + user.uid));
+  if(bannedSnap.exists()){
+    toast('Your account is banned. Signing out.');
+    await signOut(auth);
+    return;
+  }
+
+  const uref = ref(db, 'users/' + user.uid);
+  const s = await get(uref);
+  if(!s.exists()){
+    const short = String(10000 + Math.floor(Math.random()*90000));
+    await set(uref, {
+      uid: user.uid,
+      email: user.email,
+      name: user.displayName || user.email.split('@')[0],
+      avatar: user.photoURL || defaultAvatar(user.uid),
+      shortId: short,
+      createdAt: Date.now(),
+      online: true,
+      lastSeen: Date.now()
+    });
+    await set(ref(db, 'shortIds/' + short), { uid: user.uid });
+  } else {
+    const data = s.val();
+    const upd = { online: true, lastSeen: Date.now() };
+    if(!data.avatar) upd.avatar = defaultAvatar(user.uid);
+    await update(uref, upd);
+  }
+
+  me = (await get(uref)).val();
+
+  $('#navAvatar').src = me.avatar || defaultAvatar(me.uid);
+  $('#myShort').textContent = 'ID: ' + (me.shortId || '');
+  $('#auth').classList.add('hidden');
+  $('#appUI').classList.remove('hidden');
+
+
+  // fill profile editor
+  $('#profName').value = me.name || '';
+  $('#profAvatarUrl').value = me.avatar || '';
+
+  // profile buttons wired as before...
+  $('#saveProfileBtn').onclick = async ()=>{
+    const name = $('#profName').value.trim() || me.email?.split('@')[0] || 'user';
+    const avatar = $('#profAvatarUrl').value.trim() || me.avatar || defaultAvatar(me.uid);
+    await update(ref(db, 'users/'+me.uid), { name, avatar });
+    try { await updateProfile(auth.currentUser, { displayName: name, photoURL: avatar }); } catch(_) {}
+    $('#navAvatar').src = avatar;
+    toast('Profile updated');
+    await refreshFriends();
+  };
+
+  $('#resetAvatarBtn').onclick = async ()=>{
+    const avatar = defaultAvatar(me.uid);
+    $('#profAvatarUrl').value = avatar;
+    await update(ref(db, 'users/'+me.uid), { avatar });
+    try { await updateProfile(auth.currentUser, { photoURL: avatar }); } catch(_) {}
+    $('#navAvatar').src = avatar;
+    toast('Avatar reset');
+  };
+
+  // Manage admin controls visibility
+  if(user.email && user.email.toLowerCase() === adminEmail.toLowerCase()){
+    isAdminUser = true;
+    $('#adminControls').style.display = 'block';
+    await injectAdminPanel();
+    toast('Admin access granted');
+  } else {
+    isAdminUser = false;
+    $('#adminControls').style.display = 'none';
+  }
+
+  document.getElementById('profileAdminPanel').style.display = 'none';
+
+  // refresh rest of app UI...
+  await refreshFriends();
+  await loadCommunities();
+
+  // subscribe global announcement
+  onValue(ref(db,'announcements/global'), snap=>{
+    const b = $('#globalBanner');
+    if(snap.exists()){
+      b.textContent = snap.val().text || '';
+      b.classList.remove('hidden');
+    } else {
+      b.classList.add('hidden');
+      b.textContent = '';
+    }
+  });
+});
+
+/* ========================== PROFILE PANEL TOGGLE + LOGOUT ========================== */
+$('#navAvatar').onclick = () => {
+  const panel = document.getElementById('profileAdminPanel');
+  if(panel.style.display === 'none' || panel.style.display === ''){
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+};
+
+$('#logoutBtn').onclick = async () => {
+  const ok = confirm('Sign out?');
+  if(ok) await signOut(auth);
+};
+
 </script>
 </body>
 </html>
