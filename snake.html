@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiplayer Snake</title>
+<style>
+  body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #0b0f14; color: #e6eefc; }
+  #game-container { text-align: center; }
+  #game-board { border: 3px solid #1b2435; background-color: #0e1420; }
+  .btn { background: #4f8cff; border: none; color: #fff; padding: .6rem .8rem; border-radius: 10px; cursor: pointer; margin: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <h1>Multiplayer Snake</h1>
+  <canvas id="game-board" width="400" height="400"></canvas>
+  <div id="score-board">
+    <p>Your Score: <span id="player1-score">0</span></p>
+    <p>Opponent's Score: <span id="player2-score">0</span></p>
+  </div>
+  <button id="start-game" class="btn">Start Game</button>
+  <p id="waiting-message" style="display: none;">Waiting for another player to join...</p>
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
+  import { getDatabase, ref, set, onValue, get, update, remove, onDisconnect } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
+  import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
+    authDomain: "meaww-chat-4f6bd.firebaseapp.com",
+    databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
+    projectId: "meaww-chat-4f6bd",
+    storageBucket: "meaww-chat-4f6bd.appspot.com",
+    messagingSenderId: "162714330727",
+    appId: "1:162714330727:web:926dd1ce1da5806c0316c2",
+    measurementId: "G-L7Y3NV8L88"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+
+  const gameBoard = document.getElementById('game-board');
+  const ctx = gameBoard.getContext('2d');
+  const player1Score = document.getElementById('player1-score');
+  const player2Score = document.getElementById('player2-score');
+  const startGameBtn = document.getElementById('start-game');
+  const waitingMessage = document.getElementById('waiting-message');
+
+  const gridSize = 20;
+  let snake = [{ x: 10, y: 10 }];
+  let food = {};
+  let direction = 'right';
+  let opponentSnake = [];
+  let gameStarted = false;
+  let playerId = null;
+  let gameRoomId = null;
+
+  // Authenticate the user anonymously
+  signInAnonymously(auth).catch((error) => {
+    console.error("Anonymous sign-in failed:", error);
+  });
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      playerId = user.uid;
+      findOrCreateGame();
+    }
+  });
+
+  function findOrCreateGame() {
+    const gamesRef = ref(db, 'games');
+    get(gamesRef).then((snapshot) => {
+      const games = snapshot.val();
+      let availableGame = null;
+      if (games) {
+        for (const id in games) {
+          if (games[id].players && Object.keys(games[id].players).length === 1) {
+            availableGame = id;
+            break;
+          }
+        }
+      }
+
+      if (availableGame) {
+        gameRoomId = availableGame;
+        const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
+        set(playerRef, { snake: snake, score: 0, direction: 'right' });
+        onDisconnect(playerRef).remove(); // Clean up if the player disconnects
+        startGame();
+      } else {
+        gameRoomId = `game-${Date.now()}`;
+        const gameRef = ref(db, `games/${gameRoomId}`);
+        set(gameRef, {
+          players: {
+            [playerId]: { snake: snake, score: 0, direction: 'right' }
+          },
+          food: generateFood()
+        });
+        const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
+        onDisconnect(playerRef).remove(); // Clean up if the player disconnects
+        waitingMessage.style.display = 'block';
+        startGameBtn.style.display = 'none';
+      }
+      listenToGameUpdates();
+    });
+  }
+
+  function listenToGameUpdates() {
+    const gameRef = ref(db, `games/${gameRoomId}`);
+    onValue(gameRef, (snapshot) => {
+      const gameData = snapshot.val();
+      if (gameData && gameData.players) {
+        if (Object.keys(gameData.players).length === 2 && !gameStarted) {
+          waitingMessage.style.display = 'none';
+          gameStarted = true;
+        }
+
+        for (const id in gameData.players) {
+          if (id === playerId) {
+            snake = gameData.players[id].snake;
+            player1Score.textContent = gameData.players[id].score;
+          } else {
+            opponentSnake = gameData.players[id].snake;
+            player2Score.textContent = gameData.players[id].score;
+          }
+        }
+        food = gameData.food;
+      } else {
+        // Game room was deleted, end the game
+        alert('The other player has left the game.');
+        resetGame();
+      }
+    });
+  }
+
+  function generateFood() {
+    return {
+      x: Math.floor(Math.random() * (gameBoard.width / gridSize)),
+      y: Math.floor(Math.random() * (gameBoard.height / gridSize))
+    };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, gameBoard.width, gameBoard.height);
+
+    // Draw player snake
+    ctx.fillStyle = 'lime';
+    snake.forEach(part => {
+      ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
+    });
+
+    // Draw opponent snake
+    ctx.fillStyle = 'yellow';
+    opponentSnake.forEach(part => {
+      ctx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
+    });
+
+    // Draw food
+    ctx.fillStyle = 'red';
+    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 2, gridSize - 2);
+  }
+
+  function update() {
+    if (!gameStarted) return;
+
+    const head = { ...snake[0] };
+    switch (direction) {
+      case 'up': head.y--; break;
+      case 'down': head.y++; break;
+      case 'left': head.x--; break;
+      case 'right': head.x++; break;
+    }
+
+    if (head.x === food.x && head.y === food.y) {
+      const newFood = generateFood();
+      update(ref(db, `games/${gameRoomId}`), { food: newFood, [`players/${playerId}/score`]: parseInt(player1Score.textContent) + 1 });
+    } else {
+      snake.pop();
+    }
+
+    snake.unshift(head);
+
+    // Collision detection
+    if (
+      head.x < 0 || head.x >= gameBoard.width / gridSize ||
+      head.y < 0 || head.y >= gameBoard.height / gridSize ||
+      snake.slice(1).some(part => part.x === head.x && part.y === head.y)
+    ) {
+      alert('Game Over!');
+      remove(ref(db, `games/${gameRoomId}`));
+      resetGame();
+    }
+
+    update(ref(db, `games/${gameRoomId}/players/${playerId}`), { snake: snake, direction: direction });
+  }
+
+  function resetGame() {
+    snake = [{ x: 10, y: 10 }];
+    direction = 'right';
+    gameStarted = false;
+    startGameBtn.style.display = 'block';
+  }
+
+  document.addEventListener('keydown', e => {
+    switch (e.key) {
+      case 'ArrowUp': if (direction !== 'down') direction = 'up'; break;
+      case 'ArrowDown': if (direction !== 'up') direction = 'down'; break;
+      case 'ArrowLeft': if (direction !== 'right') direction = 'left'; break;
+      case 'ArrowRight': if (direction !== 'left') direction = 'right'; break;
+    }
+  });
+  
+  startGameBtn.onclick = () => {
+      if (!gameRoomId) {
+          findOrCreateGame();
+      }
+      startGameBtn.style.display = 'none';
+  }
+
+  function gameLoop() {
+    update();
+    draw();
+  }
+  
+  setInterval(gameLoop, 100);
+
+</script>
+</body>
+</html>
