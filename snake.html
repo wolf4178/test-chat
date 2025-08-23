@@ -72,45 +72,71 @@
     }
   });
 
-  function findOrCreateGame() {
-    const gamesRef = ref(db, 'games');
-    get(gamesRef).then((snapshot) => {
-      const games = snapshot.val();
-      let availableGame = null;
-      if (games) {
-        for (const id in games) {
-          if (games[id].players && Object.keys(games[id].players).length === 1) {
-            availableGame = id;
-            break;
-          }
-        }
-      }
+    function findOrCreateGame() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const specificGameId = urlParams.get('gameId');
 
-      if (availableGame) {
-        gameRoomId = availableGame;
-        const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
-        set(playerRef, { snake: snake, score: 0, direction: 'right' });
-        onDisconnect(playerRef).remove(); // Clean up if the player disconnects
-        startGame();
-      } else {
-        gameRoomId = `game-${Date.now()}`;
-        const gameRef = ref(db, `games/${gameRoomId}`);
-        set(gameRef, {
-          players: {
-            [playerId]: { snake: snake, score: 0, direction: 'right' }
-          },
-          food: generateFood()
-        });
-        const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
-        onDisconnect(playerRef).remove(); // Clean up if the player disconnects
+    // If a specific game ID is provided in the URL
+    if (specificGameId) {
+      gameRoomId = specificGameId;
+      const gameRef = ref(db, `games/${gameRoomId}`);
+      
+      get(gameRef).then((snapshot) => {
+        if (snapshot.exists() && snapshot.val().players && Object.keys(snapshot.val().players).length < 2) {
+          // Game exists and has room, join it
+          const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
+          set(playerRef, { snake: snake, score: 0, direction: 'right' });
+          onDisconnect(playerRef).remove();
+        } else {
+          // Game is full or doesn't exist, create it
+          set(gameRef, {
+            players: { [playerId]: { snake: snake, score: 0, direction: 'right' } },
+            food: generateFood()
+          });
+          const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
+          onDisconnect(playerRef).remove();
+        }
         waitingMessage.style.display = 'block';
         startGameBtn.style.display = 'none';
-      }
-      listenToGameUpdates();
-    });
-  }
+        listenToGameUpdates();
+      });
 
-  function listenToGameUpdates() {
+    } else {
+      // Original logic: find any open game if no ID is specified
+      const gamesRef = ref(db, 'games');
+      get(gamesRef).then((snapshot) => {
+        const games = snapshot.val();
+        let availableGame = null;
+        if (games) {
+          for (const id in games) {
+            if (games[id].players && Object.keys(games[id].players).length === 1) {
+              availableGame = id;
+              break;
+            }
+          }
+        }
+
+        if (availableGame) {
+          gameRoomId = availableGame;
+          const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
+          set(playerRef, { snake: snake, score: 0, direction: 'right' });
+          onDisconnect(playerRef).remove();
+        } else {
+          gameRoomId = `game-${Date.now()}`;
+          const gameRef = ref(db, `games/${gameRoomId}`);
+          set(gameRef, {
+            players: { [playerId]: { snake: snake, score: 0, direction: 'right' } },
+            food: generateFood()
+          });
+          const playerRef = ref(db, `games/${gameRoomId}/players/${playerId}`);
+          onDisconnect(playerRef).remove();
+          waitingMessage.style.display = 'block';
+          startGameBtn.style.display = 'none';
+        }
+        listenToGameUpdates();
+      });
+    }
+  }
     const gameRef = ref(db, `games/${gameRoomId}`);
     onValue(gameRef, (snapshot) => {
       const gameData = snapshot.val();
