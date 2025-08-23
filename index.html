@@ -46,7 +46,8 @@ width: 100% !important; /* Expand chat */
 <div style="flex:1"></div>
 <div style="display:flex;align-items:center;gap:0.5rem">
 <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
-<button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
+<button id="darkModeToggle" class="btn ghost" title="Toggle Dark Mode" style="padding:0.3rem 0.6rem;">Dark Mode</button>
+  <button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
 </div>
 </header>
 
@@ -957,7 +958,27 @@ $('#logoutBtn').onclick = async () => {
 const ok = confirm('Sign out?');
 if(ok) await signOut(auth);
 };
+const darkModeToggle = document.getElementById('darkModeToggle');
 
+function updateToggleButtonText() {
+  darkModeToggle.textContent = document.body.classList.contains('theme-dim') ? 'Light Mode' : 'Dark Mode';
+}
+
+darkModeToggle.onclick = () => {
+  document.body.classList.toggle('theme-dim');
+  if (document.body.classList.contains('theme-dim')) {
+    localStorage.setItem('darkMode', 'enabled');
+  } else {
+    localStorage.removeItem('darkMode');
+  }
+  updateToggleButtonText();
+};
+
+if (localStorage.getItem('darkMode') === 'enabled') {
+  document.body.classList.add('theme-dim');
+}
+
+updateToggleButtonText();
 </script>
 </body>
 </html>
