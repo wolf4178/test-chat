@@ -148,6 +148,7 @@
               <div>
                 <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">Audio</button>
                 <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">Video</button>
+                 <button id="snakeGameBtn" class="btn ghost" title="Play Snake">Snake</button>
               </div>
             </div>
 
@@ -491,9 +492,20 @@ async function openGroup(c){
   openChatPanel(c);
 
   document.getElementById('appUI').classList.remove('fullscreen-chat');
-  chatBackBtn.style.display = 'none';
+  chatBackBtn.style.display = 'inline-block';
+   const id = roomIdFor(me.uid, u.uid);
+  
 
   subscribeMessages('communityMessages/' + c.id, c.id, 'group', c);
+}
+  const snakeBtn = document.getElementById('snakeGameBtn');
+  snakeBtn.onclick = () => {
+    // We use the unique chat room ID as the game room ID
+    const gameRoomId = roomIdFor(me.uid, u.uid);
+    // Open the snake game in a new tab and pass the game room ID to it
+    window.open(`snake.html?gameId=${gameRoomId}`, '_blank');
+  };
+  // ---------------------
 }
 
 function subscribeMessages(path, chatId, kind, peer){
