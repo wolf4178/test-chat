@@ -1145,32 +1145,702 @@
         import { getDatabase, ref, set, push, onValue, get, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
         import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
-            authDomain: "meaww-chat-4f6bd.firebaseapp.com",
-            databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
-            projectId: "meaww-chat-4f6bd",
-            storageBucket: "meaww-chat-4f6bd.appspot.com",
-            messagingSenderId: "162714330727",
-            appId: "1:162714330727:dd1ce1da5806c0316c2",
-            measurementId: "G-L7Y3NV8L88"
-        };
+            const firebaseConfig = {
+  apiKey: "AIzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
+  authDomain: "meaww-chat-4f6bd.firebaseapp.com",
+  databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
+  projectId: "meaww-chat-4f6bd",
+  storageBucket: "meaww-chat-4f6bd.appspot.com",
+  messagingSenderId: "162714330727",
+  appId: "1:162714330727:dd1ce1da5806c0316c2",
+  measurementId: "G-L7Y3NV8L88"
+};
 
-        const adminEmail = "flashdc4178@gmail.com";
+const adminEmail = "flashdc4178@gmail.com";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
-        const storage = getStorage(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const storage = getStorage(app);
 
-        // Full JS code as described before (too long to paste fully here)
-        // Includes all event listeners, game logic, chat message logic,
-        // Firebase subscription handlers, navigation handlers, profile management,
-        // admin controls, toast notifications, and more.
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
 
-        // This full code was generated and prepared to be directly usable with your Firebase project.
+function toast(msg, duration = 3000, type = 'info') {
+  const container = $('#toasts');
+  const toastEl = document.createElement('div');
+  toastEl.className = `toast toast-${type}`;
+  toastEl.textContent = msg;
+  container.appendChild(toastEl);
+  setTimeout(() => {
+    toastEl.style.opacity = '0';
+    setTimeout(() => toastEl.remove(), 300);
+  }, duration);
+}
 
-        // Please let me know if you want me to share the JS code separately or provide detailed setup instructions.
+// Navigation
+function showPage(pageId) {
+  $$('.page-content').forEach(p => p.classList.add('hidden'));
+  $(`#${pageId}Page`).classList.remove('hidden');
+  $$('.nav-item').forEach(nav => nav.classList.remove('active'));
+  $(`.nav-item[data-page="${pageId}"]`).classList.add('active');
+}
+$$('.nav-item').forEach(nav => {
+  nav.addEventListener('click', () => {
+    showPage(nav.dataset.page);
+  });
+});
+
+// Authentication handlers
+$('#loginBtn').addEventListener('click', async () => {
+  const email = $('#loginEmail').value.trim();
+  const password = $('#loginPass').value;
+
+  if (!email || !password) {
+    toast('Please enter email and password', 3000, 'error');
+    return;
+  }
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    $('#authMsg').textContent = '';
+    toast('Signed in successfully!', 3000, 'success');
+  } catch (e) {
+    $('#authMsg').textContent = e.message;
+    toast('Login failed: ' + e.message, 4000, 'error');
+  }
+});
+
+$('#registerBtn').addEventListener('click', async () => {
+  const email = $('#loginEmail').value.trim();
+  const password = $('#loginPass').value;
+
+  if (!email || !password) {
+    toast('Please enter email and password', 3000, 'error');
+    return;
+  }
+  if (password.length < 6) {
+    toast('Password must be at least 6 characters', 3000, 'error');
+    return;
+  }
+
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = cred.user.uid;
+    const shortId = String(10000 + Math.floor(Math.random() * 90000));
+    await set(ref(db, 'users/' + uid), {
+      uid,
+      email,
+      name: email.split('@')[0],
+      avatar: `https://api.dicebear.com/8.x/thumbs/svg?seed=${uid.slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`,
+      shortId,
+      createdAt: Date.now(),
+      online: true,
+      lastSeen: Date.now(),
+      status: 'online'
+    });
+    await set(ref(db, 'shortIds/' + shortId), { uid });
+    toast('Account created! You can now log in.', 4000, 'success');
+  } catch (e) {
+    $('#authMsg').textContent = e.message;
+    toast('Registration failed: ' + e.message, 4000, 'error');
+  }
+});
+
+$('#googleBtn').addEventListener('click', async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const cred = await signInWithPopup(auth, provider);
+    const uid = cred.user.uid;
+    const userRef = ref(db, 'users/' + uid);
+    const snapshot = await get(userRef);
+    if (!snapshot.exists()) {
+      const shortId = String(10000 + Math.floor(Math.random() * 90000));
+      await set(userRef, {
+        uid,
+        email: cred.user.email,
+        name: cred.user.displayName || cred.user.email,
+        avatar: cred.user.photoURL || `https://api.dicebear.com/8.x/thumbs/svg?seed=${uid.slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`,
+        shortId,
+        createdAt: Date.now(),
+        online: true,
+        lastSeen: Date.now(),
+        status: 'online'
+      });
+      await set(ref(db, 'shortIds/' + shortId), { uid });
+    }
+    toast('Signed in with Google!', 3000, 'success');
+  } catch (e) {
+    $('#authMsg').textContent = e.message;
+    toast('Google sign-in failed: ' + e.message, 4000, 'error');
+  }
+});
+
+$('#logoutBtn').addEventListener('click', async () => {
+  await signOut(auth);
+  toast('Signed out', 3000, 'success');
+});
+
+// Monitor auth state
+onAuthStateChanged(auth, async (user) => {
+  if(user) {
+    // User logged in
+    const userSnap = await get(ref(db, 'users/' + user.uid));
+    if(userSnap.exists()) {
+      const me = userSnap.val();
+      $('#authSection').classList.add('hidden');
+      $('#appSection').classList.remove('hidden');
+      $('#bottomNav').classList.remove('hidden');
+      $('#navAvatar').src = me.avatar || `https://api.dicebear.com/8.x/thumbs/svg?seed=${me.uid.slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+      showPage('chats');
+      // Load other user data or initialize chat here
+    }
+  } else {
+    // User logged out
+    $('#authSection').classList.remove('hidden');
+    $('#appSection').classList.add('hidden');
+    $('#bottomNav').classList.add('hidden');
+  }
+});
+
+// ========================== CHAT AND GAMES FUNCTIONALITY ==========================
+
+// State variables
+let currentGame = null;
+
+// Initialize friends list, chat subscription, and UI updates
+async function initializeChatAndGames() {
+  if (!me) return;
+  await loadFriends();
+  // Future: load communities, call history, etc.
+}
+
+// Open a chat with a user
+async function openChat(user) {
+  if (!me) return;
+  currentChat = user;
+  $('#chatTitle').textContent = user.name;
+  $('#chatPresence').textContent = user.online ? 'Online' : 'Last seen ' + timeAgo(user.lastSeen);
+  $('#chatAvatar').src = user.avatar || defaultAvatar(user.uid);
+  // Highlight active friend
+  $$('.friend-item').forEach(fi => fi.classList.remove('active'));
+  event.currentTarget?.classList.add('active');
+
+  // Subscribe to messages of this chat room
+  subscribeMessages(roomIdFor(me.uid, user.uid));
+
+  // Hide game interface if open
+  $('#gameInterface').classList.add('hidden');
+  currentGame = null;
+}
+
+// Subscribe to messages for chatId and render messages live
+function subscribeMessages(chatId) {
+  if (unsubMessages) unsubMessages();
+
+  const messagesRef = ref(db, `chats/${chatId}/messages`);
+  unsubMessages = onValue(messagesRef, (snapshot) => {
+    const messages = snapshot.val() || {};
+    displayMessages(messages, chatId);
+  });
+
+  // Subscribe to typing indicator
+  const typingRef = ref(db, `typing/${chatId}`);
+  onValue(typingRef, snap => {
+    const typingUsers = snap.val() || {};
+    const someoneTyping = Object.keys(typingUsers).some(uid => uid !== me.uid && typingUsers[uid] === true);
+    $('#typingIndicator').classList.toggle('hidden', !someoneTyping);
+  });
+}
+
+// Display messages in the chat window
+function displayMessages(messages, chatId) {
+  const container = $('#chatMessages');
+  container.innerHTML = '';
+
+  const sortedMessages = Object.entries(messages).sort((a,b) => a[1].timestamp - b[1].timestamp);
+
+  sortedMessages.forEach(([msgId, msg]) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message ' + (msg.from === me.uid ? 'own' : 'other');
+
+    let content = `<strong>${msg.fromName || 'Unknown'}</strong> <small>${new Date(msg.timestamp).toLocaleTimeString()}</small><br>`;
+    if (msg.text) content += `<div>${msg.text}</div>`;
+
+    if (msg.imageURL) content += `<img src="${msg.imageURL}" style="max-width:200px;border-radius:8px;cursor:pointer" onclick="window.open('${msg.imageURL}')">`;
+    if (msg.audioURL) content += `<audio controls src="${msg.audioURL}"></audio>`;
+
+    // Reactions
+    if (msg.reactions) {
+      content += '<div class="message-reactions">';
+      for (const [emoji, users] of Object.entries(msg.reactions)) {
+        const count = Object.keys(users).length;
+        if (count > 0) {
+          content += `<div class="reaction" title="${emoji} - ${count}">${emoji} ${count}</div>`;
+        }
+      }
+      content += '</div>';
+    }
+
+    messageDiv.innerHTML = content;
+
+    // Add click listeners to reaction divs to toggle reaction
+    messageDiv.querySelectorAll('.reaction').forEach(reactionEl => {
+      reactionEl.addEventListener('click', () => toggleReaction(chatId, msgId, reactionEl.textContent.trim().split(' ')[0]));
+    });
+
+    container.appendChild(messageDiv);
+  });
+
+  container.scrollTop = container.scrollHeight;
+}
+
+// Toggle reaction on a message
+async function toggleReaction(chatId, msgId, emoji) {
+  const reactionRef = ref(db, `chats/${chatId}/messages/${msgId}/reactions/${emoji}/${me.uid}`);
+  const snapshot = await get(reactionRef);
+  if (snapshot.exists()) {
+    await remove(reactionRef);
+  } else {
+    await set(reactionRef, true);
+  }
+}
+
+// Send message handler
+$('#sendBtn').addEventListener('click', sendMessage);
+$('#chatInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+async function sendMessage() {
+  if (!me || !currentChat) return;
+  const text = $('#chatInput').value.trim();
+  if (!text) return;
+
+  const now = Date.now();
+  if (now - lastSendAt < SEND_COOLDOWN_MS) {
+    toast('Please wait before sending another message', 2000, 'warning');
+    return;
+  }
+  lastSendAt = now;
+
+  const chatId = roomIdFor(me.uid, currentChat.uid);
+  const messageId = push(ref(db)).key;
+
+  const message = {
+    from: me.uid,
+    fromName: me.name,
+    text,
+    timestamp: now
+  };
+
+  try {
+    await set(ref(db, `chats/${chatId}/messages/${messageId}`), message);
+    $('#chatInput').value = '';
+    if (typingTimer) {
+      clearTimeout(typingTimer);
+      await remove(ref(db, `typing/${chatId}/${me.uid}`));
+    }
+  } catch (e) {
+    toast('Failed to send message', 3000, 'error');
+  }
+}
+
+// Typing indicator implementation
+$('#chatInput').addEventListener('input', () => {
+  if (!me || !currentChat) return;
+  const chatId = roomIdFor(me.uid, currentChat.uid);
+  set(ref(db, `typing/${chatId}/${me.uid}`), true);
+
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(async () => {
+    await remove(ref(db, `typing/${chatId}/${me.uid}`));
+  }, 1500);
+});
+
+// Game buttons handlers (basic setup to toggle interface, actual game logic can be added)
+$('#gameBtn').addEventListener('click', () => {
+  $('#gameInterface').classList.toggle('hidden');
+  if (!$('#gameInterface').classList.contains('hidden')) {
+    $('#gameTitle').textContent = `Select a Game to play with ${currentChat ? currentChat.name : ''}`;
+  }
+});
+
+$('#closeGameBtn').addEventListener('click', () => {
+  $('#gameInterface').classList.add('hidden');
+  currentGame = null;
+});
+
+// Add game start buttons (example skeleton for TicTacToe)
+$$('.game-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const game = btn.dataset.game;
+    if (!currentChat) {
+      toast('Select a chat friend to play games with', 3000, 'warning');
+      return;
+    }
+    startGame(game);
+  });
+});
+
+function startGame(game) {
+  currentGame = game;
+  const gameArea = $('#gameArea');
+  gameArea.innerHTML = `<h4>Starting ${game}... (Game logic to be implemented)</h4>`;
+  // Implement game logic here or load game component
+}
+
+// Utility functions
+
+function defaultAvatar(seed) {
+  return `https://api.dicebear.com/8.x/thumbs/svg?seed=${(seed||'user').slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+}
+
+function timeAgo(ts) {
+  if(!ts) return '—';
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if(diff < 60) return diff + 's ago';
+  if(diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if(diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  return Math.floor(diff / 86400) + 'd ago';
+}
+
+// Initialization after auth state change handled earlier:
+// call initializeChatAndGames() once user is set in onAuthStateChanged handler.
+
+if(me) {
+  initializeChatAndGames();
+}
+
+// ========================== FILE ATTACHMENT AND UPLOAD ==========================
+
+$('#attachBtn').addEventListener('click', () => {
+  $('#fileInput').click();
+});
+
+$('#fileInput').addEventListener('change', async (e) => {
+  if (!me || !currentChat) {
+    toast('Please select a chat first', 3000, 'warning');
+    return;
+  }
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (file.size > 10 * 1024 * 1024) { // 10 MB limit
+    toast('File too large (max 10MB)', 3000, 'error');
+    return;
+  }
+
+  const chatId = roomIdFor(me.uid, currentChat.uid);
+  const filename = `${Date.now()}_${file.name}`;
+  const storageRef = sref(storage, `uploads/${chatId}/${filename}`);
+
+  try {
+    toast('Uploading file...', 3000, 'info');
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+
+    const messageId = push(ref(db)).key;
+    const messageData = {
+      from: me.uid,
+      fromName: me.name,
+      timestamp: Date.now()
+    };
+
+    if(file.type.startsWith('image/')) {
+      messageData.imageURL = downloadURL;
+      messageData.text = '';
+    } else if (file.type.startsWith('audio/')) {
+      messageData.audioURL = downloadURL;
+      messageData.text = '';
+    } else {
+      messageData.fileURL = downloadURL;
+      messageData.fileName = file.name;
+      messageData.text = file.name;
+    }
+
+    await set(ref(db, `chats/${chatId}/messages/${messageId}`), messageData);
+    toast('File sent successfully!', 3000, 'success');
+  } catch (err) {
+    toast('File upload failed: ' + err.message, 4000, 'error');
+  } finally {
+    e.target.value = ''; // Clear file input
+  }
+});
+
+// ========================== CALLS PAGE PLACEHOLDER ==========================
+
+async function loadCallHistory() {
+  const container = $('#callHistory');
+  container.innerHTML = '<div class="text-muted text-center">No call history yet</div>';
+  // TODO: Replace with real call history from Firebase or other backend
+}
+
+async function loadQuickCallFriends() {
+  if(!me) return;
+  const container = $('#quickCallFriends');
+  container.innerHTML = '';
+
+  const friendsSnap = await get(ref(db, 'friends/' + me.uid));
+  if(!friendsSnap.exists()) {
+    container.innerHTML = '<div class="text-muted">No friends to call</div>';
+    return;
+  }
+
+  const friendIds = Object.keys(friendsSnap.val());
+  for (const friendId of friendIds) {
+    const userSnap = await get(ref(db, 'users/' + friendId));
+    if (!userSnap.exists()) continue;
+
+    const user = userSnap.val();
+    const friendDiv = document.createElement('div');
+    friendDiv.className = 'friend-item';
+    friendDiv.innerHTML = `
+      <img class="avatar" src="${user.avatar || defaultAvatar(friendId)}" alt="${user.name}" />
+      <div style="flex:1;">
+        <div>${user.name}</div>
+        <div class="text-muted">${user.online ? 'Online' : 'Offline'}</div>
+      </div>
+      <div style="display:flex; gap:0.5rem;">
+        <button class="btn btn-outline" onclick="startCall('${friendId}', 'audio')">📞</button>
+        <button class="btn btn-outline" onclick="startCall('${friendId}', 'video')">📹</button>
+      </div>
+    `;
+    container.appendChild(friendDiv);
+  }
+}
+
+// Start Call (placeholder)
+window.startCall = async (friendId, callType) => {
+  const friendSnap = await get(ref(db, 'users/' + friendId));
+  if(!friendSnap.exists()) {
+    toast('Friend not found', 3000, 'error');
+    return;
+  }
+  const friend = friendSnap.val();
+  toast(`Starting ${callType} call with ${friend.name}... (mock)`, 3000, 'info');
+
+  // TODO: Implement actual WebRTC call integration here
+};
+
+// Load call history when calls page loads
+document.querySelector('.nav-item[data-page="calls"]')?.addEventListener('click', async () => {
+  await loadCallHistory();
+  await loadQuickCallFriends();
+});
+
+
+// ========================== SETTINGS PAGE FUNCTIONALITY ==========================
+
+// Load current user profile info into settings form
+async function loadSettings() {
+  if (!me) return;
+  $('#settingsAvatar').src = me.avatar || defaultAvatar(me.uid);
+  $('#settingsName').textContent = me.name;
+  $('#settingsId').textContent = `ID: ${me.shortId || me.uid}`;
+  $('#settingsProfName').value = me.name || '';
+  $('#settingsProfAvatarUrl').value = (me.avatar && me.avatar !== defaultAvatar(me.uid)) ? me.avatar : '';
+
+  // Load user settings or defaults
+  const settingsSnap = await get(ref(db, `users/${me.uid}/settings`));
+  const settings = settingsSnap.exists() ? settingsSnap.val() : {};
+  // Initialize toggle buttons
+  $$('.toggle-btn').forEach(btn => {
+    const setting = btn.dataset.setting;
+    const isOn = settings[setting] !== false; // default true
+    btn.textContent = isOn ? 'On' : 'Off';
+    btn.classList.toggle('btn-primary', isOn);
+    btn.classList.toggle('btn-outline', !isOn);
+  });
+}
+
+// Save profile changes from settings page
+$('#saveSettingsBtn').addEventListener('click', async () => {
+  if (!me) return;
+  const newName = $('#settingsProfName').value.trim();
+  const newAvatar = $('#settingsProfAvatarUrl').value.trim();
+
+  if (!newName) {
+    toast('Name cannot be empty', 3000, 'warning');
+    return;
+  }
+
+  const updates = {};
+  if (newName !== me.name) updates.name = newName;
+  if (newAvatar && newAvatar !== me.avatar) {
+    updates.avatar = newAvatar;
+  } else if (!newAvatar) {
+    updates.avatar = defaultAvatar(me.uid);
+  }
+  if (Object.keys(updates).length === 0) {
+    toast('No changes detected', 2000, 'info');
+    return;
+  }
+
+  try {
+    await update(ref(db, `users/${me.uid}`), updates);
+    Object.assign(me, updates);
+    $('#navAvatar').src = me.avatar;
+    $('#settingsAvatar').src = me.avatar;
+    $('#settingsName').textContent = me.name;
+    toast('Profile updated successfully', 3000, 'success');
+  } catch (e) {
+    toast('Failed to update profile: ' + e.message, 4000, 'error');
+  }
+});
+
+// Theme selection
+$$('.theme-option').forEach(option => {
+  option.addEventListener('click', () => {
+    $$('.theme-option').forEach(opt => opt.classList.remove('active'));
+    option.classList.add('active');
+    const theme = option.dataset.theme;
+    applyTheme(theme);
+  });
+});
+
+// Apply selected theme
+function applyTheme(theme) {
+  const root = document.documentElement;
+  switch(theme) {
+    case 'green':
+      root.style.setProperty('--accent-color', '#4caf50');
+      break;
+    case 'purple':
+      root.style.setProperty('--accent-color', '#9c27b0');
+      break;
+    case 'red':
+      root.style.setProperty('--accent-color', '#f44336');
+      break;
+    case 'orange':
+      root.style.setProperty('--accent-color', '#ff9800');
+      break;
+    default:
+      root.style.setProperty('--accent-color', '#4f8cff');
+  }
+}
+
+// Toggle settings buttons (notifications, sounds, privacy)
+$$('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const setting = btn.dataset.setting;
+    const currentOn = btn.textContent === 'On';
+    btn.textContent = currentOn ? 'Off' : 'On';
+    btn.classList.toggle('btn-primary', !currentOn);
+    btn.classList.toggle('btn-outline', currentOn);
+
+    if (me) {
+      const userSettingsRef = ref(db, `users/${me.uid}/settings`);
+      await update(userSettingsRef, { [setting]: !currentOn });
+    }
+  });
+});
+
+// Admin Panel Controls (visible only if admin)
+if(me && me.email === adminEmail) {
+  $('#adminPanel').classList.remove('hidden');
+
+  $('#adminLookupBtn').addEventListener('click', async () => {
+    const target = $('#adminTarget').value.trim();
+    if(!target) return toast('Enter user ID or short ID', 3000, 'warning');
+    try {
+      let uid = target;
+      if(target.length === 5) {
+        const shortSnap = await get(ref(db, 'shortIds/' + target));
+        if(!shortSnap.exists()) return toast('No user with that short ID', 3000, 'error');
+        uid = shortSnap.val().uid;
+      }
+      const userSnap = await get(ref(db, 'users/' + uid));
+      if(!userSnap.exists()) return toast('User not found', 3000, 'error');
+      const user = userSnap.val();
+      toast(`Found user: ${user.name || user.email}`, 4000, 'success');
+    } catch(e) {
+      toast('Lookup failed: ' + e.message, 3000, 'error');
+    }
+  });
+
+  $('#adminVerifyBtn').addEventListener('click', async () => {
+    const target = $('#adminTarget').value.trim();
+    if(!target) return toast('Enter user ID or short ID', 3000, 'warning');
+    try {
+      let uid = target;
+      if(target.length === 5) {
+        const shortSnap = await get(ref(db, 'shortIds/' + target));
+        if(!shortSnap.exists()) return toast('User not found', 3000, 'error');
+        uid = shortSnap.val().uid;
+      }
+      await update(ref(db, 'users/' + uid), { verified: true });
+      toast('User verified', 3000, 'success');
+    } catch(e) {
+      toast('Verification failed: ' + e.message, 3000, 'error');
+    }
+  });
+
+  $('#adminBanBtn').addEventListener('click', async () => {
+    const target = $('#adminTarget').value.trim();
+    if(!target) return toast('Enter user ID or short ID', 3000, 'warning');
+    if(!confirm('Are you sure you want to ban this user?')) return;
+    try {
+      let uid = target;
+      if(target.length === 5) {
+        const shortSnap = await get(ref(db, 'shortIds/' + target));
+        if(!shortSnap.exists()) return toast('User not found', 3000, 'error');
+        uid = shortSnap.val().uid;
+      }
+      await set(ref(db, 'banned/' + uid), true);
+      await update(ref(db, 'users/' + uid), { banned: true, online: false });
+      toast('User banned', 3000, 'success');
+    } catch(e) {
+      toast('Ban failed: ' + e.message, 3000, 'error');
+    }
+  });
+
+  $('#adminAnnSet').addEventListener('click', async () => {
+    const text = $('#adminAnnText').value.trim();
+    if(!text) return toast('Enter announcement text', 3000, 'warning');
+    try {
+      await set(ref(db, 'announcements/global'), { text, timestamp: Date.now(), by: me.uid });
+      toast('Announcement set', 3000, 'success');
+      $('#adminAnnText').value = '';
+      checkGlobalAnnouncement();
+    } catch(e) {
+      toast('Failed to set announcement: ' + e.message, 3000, 'error');
+    }
+  });
+
+  $('#adminAnnClear').addEventListener('click', async () => {
+    try {
+      await remove(ref(db, 'announcements/global'));
+      toast('Announcement cleared', 3000, 'success');
+      $('#globalBanner').classList.add('hidden');
+    } catch(e) {
+      toast('Failed to clear announcement: ' + e.message, 3000, 'error');
+    }
+  });
+}
+
+// Check and show global announcement
+async function checkGlobalAnnouncement() {
+  try {
+    const annSnap = await get(ref(db, 'announcements/global'));
+    if(annSnap.exists()) {
+      $('#globalBanner').textContent = annSnap.val().text;
+      $('#globalBanner').classList.remove('hidden');
+    } else {
+      $('#globalBanner').classList.add('hidden');
+    }
+  } catch(e) {
+    // ignore errors
+  }
+}
+
+// Call this on app initialization after login
+if(me) {
+  loadSettings();
+  checkGlobalAnnouncement();
+}
+
+        
 
     </script>
 </body>
