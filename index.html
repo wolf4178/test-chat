@@ -1,28 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Chat Page</title>
-</head>
-<body>
-  <button onclick="goBack()">Back to Chats</button>
-  <h2 id="chatWith"></h2>
-
-  <script>
-    // Function to go back to main chat list page
-    function goBack() {
-      window.location.href = 'index.html'; 
-    }
-
-    // Get userId from URL like chat.html?userId=user1
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
-
-    // Display which chat is open
-    document.getElementById('chatWith').textContent = 'Chat with ' + userId;
-  <style>
-  body { opacity: 0; transition: opacity 500ms ease; }
-  body.page-loaded { opacity: 1; }
-</style>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>QuickChat — Admin Edition</title>
@@ -68,7 +46,7 @@ width: 100% !important; /* Expand chat */
 <div style="display:flex;align-items:center;gap:0.5rem">
 <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
 <button id="darkModeToggle" class="btn ghost" title="Toggle Dark Mode" style="padding:0.3rem 0.6rem;">Dark Mode</button>
-  <button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button><body>
+<button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
 </div>
 </header>
 
@@ -147,26 +125,26 @@ width: 100% !important; /* Expand chat */
 
 <!-- ADD FRIENDS + REQUESTS PANELS -->
 <div class="card" style="margin-bottom:.8rem">
-  <strong>Add friends</strong>
-  <div style="display:flex;gap:.5rem;margin-top:.5rem">
-    <input id="addByShort" class="input" placeholder="Enter 5-digit ID" style="flex:1" />
-    <button id="addFriendBtn" class="btn">Add</button>
-  </div>
-  <div id="friendRequestMsg" style="color:var(--muted);margin-top:.4rem"></div>
+<strong>Add friends</strong>
+<div style="display:flex;gap:.5rem;margin-top:.5rem">
+<input id="addByShort" class="input" placeholder="Enter 5-digit ID" style="flex:1" />
+<button id="addFriendBtn" class="btn">Add</button>
+</div>
+<div id="friendRequestMsg" style="color:var(--muted);margin-top:.4rem"></div>
 </div>
 
 <div class="card" style="margin-bottom:.8rem">
-  <strong>Requests</strong>
-  <div style="display:flex;gap:1rem;margin-top:.5rem">
-    <div style="flex:1">
-      <div style="font-weight:700;margin-bottom:.4rem">Incoming</div>
-      <div id="incomingReqs" class="list"></div>
-    </div>
-    <div style="flex:1">
-      <div style="font-weight:700;margin-bottom:.4rem">Outgoing</div>
-      <div id="outgoingReqs" class="list"></div>
-    </div>
-  </div>
+<strong>Requests</strong>
+<div style="display:flex;gap:1rem;margin-top:.5rem">
+<div style="flex:1">
+<div style="font-weight:700;margin-bottom:.4rem">Incoming</div>
+<div id="incomingReqs" class="list"></div>
+</div>
+<div style="flex:1">
+<div style="font-weight:700;margin-bottom:.4rem">Outgoing</div>
+<div id="outgoingReqs" class="list"></div>
+</div>
+</div>
 </div>
 
 <div class="card">
@@ -424,7 +402,7 @@ div.innerHTML = `
 <img src="${u.avatar||defaultAvatar(uid)}" class="avatar" />
 <div style="flex:1">
 <div style="font-weight:700">${u.name || u.email || uid}</div>
-<div style="color:var(--muted);font-size:.85rem">${u.email||''} -  ${u.shortId||''} -  ${u.verified? '✅ verified':''}</div>
+<div style="color:var(--muted);font-size:.85rem">${u.email||''} - ${u.shortId||''} - ${u.verified? '✅ verified':''}</div>
 </div>
 <div style="display:flex;flex-direction:column;gap:6px">
 <button class="btn ghost" data-uid="${uid}" data-action="verify">Verify</button>
@@ -550,7 +528,7 @@ const entries = Object.entries(data).sort((a,b)=>a.ts - b.ts);
 for(const [key,m] of entries){
 const div = document.createElement('div'); div.className = 'item';
 div.style.background = m.from===me.uid? '#08263f':'#071328';
-div.innerHTML = `<div style="flex:1"><div style="font-weight:700">${m.fromName||''}${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> -  edited</span>':''}</div><div>${m.text||''}</div><div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div></div>`;
+div.innerHTML = `<div style="flex:1"><div style="font-weight:700">${m.fromName||''}${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> - edited</span>':''}</div><div>${m.text||''}</div><div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div></div>`;
 const keyEl = document.createElement('div'); keyEl.style.color='var(--muted)'; keyEl.style.fontSize='.7rem'; keyEl.textContent = key;
 div.appendChild(keyEl);
 
@@ -687,154 +665,154 @@ if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Sent'); }
 // Data structure:
 // friendRequests/{uid}/incoming/{reqId} = { fromUid, fromName, fromAvatar, ts }
 // friendRequests/{uid}/outgoing/{reqId} = { toUid, toName, toAvatar, ts }
-// requestPairs/{pairKey} = true   // guard against duplicate pending requests
+// requestPairs/{pairKey} = true // guard against duplicate pending requests
 // friends/{uid}/{friendUid} = true
 
 async function sendFriendRequestByShortId(shortId){
-  $('#friendRequestMsg').textContent = '';
-  if(!me) return toast('Sign in first');
-  const v = (shortId||'').trim();
-  if(v.length !== 5) { $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; return; }
+$('#friendRequestMsg').textContent = '';
+if(!me) return toast('Sign in first');
+const v = (shortId||'').trim();
+if(v.length !== 5) { $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; return; }
 
-  // Lookup target UID
-  const shortSnap = await get(ref(db, 'shortIds/' + v));
-  if(!shortSnap.exists()){ $('#friendRequestMsg').textContent = 'No user with that ID'; return; }
-  const targetUid = shortSnap.val().uid;
+// Lookup target UID
+const shortSnap = await get(ref(db, 'shortIds/' + v));
+if(!shortSnap.exists()){ $('#friendRequestMsg').textContent = 'No user with that ID'; return; }
+const targetUid = shortSnap.val().uid;
 
-  if(targetUid === me.uid){ $('#friendRequestMsg').textContent = 'Cannot add yourself'; return; }
+if(targetUid === me.uid){ $('#friendRequestMsg').textContent = 'Cannot add yourself'; return; }
 
-  // Already friends?
-  const already = await get(ref(db, `friends/${me.uid}/${targetUid}`));
-  if(already.exists()){ $('#friendRequestMsg').textContent = 'Already friends'; return; }
+// Already friends?
+const already = await get(ref(db, `friends/${me.uid}/${targetUid}`));
+if(already.exists()){ $('#friendRequestMsg').textContent = 'Already friends'; return; }
 
-  // Pair guard
-  const pk = pairKey(me.uid, targetUid);
-  const pairSnap = await get(ref(db, `requestPairs/${pk}`));
-  if(pairSnap.exists()){ $('#friendRequestMsg').textContent = 'Request already pending'; return; }
+// Pair guard
+const pk = pairKey(me.uid, targetUid);
+const pairSnap = await get(ref(db, `requestPairs/${pk}`));
+if(pairSnap.exists()){ $('#friendRequestMsg').textContent = 'Request already pending'; return; }
 
-  // Compose target user display
-  const targetUserSnap = await get(ref(db, 'users/' + targetUid));
-  const targetUser = targetUserSnap.val() || {};
-  const reqId = push(ref(db, 'friendRequests/_tmp')).key;
-  const now = Date.now();
+// Compose target user display
+const targetUserSnap = await get(ref(db, 'users/' + targetUid));
+const targetUser = targetUserSnap.val() || {};
+const reqId = push(ref(db, 'friendRequests/_tmp')).key;
+const now = Date.now();
 
-  // Write outgoing for me
-  await set(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`), {
-    toUid: targetUid,
-    toName: targetUser.name || targetUser.email || targetUid,
-    toAvatar: targetUser.avatar || '',
-    ts: now
-  });
+// Write outgoing for me
+await set(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`), {
+toUid: targetUid,
+toName: targetUser.name || targetUser.email || targetUid,
+toAvatar: targetUser.avatar || '',
+ts: now
+});
 
-  // Write incoming for target
-  await set(ref(db, `friendRequests/${targetUid}/incoming/${reqId}`), {
-    fromUid: me.uid,
-    fromName: me.name || me.email || me.uid,
-    fromAvatar: me.avatar || '',
-    ts: now
-  });
+// Write incoming for target
+await set(ref(db, `friendRequests/${targetUid}/incoming/${reqId}`), {
+fromUid: me.uid,
+fromName: me.name || me.email || me.uid,
+fromAvatar: me.avatar || '',
+ts: now
+});
 
-  // Mark pair as pending
-  await set(ref(db, `requestPairs/${pk}`), true);
+// Mark pair as pending
+await set(ref(db, `requestPairs/${pk}`), true);
 
-  $('#friendRequestMsg').textContent = 'Request sent';
-  toast('Friend request sent');
-  await loadFriendRequests(); // refresh UI
+$('#friendRequestMsg').textContent = 'Request sent';
+toast('Friend request sent');
+await loadFriendRequests(); // refresh UI
 }
 
 async function acceptFriendRequest(reqId, fromUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, fromUid);
+if(!me) return;
+const pk = pairKey(me.uid, fromUid);
 
-  // Add both sides as friends
-  await set(ref(db, `friends/${me.uid}/${fromUid}`), true);
-  await set(ref(db, `friends/${fromUid}/${me.uid}`), true);
+// Add both sides as friends
+await set(ref(db, `friends/${me.uid}/${fromUid}`), true);
+await set(ref(db, `friends/${fromUid}/${me.uid}`), true);
 
-  // Remove request entries
-  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
-  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
+// Remove request entries
+await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
+await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
+await remove(ref(db, `requestPairs/${pk}`));
 
-  toast('Friend added');
-  await refreshFriends();
-  await loadFriendRequests();
+toast('Friend added');
+await refreshFriends();
+await loadFriendRequests();
 }
 
 async function declineFriendRequest(reqId, fromUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, fromUid);
+if(!me) return;
+const pk = pairKey(me.uid, fromUid);
 
-  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
-  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
+await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
+await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
+await remove(ref(db, `requestPairs/${pk}`));
 
-  toast('Request declined');
-  await loadFriendRequests();
+toast('Request declined');
+await loadFriendRequests();
 }
 
 async function cancelFriendRequest(reqId, toUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, toUid);
+if(!me) return;
+const pk = pairKey(me.uid, toUid);
 
-  await remove(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`));
-  await remove(ref(db, `friendRequests/${toUid}/incoming/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
+await remove(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`));
+await remove(ref(db, `friendRequests/${toUid}/incoming/${reqId}`));
+await remove(ref(db, `requestPairs/${pk}`));
 
-  toast('Request canceled');
-  await loadFriendRequests();
+toast('Request canceled');
+await loadFriendRequests();
 }
 
 async function loadFriendRequests(){
-  if(!me) return;
-  const incomingWrap = $('#incomingReqs');
-  const outgoingWrap = $('#outgoingReqs');
-  incomingWrap.innerHTML = '';
-  outgoingWrap.innerHTML = '';
+if(!me) return;
+const incomingWrap = $('#incomingReqs');
+const outgoingWrap = $('#outgoingReqs');
+incomingWrap.innerHTML = '';
+outgoingWrap.innerHTML = '';
 
-  const inSnap = await get(ref(db, `friendRequests/${me.uid}/incoming`));
-  const outSnap = await get(ref(db, `friendRequests/${me.uid}/outgoing`));
-  const incoming = inSnap.val() || {};
-  const outgoing = outSnap.val() || {};
+const inSnap = await get(ref(db, `friendRequests/${me.uid}/incoming`));
+const outSnap = await get(ref(db, `friendRequests/${me.uid}/outgoing`));
+const incoming = inSnap.val() || {};
+const outgoing = outSnap.val() || {};
 
-  // Incoming
-  for(const reqId in incoming){
-    const r = incoming[reqId];
-    const it = document.createElement('div'); it.className = 'item';
-    it.innerHTML = `
-      <img class="avatar" src="${r.fromAvatar || defaultAvatar(r.fromUid)}" />
-      <div style="flex:1">
-        <div style="font-weight:700">${r.fromName || r.fromUid}</div>
-        <div style="color:var(--muted);font-size:.85rem">${timeAgo(r.ts)} ago</div>
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn">Accept</button>
-        <button class="btn ghost">Decline</button>
-      </div>
-    `;
-    const [acceptBtn, declineBtn] = it.querySelectorAll('button');
-    acceptBtn.onclick = ()=> acceptFriendRequest(reqId, r.fromUid);
-    declineBtn.onclick = ()=> declineFriendRequest(reqId, r.fromUid);
-    incomingWrap.appendChild(it);
-  }
+// Incoming
+for(const reqId in incoming){
+const r = incoming[reqId];
+const it = document.createElement('div'); it.className = 'item';
+it.innerHTML = `
+<img class="avatar" src="${r.fromAvatar || defaultAvatar(r.fromUid)}" />
+<div style="flex:1">
+<div style="font-weight:700">${r.fromName || r.fromUid}</div>
+<div style="color:var(--muted);font-size:.85rem">${timeAgo(r.ts)} ago</div>
+</div>
+<div style="display:flex;gap:6px">
+<button class="btn">Accept</button>
+<button class="btn ghost">Decline</button>
+</div>
+`;
+const [acceptBtn, declineBtn] = it.querySelectorAll('button');
+acceptBtn.onclick = ()=> acceptFriendRequest(reqId, r.fromUid);
+declineBtn.onclick = ()=> declineFriendRequest(reqId, r.fromUid);
+incomingWrap.appendChild(it);
+}
 
-  // Outgoing
-  for(const reqId in outgoing){
-    const r = outgoing[reqId];
-    const it = document.createElement('div'); it.className = 'item';
-    it.innerHTML = `
-      <img class="avatar" src="${r.toAvatar || defaultAvatar(r.toUid)}" />
-      <div style="flex:1">
-        <div style="font-weight:700">${r.toName || r.toUid}</div>
-        <div style="color:var(--muted);font-size:.85rem">Pending -  ${timeAgo(r.ts)} ago</div>
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn ghost">Cancel</button>
-      </div>
-    `;
-    const cancelBtn = it.querySelector('button');
-    cancelBtn.onclick = ()=> cancelFriendRequest(reqId, r.toUid);
-    outgoingWrap.appendChild(it);
-  }
+// Outgoing
+for(const reqId in outgoing){
+const r = outgoing[reqId];
+const it = document.createElement('div'); it.className = 'item';
+it.innerHTML = `
+<img class="avatar" src="${r.toAvatar || defaultAvatar(r.toUid)}" />
+<div style="flex:1">
+<div style="font-weight:700">${r.toName || r.toUid}</div>
+<div style="color:var(--muted);font-size:.85rem">Pending - ${timeAgo(r.ts)} ago</div>
+</div>
+<div style="display:flex;gap:6px">
+<button class="btn ghost">Cancel</button>
+</div>
+`;
+const cancelBtn = it.querySelector('button');
+cancelBtn.onclick = ()=> cancelFriendRequest(reqId, r.toUid);
+outgoingWrap.appendChild(it);
+}
 }
 
 /* ========================== PRESENCE ========================== */
@@ -982,39 +960,34 @@ if(ok) await signOut(auth);
 const darkModeToggle = document.getElementById('darkModeToggle');
 
 function updateToggleButtonText() {
-  darkModeToggle.textContent = document.body.classList.contains('theme-dim') ? 'Light Mode' : 'Dark Mode';
+darkModeToggle.textContent = document.body.classList.contains('theme-dim') ? 'Light Mode' : 'Dark Mode';
 }
 
 darkModeToggle.onclick = () => {
-  document.body.classList.toggle('theme-dim');
-  if (document.body.classList.contains('theme-dim')) {
-    localStorage.setItem('darkMode', 'enabled');
-  } else {
-    localStorage.removeItem('darkMode');
-  }
-  updateToggleButtonText();
+document.body.classList.toggle('theme-dim');
+if (document.body.classList.contains('theme-dim')) {
+localStorage.setItem('darkMode', 'enabled');
+} else {
+localStorage.removeItem('darkMode');
+}
+updateToggleButtonText();
 };
 
 if (localStorage.getItem('darkMode') === 'enabled') {
-  document.body.classList.add('theme-dim');
+document.body.classList.add('theme-dim');
 }
 
 updateToggleButtonText();
-  const msgInput = document.getElementById('msgInput');
+const msgInput = document.getElementById('msgInput');
 const typingIndicator = document.getElementById('typingIndicator');
 
 msgInput.addEventListener('input', () => {
-  typingIndicator.style.display = 'block';
-  clearTimeout(msgInput._typingTimeout);
-  msgInput._typingTimeout = setTimeout(() => {
-    typingIndicator.style.display = 'none';
-  }, 1000);
+typingIndicator.style.display = 'block';
+clearTimeout(msgInput._typingTimeout);
+msgInput._typingTimeout = setTimeout(() => {
+typingIndicator.style.display = 'none';
+}, 1000);
 });
-</script>
-  <script>
-  window.addEventListener('load', function () {
-    document.body.classList.add('page-loaded');
-  });
 </script>
 </body>
 </html>
