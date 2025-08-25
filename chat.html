@@ -6,19 +6,51 @@
 <body>
   <button onclick="goBack()">Back to Chats</button>
   <h2 id="chatWith"></h2>
+  <div id="messages"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <script>
-    // Function to go back to the chat list page
     function goBack() {
       window.location.href = 'index.html';
     }
 
-    // Get the userId from URL query string like chat.html?userId=user1
+    // Get userId from URL
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('userId');
-
-    // Show who the chat is with
     document.getElementById('chatWith').textContent = 'Chat with ' + userId;
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AlzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
+      authDomain: "meaww-chat-4f6bd.firebaseapp.com",
+      databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
+      projectId: "meaww-chat-4f6bd",
+      storageBucket: "meaww-chat-4f6bd.firebasestorage.app",
+      messagingSenderId: "162714330727",
+      appId: "1:162714330727:web:926dd1ce1da5806c0316c2",
+      measurementId: "G-L7Y3NV8L88"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Load messages for this userId from Firestore
+    db.collection('chats').doc(userId).collection('messages')
+      .orderBy('timestamp')
+      .onSnapshot(snapshot => {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML = '';
+        snapshot.forEach(doc => {
+          const msg = doc.data();
+          const p = document.createElement('p');
+          p.textContent = `${msg.sender}: ${msg.text}`;
+          messagesDiv.appendChild(p);
+        });
+      });
   </script>
 </body>
 </html>
