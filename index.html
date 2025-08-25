@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style>
+  body { opacity: 0; transition: opacity 500ms ease; }
+  body.page-loaded { opacity: 1; }
+</style>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>QuickChat — Admin Edition</title>
@@ -988,6 +992,11 @@ msgInput.addEventListener('input', () => {
     typingIndicator.style.display = 'none';
   }, 1000);
 });
+</script>
+  <script>
+  window.addEventListener('load', function () {
+    document.body.classList.add('page-loaded');
+  });
 </script>
 </body>
 </html>
