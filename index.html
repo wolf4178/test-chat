@@ -1,9 +1,11 @@
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>QuickChat — Admin Edition</title>
+<title>QuickChat — Enhanced Edition</title>
 <style>
 :root{--bg:#0b0f14;--elev:#111723;--border:#1b2435;--text:#e6eefc;--muted:#98a7c0;--brand:#4f8cff}
 body.theme-high { --bg:#05070b; --elev:#0a1120; --border:#172135; --text:#eaf2ff; --muted:#9fb1cc; --brand:#4f8cff }
@@ -35,6 +37,250 @@ display: none; /* Hide sidebar */
 }
 .fullscreen-chat #appUI > div > div:last-child {
 width: 100% !important; /* Expand chat */
+}
+
+/* NEW: Message reactions */
+.reaction-container {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.reaction {
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.reaction:hover {
+  background: var(--brand);
+}
+
+.reaction-picker {
+  position: absolute;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.reaction-emoji {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+}
+
+.reaction-emoji:hover {
+  background: var(--brand);
+}
+
+/* NEW: Message status indicators */
+.message-status {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+/* NEW: Pinned messages */
+.pinned-message {
+  border-left: 3px solid var(--brand);
+  background: #0c1a30 !important;
+}
+
+.pin-indicator {
+  color: var(--brand);
+  font-size: 0.8rem;
+  margin-right: 6px;
+}
+
+/* NEW: Online status indicator */
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.status-online {
+  background: #4caf50;
+}
+
+.status-offline {
+  background: #f44336;
+}
+
+.status-away {
+  background: #ff9800;
+}
+
+/* NEW: Theme selector */
+.theme-selector {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.theme-option {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.theme-option.active {
+  border-color: var(--text);
+}
+
+.theme-blue { background: #4f8cff; }
+.theme-green { background: #4caf50; }
+.theme-purple { background: #9c27b0; }
+.theme-red { background: #f44336; }
+
+/* NEW: Message context menu */
+.context-menu {
+  position: absolute;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.context-menu-item {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.context-menu-item:hover {
+  background: var(--brand);
+}
+
+/* NEW: File preview */
+.file-preview {
+  max-width: 200px;
+  margin-top: 8px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.file-preview img {
+  width: 100%;
+  height: auto;
+}
+
+.file-info {
+  background: rgba(0,0,0,0.7);
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  color: white;
+}
+
+/* NEW: Voice message player */
+.voice-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.voice-play-btn {
+  background: var(--brand);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-progress {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  position: relative;
+}
+
+.voice-progress-bar {
+  position: absolute;
+  height: 100%;
+  background: var(--brand);
+  border-radius: 2px;
+  width: 0%;
+}
+
+.voice-duration {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* NEW: Message search */
+.search-container {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+}
+
+.search-result-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-result-item:hover {
+  background: var(--brand);
+}
+
+/* NEW: User status selector */
+.status-selector {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.status-option {
+  padding: 4px 8px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+.status-option.active {
+  background: var(--brand);
+  border-color: var(--brand);
 }
 </style>
 </head>
@@ -76,9 +322,28 @@ width: 100% !important; /* Expand chat */
 <strong>My Profile</strong>
 <input id="profName" class="input" placeholder="Display name" />
 <input id="profAvatarUrl" class="input" placeholder="Avatar URL (optional)" />
+
+<!-- NEW: User status selector -->
+<div class="status-selector">
+<div class="status-option" data-status="online">🟢 Online</div>
+<div class="status-option" data-status="away">🟡 Away</div>
+<div class="status-option" data-status="busy">🔴 Busy</div>
+</div>
+
 <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
 <button id="saveProfileBtn" class="btn">Save</button>
 <button id="resetAvatarBtn" class="btn ghost">Reset Avatar</button>
+</div>
+
+<!-- NEW: Theme selector -->
+<div style="margin-bottom: 1rem;">
+<strong>Chat Theme</strong>
+<div class="theme-selector">
+<div class="theme-option theme-blue active" data-theme="blue"></div>
+<div class="theme-option theme-green" data-theme="green"></div>
+<div class="theme-option theme-purple" data-theme="purple"></div>
+<div class="theme-option theme-red" data-theme="red"></div>
+</div>
 </div>
 
 <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:10px; margin-top: 8px;">
@@ -176,12 +441,18 @@ width: 100% !important; /* Expand chat */
 </div>
 </div>
 
+<!-- NEW: Search container -->
+<div class="search-container">
+<input id="messageSearch" class="input" placeholder="Search messages..." style="margin-bottom:0" />
+<div id="searchResults" class="search-results"></div>
+</div>
+
 <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.6rem;border-radius:8px"></div>
 
 <div style="display:flex;gap:.5rem;margin-top:.6rem">
 <input id="msgInput" class="input" placeholder="Message..." style="flex:1" autocomplete="off" />
-<input id="fileInput" type="file" accept="image/*" style="display:none" />
-<button id="attachBtn" class="btn ghost" title="Attach image">Attach</button>
+<input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt" style="display:none" />
+<button id="attachBtn" class="btn ghost" title="Attach file">Attach</button>
 <button id="sendBtn" class="btn">Send</button>
 </div>
 <div id="typingIndicator" style="color:var(--muted);margin-top:.4rem;display:none">Someone is typing…</div>
@@ -200,6 +471,9 @@ width: 100% !important; /* Expand chat */
 
 <!-- Toast area -->
 <div id="toasts" style="position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:9999"></div>
+
+<!-- NEW: Context menu -->
+<div id="contextMenu" class="context-menu hidden"></div>
 
 <!-- Firebase + logic -->
 <script type="module">
@@ -269,6 +543,9 @@ let pendingFile = null;
 let lastSendAt = 0;
 const SEND_COOLDOWN_MS = 1200;
 
+// NEW: Available emojis for reactions
+const EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🔥'];
+
 /* ========================== AUTH UI HANDLERS ========================== */
 $('#loginBtn').onclick = async () => {
 try {
@@ -293,7 +570,8 @@ avatar: defaultAvatar(uid),
 shortId: short,
 createdAt: Date.now(),
 online: true,
-lastSeen: Date.now()
+lastSeen: Date.now(),
+status: 'online' // NEW: Default status
 });
 await set(ref(db, 'shortIds/' + short), { uid });
 toast('Registered — check profile to edit');
@@ -316,7 +594,8 @@ avatar: cred.user.photoURL || defaultAvatar(uid),
 shortId: short,
 createdAt: Date.now(),
 online: true,
-lastSeen: Date.now()
+lastSeen: Date.now(),
+status: 'online' // NEW: Default status
 });
 await set(ref(db, 'shortIds/' + short), { uid });
 }
@@ -458,7 +737,10 @@ it.innerHTML = `<img class="avatar" src="${u.avatar||defaultAvatar(u.uid)}" />
 <span>${u.name||u.email}</span>
 ${unread>0? `<span style="background:#1b3d74;color:#dfefff;font-size:.75rem;padding:2px 8px;border-radius:999px">${unread}</span>`:''}
 </div>
-<div style="color:var(--muted);font-size:.85rem">${u.online? 'online':'last '+timeAgo(u.lastSeen)}</div>
+<div style="color:var(--muted);font-size:.85rem">
+<span class="status-indicator status-${u.status || (u.online ? 'online' : 'offline')}"></span>
+${u.status === 'online' ? 'online' : u.status === 'away' ? 'away' : u.status === 'busy' ? 'busy' : 'last '+timeAgo(u.lastSeen)}
+</div>
 </div>`;
 it.onclick = ()=> openDM(u);
 wrap.appendChild(it);
@@ -518,6 +800,117 @@ chatBackBtn.style.display = 'none';
 subscribeMessages('communityMessages/' + c.id, c.id, 'group', c);
 }
 
+// NEW: Show reaction picker
+function showReactionPicker(messageKey, chatId, buttonElement) {
+  const picker = document.createElement('div');
+  picker.className = 'reaction-picker';
+  
+  EMOJIS.forEach(emoji => {
+    const emojiEl = document.createElement('div');
+    emojiEl.className = 'reaction-emoji';
+    emojiEl.textContent = emoji;
+    emojiEl.onclick = () => {
+      addReactionToMessage(messageKey, chatId, emoji);
+      picker.remove();
+    };
+    picker.appendChild(emojiEl);
+  });
+  
+  const rect = buttonElement.getBoundingClientRect();
+  picker.style.top = (rect.top - 50) + 'px';
+  picker.style.left = rect.left + 'px';
+  
+  document.body.appendChild(picker);
+  
+  // Close picker when clicking outside
+  setTimeout(() => {
+    const closePicker = (e) => {
+      if (!picker.contains(e.target) && e.target !== buttonElement) {
+        picker.remove();
+        document.removeEventListener('click', closePicker);
+      }
+    };
+    document.addEventListener('click', closePicker);
+  }, 100);
+}
+
+// NEW: Add reaction to message
+async function addReactionToMessage(messageKey, chatId, reaction) {
+  const basePath = currentChat.uid 
+    ? `chats/${chatId}/messages/${messageKey}/reactions/${reaction}/${me.uid}`
+    : `communityMessages/${chatId}/messages/${messageKey}/reactions/${reaction}/${me.uid}`;
+  
+  // Toggle reaction
+  const reactionRef = ref(db, basePath);
+  const snap = await get(reactionRef);
+  
+  if (snap.exists()) {
+    await remove(reactionRef);
+  } else {
+    await set(reactionRef, true);
+  }
+}
+
+// NEW: Show context menu for messages
+function showMessageContextMenu(e, message, messageKey, chatId) {
+  e.preventDefault();
+  
+  const contextMenu = $('#contextMenu');
+  contextMenu.innerHTML = '';
+  contextMenu.classList.remove('hidden');
+  
+  contextMenu.style.left = e.pageX + 'px';
+  contextMenu.style.top = e.pageY + 'px';
+  
+  // Add reaction option
+  const reactOption = document.createElement('div');
+  reactOption.className = 'context-menu-item';
+  reactOption.textContent = 'Add Reaction';
+  reactOption.onclick = () => {
+    showReactionPicker(messageKey, chatId, reactOption);
+    contextMenu.classList.add('hidden');
+  };
+  contextMenu.appendChild(reactOption);
+  
+  // Add reply option
+  const replyOption = document.createElement('div');
+  replyOption.className = 'context-menu-item';
+  replyOption.textContent = 'Reply';
+  replyOption.onclick = () => {
+    $('#msgInput').value = `@${message.fromName} `;
+    $('#msgInput').focus();
+    contextMenu.classList.add('hidden');
+  };
+  contextMenu.appendChild(replyOption);
+  
+  // Add pin option for admins
+  if (isAdminUser) {
+    const pinOption = document.createElement('div');
+    pinOption.className = 'context-menu-item';
+    pinOption.textContent = message.pinned ? 'Unpin Message' : 'Pin Message';
+    pinOption.onclick = async () => {
+      const basePath = currentChat.uid 
+        ? `chats/${chatId}/messages/${messageKey}`
+        : `communityMessages/${chatId}/messages/${messageKey}`;
+      
+      await update(ref(db, basePath), { pinned: !message.pinned });
+      contextMenu.classList.add('hidden');
+    };
+    contextMenu.appendChild(pinOption);
+  }
+  
+  // Close menu when clicking outside
+  setTimeout(() => {
+    const closeMenu = (e) => {
+      if (!contextMenu.contains(e.target)) {
+        contextMenu.classList.add('hidden');
+        document.removeEventListener('click', closeMenu);
+      }
+    };
+    document.addEventListener('click', closeMenu);
+  }, 100);
+}
+
 function subscribeMessages(path, chatId, kind, peer){
 if(unsubMessages) unsubMessages();
 const r = ref(db, path);
@@ -525,72 +918,46 @@ onValue(r, async snap => {
 const data = snap.val() || {};
 $('#messages').innerHTML = '';
 const entries = Object.entries(data).sort((a,b)=>a.ts - b.ts);
+
+// NEW: Check for pinned messages
+let pinnedMessages = [];
+let regularMessages = [];
+
 for(const [key,m] of entries){
-const div = document.createElement('div'); div.className = 'item';
-div.style.background = m.from===me.uid? '#08263f':'#071328';
-div.innerHTML = `<div style="flex:1"><div style="font-weight:700">${m.fromName||''}${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> - edited</span>':''}</div><div>${m.text||''}</div><div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div></div>`;
-const keyEl = document.createElement('div'); keyEl.style.color='var(--muted)'; keyEl.style.fontSize='.7rem'; keyEl.textContent = key;
-div.appendChild(keyEl);
-
-if(m.imageURL){
-const img = document.createElement('img');
-img.src = m.imageURL;
-img.style.maxWidth = '100%';
-img.style.borderRadius = '8px';
-img.style.marginTop = '6px';
-div.querySelector('div[style*="flex:1"]').appendChild(img);
+  if (m.pinned) {
+    pinnedMessages.push([key, m]);
+  } else {
+    regularMessages.push([key, m]);
+  }
 }
 
-if(m.from === me.uid){
-const row = document.createElement('div');
-row.style.display='flex'; row.style.gap='6px'; row.style.marginTop='6px';
-
-const delBtn = document.createElement('button');
-delBtn.className = 'btn ghost'; delBtn.textContent = 'Delete';
-delBtn.onclick = async ()=>{
-const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
-await remove(ref(db, basePath));
-toast('Deleted');
-};
-row.appendChild(delBtn);
-
-const EDIT_WINDOW_MS = 120000;
-if(Date.now() - m.ts <= EDIT_WINDOW_MS){
-const editBtn = document.createElement('button');
-editBtn.className = 'btn ghost'; editBtn.textContent = 'Edit';
-editBtn.onclick = async ()=>{
-const newText = prompt('Edit message:', m.text||'');
-if(newText===null) return;
-const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
-await update(ref(db, basePath), { text: newText, editedAt: Date.now() });
-toast('Edited');
-};
-row.appendChild(editBtn);
+// Display pinned messages first
+if (pinnedMessages.length > 0) {
+  const pinnedHeader = document.createElement('div');
+  pinnedHeader.textContent = '📌 Pinned Messages';
+  pinnedHeader.style.color = 'var(--muted)';
+  pinnedHeader.style.marginBottom = '8px';
+  $('#messages').appendChild(pinnedHeader);
+  
+  for(const [key,m] of pinnedMessages){
+    renderMessage(key, m, chatId);
+  }
+  
+  const divider = document.createElement('div');
+  divider.style.borderTop = '1px solid var(--border)';
+  divider.style.margin = '12px 0';
+  $('#messages').appendChild(divider);
 }
 
-div.appendChild(row);
+// Display regular messages
+for(const [key,m] of regularMessages){
+  renderMessage(key, m, chatId);
 }
 
-// read-by badge
-const readsSnap = await get(ref(db, `reads/${chatId}/${key}`));
-if(readsSnap.exists()){
-const readers = Object.keys(readsSnap.val() || {});
-if(readers.length){
-const readBadge = document.createElement('div');
-readBadge.style.color='var(--muted)'; readBadge.style.fontSize='.7rem'; readBadge.style.marginTop='4px';
-readBadge.textContent = `Read by ${readers.length}`;
-div.appendChild(readBadge);
-}
-}
-$('#messages').appendChild(div);
-if(m.from !== me.uid){
-await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
-}
-}
 $('#messages').scrollTop = $('#messages').scrollHeight;
 });
 
-// typing observer
+// NEW: Typing observer
 const tRef = ref(db, `typing/${chatId}`);
 const offTyping = onValue(tRef, snap=>{
 const obj = snap.val() || {};
@@ -601,6 +968,194 @@ $('#typingIndicator').style.display = someoneElseTyping ? 'block' : 'none';
 unsubMessages = ()=>{
 offTyping();
 };
+}
+
+// NEW: Render message function
+async function renderMessage(key, m, chatId) {
+  const div = document.createElement('div'); 
+  div.className = 'item';
+  div.style.background = m.from===me.uid? '#08263f':'#071328';
+  
+  // Add pinned class if message is pinned
+  if (m.pinned) {
+    div.classList.add('pinned-message');
+  }
+  
+  div.innerHTML = `
+    <div style="flex:1">
+      <div style="font-weight:700">
+        ${m.pinned ? '<span class="pin-indicator">📌</span>' : ''}
+        ${m.fromName||''}
+        ${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> - edited</span>':''}
+      </div>
+      <div>${m.text||''}</div>
+      ${m.replyTo ? '<div style="color:var(--muted);font-size:.85rem;border-left:2px solid var(--brand);padding-left:8px;margin:4px 0">↪️ ' + (m.replyToText || 'Replied to a message') + '</div>' : ''}
+      <div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div>
+    </div>
+    <div style="color:var(--muted);font-size:.7rem">${key.slice(0,6)}</div>`;
+  
+  // Add image if exists
+  if(m.imageURL){
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'file-preview';
+    
+    const img = document.createElement('img');
+    img.src = m.imageURL;
+    img.style.cursor = 'pointer';
+    img.onclick = () => window.open(m.imageURL, '_blank');
+    
+    const fileInfo = document.createElement('div');
+    fileInfo.className = 'file-info';
+    fileInfo.textContent = 'Click to view full image';
+    
+    imgContainer.appendChild(img);
+    imgContainer.appendChild(fileInfo);
+    div.querySelector('div[style*="flex:1"]').appendChild(imgContainer);
+  }
+  
+  // Add audio player if audio exists
+  if(m.audioURL){
+    const audioContainer = document.createElement('div');
+    audioContainer.className = 'voice-message';
+    
+    const playBtn = document.createElement('button');
+    playBtn.className = 'voice-play-btn';
+    playBtn.innerHTML = '▶';
+    
+    const progress = document.createElement('div');
+    progress.className = 'voice-progress';
+    
+    const progressBar = document.createElement('div');
+    progressBar.className = 'voice-progress-bar';
+    
+    const duration = document.createElement('div');
+    duration.className = 'voice-duration';
+    duration.textContent = m.audioDuration ? formatDuration(m.audioDuration) : '0:00';
+    
+    progress.appendChild(progressBar);
+    audioContainer.appendChild(playBtn);
+    audioContainer.appendChild(progress);
+    audioContainer.appendChild(duration);
+    
+    // Audio player functionality
+    let audio = new Audio(m.audioURL);
+    audio.addEventListener('loadedmetadata', () => {
+      if (!m.audioDuration) {
+        duration.textContent = formatDuration(audio.duration);
+      }
+    });
+    
+    audio.addEventListener('timeupdate', () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progressBar.style.width = percent + '%';
+    });
+    
+    audio.addEventListener('ended', () => {
+      playBtn.innerHTML = '▶';
+      progressBar.style.width = '0%';
+      audio.currentTime = 0;
+    });
+    
+    playBtn.onclick = () => {
+      if (audio.paused) {
+        audio.play();
+        playBtn.innerHTML = '⏸';
+      } else {
+        audio.pause();
+        playBtn.innerHTML = '▶';
+      }
+    };
+    
+    div.querySelector('div[style*="flex:1"]').appendChild(audioContainer);
+  }
+  
+  // NEW: Add message reactions if they exist
+  if (m.reactions) {
+    const reactionContainer = document.createElement('div');
+    reactionContainer.className = 'reaction-container';
+    
+    for (const [emoji, users] of Object.entries(m.reactions)) {
+      const count = Object.keys(users || {}).length;
+      if (count > 0) {
+        const reactionBtn = document.createElement('div');
+        reactionBtn.className = 'reaction';
+        reactionBtn.innerHTML = `${emoji} ${count}`;
+        reactionBtn.onclick = () => addReactionToMessage(key, chatId, emoji);
+        reactionContainer.appendChild(reactionBtn);
+      }
+    }
+    
+    if (reactionContainer.children.length > 0) {
+      div.appendChild(reactionContainer);
+    }
+  }
+  
+  // Add action buttons for user's own messages
+  if(m.from === me.uid){
+    const row = document.createElement('div');
+    row.style.display='flex'; row.style.gap='6px'; row.style.marginTop='6px';
+    
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn ghost'; delBtn.textContent = 'Delete';
+    delBtn.onclick = async ()=>{
+      const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
+      await remove(ref(db, basePath));
+      toast('Deleted');
+    };
+    row.appendChild(delBtn);
+    
+    const EDIT_WINDOW_MS = 120000;
+    if(Date.now() - m.ts <= EDIT_WINDOW_MS){
+      const editBtn = document.createElement('button');
+      editBtn.className = 'btn ghost'; editBtn.textContent = 'Edit';
+      editBtn.onclick = async ()=>{
+        const newText = prompt('Edit message:', m.text||'');
+        if(newText===null) return;
+        const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
+        await update(ref(db, basePath), { text: newText, editedAt: Date.now() });
+        toast('Edited');
+      };
+      row.appendChild(editBtn);
+      
+      const reactBtn = document.createElement('button');
+      reactBtn.className = 'btn ghost'; reactBtn.textContent = 'React';
+      reactBtn.onclick = () => showReactionPicker(key, chatId, reactBtn);
+      row.appendChild(reactBtn);
+    }
+    
+    div.appendChild(row);
+  }
+  
+  // Add context menu on right-click
+  div.addEventListener('contextmenu', (e) => {
+    showMessageContextMenu(e, m, key, chatId);
+  });
+  
+  // read-by badge
+  const readsSnap = await get(ref(db, `reads/${chatId}/${key}`));
+  if(readsSnap.exists()){
+    const readers = Object.keys(readsSnap.val() || {});
+    if(readers.length){
+      const readBadge = document.createElement('div');
+      readBadge.style.color='var(--muted)'; readBadge.style.fontSize='.7rem'; readBadge.style.marginTop='4px';
+      readBadge.textContent = `Read by ${readers.length}`;
+      div.appendChild(readBadge);
+    }
+  }
+  
+  $('#messages').appendChild(div);
+  
+  // Mark as read if not sender
+  if(m.from !== me.uid){
+    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+  }
+}
+
+// NEW: Format duration for audio messages
+function formatDuration(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
 $('#msgInput').addEventListener('input', async ()=>{
@@ -618,7 +1173,7 @@ try{ await remove(typingRef(chatId, me.uid)); }catch{}
 $('#attachBtn').onclick = ()=> $('#fileInput').click();
 $('#fileInput').onchange = (e)=> {
 pendingFile = e.target.files && e.target.files ? e.target.files : null;
-if(pendingFile) toast('Image selected: '+pendingFile.name);
+if(pendingFile) toast('File selected: '+pendingFile.name);
 };
 
 $('#sendBtn').onclick = async () => {
@@ -630,21 +1185,50 @@ const text = $('#msgInput').value.trim();
 if(!currentChat || (!text && !pendingFile)) return;
 
 let imageURL = null;
+let audioURL = null;
+let audioDuration = null;
 const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
 
 if(pendingFile){
 try {
-const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile.name}`;
-const sr = sref(storage, filePath);
-await uploadBytes(sr, pendingFile);
-imageURL = await getDownloadURL(sr);
+// Check if it's an audio file
+if (pendingFile[0].type.startsWith('audio/')) {
+  const filePath = `uploads/${me.uid}/${chatId}/audio/${Date.now()}_${pendingFile[0].name}`;
+  const sr = sref(storage, filePath);
+  await uploadBytes(sr, pendingFile[0]);
+  audioURL = await getDownloadURL(sr);
+  
+  // Get audio duration
+  const audio = new Audio();
+  audio.src = URL.createObjectURL(pendingFile[0]);
+  await new Promise(resolve => {
+    audio.addEventListener('loadedmetadata', () => {
+      audioDuration = audio.duration;
+      resolve();
+    });
+  });
+} else {
+  // Handle image or other files
+  const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile[0].name}`;
+  const sr = sref(storage, filePath);
+  await uploadBytes(sr, pendingFile[0]);
+  imageURL = await getDownloadURL(sr);
+}
 } catch(e) {
 toast('Upload failed');
 console.error(e);
 }
 }
 
-const payload = { from: me.uid, fromName: me.name, text: text || '', ts: Date.now(), imageURL: imageURL || null };
+const payload = { 
+  from: me.uid, 
+  fromName: me.name, 
+  text: text || '', 
+  ts: Date.now(), 
+  imageURL: imageURL || null,
+  audioURL: audioURL || null,
+  audioDuration: audioDuration || null
+};
 const key = push(ref(db)).key;
 
 if(currentChat.uid){
@@ -660,6 +1244,74 @@ try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
 $('#msgInput').value = '';
 if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Sent'); }
 };
+
+// NEW: Message search functionality
+$('#messageSearch').addEventListener('input', async (e) => {
+  const query = e.target.value.trim().toLowerCase();
+  const resultsContainer = $('#searchResults');
+  
+  if (query.length < 2) {
+    resultsContainer.style.display = 'none';
+    return;
+  }
+  
+  if (!currentChat) return;
+  
+  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+  const path = currentChat.uid ? `chats/${chatId}/messages` : `communityMessages/${chatId}/messages`;
+  
+  const messagesSnap = await get(ref(db, path));
+  if (!messagesSnap.exists()) {
+    resultsContainer.style.display = 'none';
+    return;
+  }
+  
+  const messages = messagesSnap.val();
+  resultsContainer.innerHTML = '';
+  resultsContainer.style.display = 'block';
+  
+  let foundResults = false;
+  
+  for (const [key, message] of Object.entries(messages)) {
+    if (message.text && message.text.toLowerCase().includes(query)) {
+      foundResults = true;
+      const resultItem = document.createElement('div');
+      resultItem.className = 'search-result-item';
+      resultItem.innerHTML = `
+        <div style="font-weight:700">${message.fromName}</div>
+        <div>${message.text}</div>
+        <div style="color:var(--muted);font-size:.8rem">${new Date(message.ts).toLocaleString()}</div>
+      `;
+      
+      resultItem.onclick = () => {
+        // Scroll to message
+        const messageElement = $(`[data-message-id="${key}"]`);
+        if (messageElement) {
+          messageElement.scrollIntoView({ behavior: 'smooth' });
+          messageElement.style.backgroundColor = '#1b3d74';
+          setTimeout(() => {
+            messageElement.style.backgroundColor = '';
+          }, 2000);
+        }
+        resultsContainer.style.display = 'none';
+        $('#messageSearch').value = '';
+      };
+      
+      resultsContainer.appendChild(resultItem);
+    }
+  }
+  
+  if (!foundResults) {
+    resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
+  }
+});
+
+// Close search results when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-container')) {
+    $('#searchResults').style.display = 'none';
+  }
+});
 
 /* ========================== FRIEND REQUESTS ========================== */
 // Data structure:
@@ -867,13 +1519,15 @@ avatar: user.photoURL || defaultAvatar(user.uid),
 shortId: short,
 createdAt: Date.now(),
 online: true,
-lastSeen: Date.now()
+lastSeen: Date.now(),
+status: 'online' // NEW: Default status
 });
 await set(ref(db, 'shortIds/' + short), { uid: user.uid });
 } else {
 const data = s.val();
 const upd = { online: true, lastSeen: Date.now() };
 if(!data.avatar) upd.avatar = defaultAvatar(user.uid);
+if(!data.status) upd.status = 'online'; // NEW: Ensure status exists
 await update(uref, upd);
 }
 
@@ -887,6 +1541,60 @@ $('#appUI').classList.remove('hidden');
 // fill profile editor
 $('#profName').value = me.name || '';
 $('#profAvatarUrl').value = me.avatar || '';
+
+// NEW: Set status selector
+$$('.status-option').forEach(option => {
+  if (option.dataset.status === me.status) {
+    option.classList.add('active');
+  } else {
+    option.classList.remove('active');
+  }
+});
+
+// NEW: Status selector event listeners
+$$('.status-option').forEach(option => {
+  option.onclick = async () => {
+    $$('.status-option').forEach(opt => opt.classList.remove('active'));
+    option.classList.add('active');
+    
+    await update(ref(db, 'users/' + me.uid), { status: option.dataset.status });
+    toast(`Status set to ${option.dataset.status}`);
+  };
+});
+
+// NEW: Theme selector event listeners
+$$('.theme-option').forEach(option => {
+  option.onclick = () => {
+    $$('.theme-option').forEach(opt => opt.classList.remove('active'));
+    option.classList.add('active');
+    
+    // Update CSS variables based on theme
+    document.documentElement.style.setProperty('--brand', getComputedStyle(option).backgroundColor);
+    localStorage.setItem('chatTheme', option.dataset.theme);
+    toast(`Theme changed to ${option.dataset.theme}`);
+  };
+});
+
+// Load saved theme
+const savedTheme = localStorage.getItem('chatTheme');
+if (savedTheme) {
+  const themeOption = $(`.theme-option[data-theme="${savedTheme}"]`);
+  if (themeOption) {
+    $$('.theme-option').forEach(opt => opt.classList.remove('active'));
+    themeOption.classList.add('active');
+    
+    // Update CSS variables
+    if (savedTheme === 'green') {
+      document.documentElement.style.setProperty('--brand', '#4caf50');
+    } else if (savedTheme === 'purple') {
+      document.documentElement.style.setProperty('--brand', '#9c27b0');
+    } else if (savedTheme === 'red') {
+      document.documentElement.style.setProperty('--brand', '#f44336');
+    } else {
+      document.documentElement.style.setProperty('--brand', '#4f8cff');
+    }
+  }
+}
 
 // profile buttons wired as before...
 $('#saveProfileBtn').onclick = async ()=>{
@@ -991,3 +1699,4 @@ typingIndicator.style.display = 'none';
 </script>
 </body>
 </html>
+```
