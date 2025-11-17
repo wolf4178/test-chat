@@ -913,6 +913,270 @@ input:checked + .slider:before {
   color: #2196f3;
 }
 
+/* NEW FRIEND REQUEST FEATURES */
+.friend-request-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--danger);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1.5s infinite;
+}
+
+.friend-suggestions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  border-radius: var(--radius);
+  background: #0b1424;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.suggestion-item:hover {
+  background: #0c1a30;
+  transform: translateX(5px);
+}
+
+.suggestion-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.friends-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 120px;
+  background: linear-gradient(135deg, var(--elev), #0c1a30);
+  padding: 1rem;
+  border-radius: var(--radius);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--brand);
+  margin-bottom: 0.3rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ENHANCED ADMIN FEATURES */
+.admin-dashboard {
+  background: linear-gradient(135deg, #1a1f2e, #0f1420);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-stat {
+  background: var(--elev);
+  padding: 1rem;
+  border-radius: var(--radius);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.admin-stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--brand);
+  margin-bottom: 0.5rem;
+}
+
+.admin-stat-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.quick-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.admin-log {
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem;
+  font-size: 0.85rem;
+}
+
+.log-entry {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.user-management {
+  margin-top: 1rem;
+}
+
+.user-filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--elev);
+  color: var(--text);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.filter-btn:hover {
+  background: var(--border);
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+/* NOTIFICATION SYSTEM */
+.notification-bell {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: var(--shadow);
+  display: none;
+}
+
+.notification-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.notification-item:hover {
+  background: var(--border);
+}
+
+.notification-item.unread {
+  background: rgba(79, 140, 255, 0.1);
+}
+
+.notification-content {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.notification-time {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* FRIEND ACTIVITY FEED */
+.activity-feed {
+  margin-top: 1rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  border-radius: var(--radius);
+  background: #0b1424;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid var(--brand);
+}
+
+.activity-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.activity-content {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
 @media (max-width: 768px) {
   .app {
     font-size: 14px;
@@ -941,6 +1205,19 @@ input:checked + .slider:before {
   
   .page {
     padding-bottom: 70px;
+  }
+  
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .friends-stats {
+    flex-direction: column;
+  }
+  
+  .notification-dropdown {
+    width: 280px;
+    right: -50px;
   }
 }
 
@@ -1059,6 +1336,19 @@ input:checked + .slider:before {
 <div class="title">QuickChat</div>
 <div style="flex:1"></div>
 <div style="display:flex;align-items:center;gap:0.5rem">
+<!-- Notification Bell -->
+<div class="notification-bell" id="notificationBell" style="position:relative;cursor:pointer">
+  <div class="nav-icon">🔔</div>
+  <div id="notificationBadge" class="friend-request-badge hidden">0</div>
+  <div id="notificationDropdown" class="notification-dropdown hidden">
+    <div class="notification-header">
+      <strong>Notifications</strong>
+      <button class="btn ghost" id="clearNotifications" style="padding:0.3rem 0.6rem">Clear All</button>
+    </div>
+    <div id="notificationList" class="notification-list"></div>
+  </div>
+</div>
+
 <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
 <button id="darkModeToggle" class="btn ghost" title="Toggle Dark Mode" style="padding:0.3rem 0.6rem;">Dark Mode</button>
 <button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
@@ -1103,6 +1393,7 @@ input:checked + .slider:before {
 <div id="chats-page" class="page active">
   <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
     <div style="flex:1;min-width:300px">
+      <!-- Profile & Admin Panel -->
       <div id="profileAdminPanel" class="card" style="margin-bottom:.8rem; display:none;">
         <strong style="display:block;margin-bottom:1rem;color:var(--brand)">My Profile</strong>
         <input id="profName" class="input" placeholder="Display name" />
@@ -1138,57 +1429,122 @@ input:checked + .slider:before {
           </div>
         </div>
 
+        <!-- Enhanced Admin Panel -->
         <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:15px; margin-top: 15px;">
           <div style="font-weight:700; margin-bottom:12px;color:var(--brand)">Admin Panel 👑</div>
 
-          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-            <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="flex:1;padding:.6rem" />
-            <button id="adminLookupBtn" class="btn ghost">Lookup</button>
-          </div>
+          <!-- Admin Dashboard -->
+          <div class="admin-dashboard">
+            <div class="admin-stats">
+              <div class="admin-stat">
+                <div id="totalUsers" class="admin-stat-number">0</div>
+                <div class="admin-stat-label">Total Users</div>
+              </div>
+              <div class="admin-stat">
+                <div id="onlineUsers" class="admin-stat-number">0</div>
+                <div class="admin-stat-label">Online Now</div>
+              </div>
+              <div class="admin-stat">
+                <div id="totalMessages" class="admin-stat-number">0</div>
+                <div class="admin-stat-label">Messages</div>
+              </div>
+              <div class="admin-stat">
+                <div id="bannedUsers" class="admin-stat-number">0</div>
+                <div class="admin-stat-label">Banned</div>
+              </div>
+            </div>
 
-          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-            <button id="adminVerifyBtn" class="btn" style="flex:1">Verify</button>
-            <button id="adminUnverifyBtn" class="btn ghost" style="flex:1">Unverify</button>
-          </div>
+            <div class="quick-actions">
+              <button id="adminRefreshStats" class="btn ghost">Refresh Stats</button>
+              <button id="adminExportData" class="btn ghost">Export Data</button>
+              <button id="adminSystemCheck" class="btn ghost">System Check</button>
+            </div>
 
-          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-            <button id="adminBanBtn" class="btn ghost" style="flex:1">Ban</button>
-            <button id="adminUnbanBtn" class="btn ghost" style="flex:1">Unban</button>
-          </div>
-
-          <div style="margin-bottom:12px">
-            <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:8px;padding:.6rem" />
-            <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.6rem" />
-            <div style="display:flex;gap:6px;margin-top:8px">
-              <button id="adminDelMsgBtn" class="btn" style="flex:1">Delete Message</button>
+            <div class="admin-log">
+              <strong style="display:block;margin-bottom:8px">Admin Log</strong>
+              <div id="adminLogEntries"></div>
             </div>
           </div>
 
-          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;margin-bottom:12px;">
-            <div style="font-weight:700;margin-bottom:8px">Global Announcement</div>
-            <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.6rem" />
-            <div style="display:flex;gap:6px;margin-top:8px">
-              <button id="adminAnnSet" class="btn" style="flex:1">Set</button>
-              <button id="adminAnnClear" class="btn ghost" style="flex:1">Clear</button>
+          <!-- User Management -->
+          <div class="user-management">
+            <strong style="display:block;margin-bottom:12px">User Management</strong>
+            
+            <div class="user-filters">
+              <button class="filter-btn active" data-filter="all">All Users</button>
+              <button class="filter-btn" data-filter="online">Online</button>
+              <button class="filter-btn" data-filter="verified">Verified</button>
+              <button class="filter-btn" data-filter="banned">Banned</button>
             </div>
-          </div>
 
-          <div>
-            <button id="adminRefreshUsers" class="btn ghost" style="width:100%;margin-bottom:8px">Refresh Users</button>
-            <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
+            <div class="bulk-actions">
+              <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="flex:1;padding:.6rem" />
+              <button id="adminLookupBtn" class="btn ghost">Lookup</button>
+            </div>
+
+            <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+              <button id="adminVerifyBtn" class="btn" style="flex:1">Verify</button>
+              <button id="adminUnverifyBtn" class="btn ghost" style="flex:1">Unverify</button>
+              <button id="adminBanBtn" class="btn ghost" style="flex:1">Ban</button>
+              <button id="adminUnbanBtn" class="btn ghost" style="flex:1">Unban</button>
+            </div>
+
+            <div style="margin-bottom:12px">
+              <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:8px;padding:.6rem" />
+              <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.6rem" />
+              <div style="display:flex;gap:6px;margin-top:8px">
+                <button id="adminDelMsgBtn" class="btn" style="flex:1">Delete Message</button>
+                <button id="adminClearChat" class="btn ghost" style="flex:1">Clear Chat</button>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;margin-bottom:12px;">
+              <div style="font-weight:700;margin-bottom:8px">Global Announcement</div>
+              <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.6rem" />
+              <div style="display:flex;gap:6px;margin-top:8px">
+                <button id="adminAnnSet" class="btn" style="flex:1">Set</button>
+                <button id="adminAnnClear" class="btn ghost" style="flex:1">Clear</button>
+              </div>
+            </div>
+
+            <div>
+              <button id="adminRefreshUsers" class="btn ghost" style="width:100%;margin-bottom:8px">Refresh Users</button>
+              <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- Enhanced Friend System -->
       <div class="card" style="margin-bottom:.8rem">
         <strong style="display:block;margin-bottom:.8rem">Add friends</strong>
         <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
           <input id="addByShort" class="input" placeholder="Enter 5-digit ID" style="flex:1;min-width:150px" />
           <button id="addFriendBtn" class="btn">Add</button>
+          <button id="findFriendsBtn" class="btn ghost">Find Friends</button>
         </div>
         <div id="friendRequestMsg" style="color:var(--muted);margin-top:.6rem;text-align:center"></div>
       </div>
 
+      <!-- Friends Statistics -->
+      <div class="card" style="margin-bottom:.8rem">
+        <div class="friends-stats">
+          <div class="stat-card">
+            <div id="totalFriends" class="stat-number">0</div>
+            <div class="stat-label">Friends</div>
+          </div>
+          <div class="stat-card">
+            <div id="pendingRequests" class="stat-number">0</div>
+            <div class="stat-label">Pending</div>
+          </div>
+          <div class="stat-card">
+            <div id="onlineFriends" class="stat-number">0</div>
+            <div class="stat-label">Online</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Friend Requests Section -->
       <div class="card" style="margin-bottom:.8rem">
         <strong style="display:block;margin-bottom:.8rem">Friend Requests</strong>
         <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap">
@@ -1203,6 +1559,16 @@ input:checked + .slider:before {
         </div>
       </div>
 
+      <!-- Friend Suggestions -->
+      <div class="card" style="margin-bottom:.8rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+          <strong>Friend Suggestions</strong>
+          <button id="refreshSuggestions" class="btn ghost" style="padding:0.3rem 0.6rem">Refresh</button>
+        </div>
+        <div id="friendSuggestions" class="friend-suggestions"></div>
+      </div>
+
+      <!-- Friends List -->
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
           <strong>Friends</strong>
@@ -1211,12 +1577,19 @@ input:checked + .slider:before {
         <div id="friendsList" class="list" style="margin-top:.6rem;max-height:280px;overflow:auto"></div>
       </div>
 
+      <!-- Friend Activity Feed -->
+      <div class="card" style="margin-top:.8rem">
+        <strong style="display:block;margin-bottom:.8rem">Friend Activity</strong>
+        <div id="activityFeed" class="activity-feed"></div>
+      </div>
+
       <div class="card" style="margin-top:.8rem">
         <strong style="display:block;margin-bottom:.8rem">Communities</strong>
         <div id="communitiesList" class="list"></div>
       </div>
     </div>
 
+    <!-- Chat Area -->
     <div style="width:420px;min-width:300px">
       <div class="card" id="chatCard">
         <div style="display:flex;align-items:center;gap:.6rem;position:relative;margin-bottom:1rem">
@@ -1520,7 +1893,8 @@ function toast(msg, t = 3000, type = 'info') {
   const d = document.createElement('div');
   d.className = 'toast';
   d.style.background = type === 'error' ? 'var(--danger)' : 
-                      type === 'success' ? 'var(--success)' : 'var(--elev)';
+                      type === 'success' ? 'var(--success)' : 
+                      type === 'warning' ? 'var(--warning)' : 'var(--elev)';
   d.textContent = msg;
   $('#toasts').appendChild(d);
   setTimeout(() => {
@@ -1566,6 +1940,512 @@ let ticTacToeGame = {
   playerSymbol: 'X'
 };
 
+// Enhanced Friend Request Features
+let notificationCount = 0;
+
+function updateNotificationBadge() {
+  const badge = $('#notificationBadge');
+  if (notificationCount > 0) {
+    badge.textContent = notificationCount > 99 ? '99+' : notificationCount;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function addNotification(message, type = 'info') {
+  const notification = {
+    id: Date.now().toString(),
+    message,
+    type,
+    timestamp: Date.now(),
+    read: false
+  };
+  
+  if (me && me.uid) {
+    set(ref(db, `notifications/${me.uid}/${notification.id}`), notification);
+  }
+  
+  notificationCount++;
+  updateNotificationBadge();
+  
+  toast(message, 3000, type);
+}
+
+async function loadNotifications() {
+  if (!me || !me.uid) return;
+  
+  const notificationsRef = ref(db, `notifications/${me.uid}`);
+  onValue(notificationsRef, (snapshot) => {
+    const notifications = snapshot.val() || {};
+    const notificationList = $('#notificationList');
+    notificationList.innerHTML = '';
+    
+    notificationCount = 0;
+    
+    Object.entries(notifications)
+      .sort(([,a], [,b]) => b.timestamp - a.timestamp)
+      .forEach(([id, notification]) => {
+        if (!notification.read) notificationCount++;
+        
+        const item = document.createElement('div');
+        item.className = `notification-item ${notification.read ? '' : 'unread'}`;
+        item.innerHTML = `
+          <div class="notification-content">${notification.message}</div>
+          <div class="notification-time">${timeAgo(notification.timestamp)} ago</div>
+        `;
+        
+        item.onclick = async () => {
+          await set(ref(db, `notifications/${me.uid}/${id}/read`), true);
+          item.classList.remove('unread');
+        };
+        
+        notificationList.appendChild(item);
+      });
+    
+    updateNotificationBadge();
+  });
+}
+
+// Friend Suggestions
+async function loadFriendSuggestions() {
+  if (!me || !me.uid) return;
+  
+  const suggestionsRef = ref(db, 'users');
+  const friendsRef = ref(db, `friends/${me.uid}`);
+  
+  const [usersSnap, friendsSnap] = await Promise.all([
+    get(suggestionsRef),
+    get(friendsRef)
+  ]);
+  
+  if (!usersSnap.exists()) return;
+  
+  const allUsers = usersSnap.val();
+  const myFriends = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : [];
+  const myRequests = await getFriendRequests();
+  
+  const suggestions = Object.values(allUsers).filter(user => 
+    user.uid !== me.uid && 
+    !myFriends.includes(user.uid) &&
+    !myRequests.outgoing.includes(user.uid) &&
+    !myRequests.incoming.includes(user.uid)
+  ).slice(0, 5);
+  
+  const container = $('#friendSuggestions');
+  container.innerHTML = '';
+  
+  if (suggestions.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1rem">No suggestions available</div>';
+    return;
+  }
+  
+  suggestions.forEach(user => {
+    const item = document.createElement('div');
+    item.className = 'suggestion-item';
+    item.innerHTML = `
+      <img class="avatar" src="${user.avatar || defaultAvatar(user.uid)}" />
+      <div style="flex:1">
+        <div style="font-weight:700">${user.name || user.email}</div>
+        <div style="color:var(--muted);font-size:.85rem">
+          <span class="status-indicator status-${user.status || (user.online ? 'online' : 'offline')}"></span>
+          ${user.status || (user.online ? 'online' : 'offline')}
+        </div>
+      </div>
+      <div class="suggestion-actions">
+        <button class="btn" data-action="add">Add</button>
+      </div>
+    `;
+    
+    item.querySelector('button').onclick = () => {
+      sendFriendRequestByShortId(user.shortId);
+    };
+    
+    container.appendChild(item);
+  });
+}
+
+// Enhanced Friend Statistics
+async function updateFriendStats() {
+  if (!me || !me.uid) return;
+  
+  const friendsRef = ref(db, `friends/${me.uid}`);
+  const requestsRef = ref(db, `friendRequests/${me.uid}`);
+  
+  const [friendsSnap, requestsSnap] = await Promise.all([
+    get(friendsRef),
+    get(requestsRef)
+  ]);
+  
+  const friends = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : [];
+  const requests = requestsSnap.exists() ? requestsSnap.val() : {};
+  
+  let onlineCount = 0;
+  for (const friendId of friends) {
+    const friendSnap = await get(ref(db, `users/${friendId}`));
+    if (friendSnap.exists() && friendSnap.val().online) {
+      onlineCount++;
+    }
+  }
+  
+  $('#totalFriends').textContent = friends.length;
+  $('#onlineFriends').textContent = onlineCount;
+  $('#pendingRequests').textContent = Object.keys(requests.incoming || {}).length;
+}
+
+// Friend Activity Feed
+async function loadActivityFeed() {
+  if (!me || !me.uid) return;
+  
+  const friendsRef = ref(db, `friends/${me.uid}`);
+  const friendsSnap = await get(friendsRef);
+  
+  if (!friendsSnap.exists()) return;
+  
+  const friendIds = Object.keys(friendsSnap.val());
+  const activities = [];
+  
+  for (const friendId of friendIds) {
+    const userSnap = await get(ref(db, `users/${friendId}`));
+    if (userSnap.exists()) {
+      const user = userSnap.val();
+      activities.push({
+        type: 'status',
+        user: user,
+        message: `${user.name} is now ${user.status}`,
+        timestamp: user.lastSeen || Date.now()
+      });
+    }
+  }
+  
+  activities.sort((a, b) => b.timestamp - a.timestamp);
+  
+  const container = $('#activityFeed');
+  container.innerHTML = '';
+  
+  activities.slice(0, 10).forEach(activity => {
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+      <img class="avatar activity-avatar" src="${activity.user.avatar || defaultAvatar(activity.user.uid)}" />
+      <div class="activity-content">
+        <div>${activity.message}</div>
+        <div class="activity-time">${timeAgo(activity.timestamp)} ago</div>
+      </div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+// Enhanced Admin Features
+async function updateAdminStats() {
+  if (!isAdminUser) return;
+  
+  const usersRef = ref(db, 'users');
+  const messagesRef = ref(db, 'chats');
+  const bannedRef = ref(db, 'banned');
+  
+  const [usersSnap, messagesSnap, bannedSnap] = await Promise.all([
+    get(usersRef),
+    get(messagesRef),
+    get(bannedRef)
+  ]);
+  
+  const users = usersSnap.exists() ? usersSnap.val() : {};
+  const messages = messagesSnap.exists() ? messagesSnap.val() : {};
+  const banned = bannedSnap.exists() ? bannedSnap.val() : {};
+  
+  const onlineUsers = Object.values(users).filter(user => user.online).length;
+  
+  let totalMessages = 0;
+  for (const chatId in messages) {
+    const chatMessages = messages[chatId]?.messages;
+    if (chatMessages) {
+      totalMessages += Object.keys(chatMessages).length;
+    }
+  }
+  
+  $('#totalUsers').textContent = Object.keys(users).length;
+  $('#onlineUsers').textContent = onlineUsers;
+  $('#totalMessages').textContent = totalMessages;
+  $('#bannedUsers').textContent = Object.keys(banned).length;
+}
+
+function addAdminLog(action, details = '') {
+  if (!isAdminUser || !me) return;
+  
+  const logEntry = {
+    action,
+    details,
+    admin: me.name || me.email,
+    timestamp: Date.now()
+  };
+  
+  const logRef = push(ref(db, 'adminLogs'));
+  set(logRef, logEntry);
+  
+  const logContainer = $('#adminLogEntries');
+  const logItem = document.createElement('div');
+  logItem.className = 'log-entry';
+  logItem.innerHTML = `
+    <strong>${logEntry.admin}</strong>: ${action}
+    ${details ? `<br><small>${details}</small>` : ''}
+    <div style="color:var(--muted);font-size:0.7rem">${new Date(logEntry.timestamp).toLocaleTimeString()}</div>
+  `;
+  
+  logContainer.insertBefore(logItem, logContainer.firstChild);
+  
+  if (logContainer.children.length > 10) {
+    logContainer.removeChild(logContainer.lastChild);
+  }
+}
+
+async function refreshAdminUsers(filter = 'all') {
+  const wrap = $('#adminUsersList'); 
+  wrap.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted)">Loading users...</div>';
+  
+  const s = await get(ref(db, 'users'));
+  if(!s.exists()){ 
+    wrap.textContent = 'No users yet'; 
+    return; 
+  }
+  
+  const users = s.val();
+  wrap.innerHTML = '';
+  
+  for(const uid in users){
+    const u = users[uid];
+    
+    if (filter === 'online' && !u.online) continue;
+    if (filter === 'verified' && !u.verified) continue;
+    if (filter === 'banned') {
+      const bannedSnap = await get(ref(db, `banned/${uid}`));
+      if (!bannedSnap.exists()) continue;
+    }
+    
+    const div = document.createElement('div'); 
+    div.className='item';
+    div.innerHTML = `
+      <img src="${u.avatar||defaultAvatar(uid)}" class="avatar" />
+      <div style="flex:1">
+        <div style="font-weight:700">${u.name || u.email || uid}</div>
+        <div style="color:var(--muted);font-size:.85rem">
+          ${u.email||''} - ${u.shortId||''} 
+          ${u.verified? ' ✅':''} 
+          ${u.online? ' 🟢':''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn ghost" data-uid="${uid}" data-action="verify">${u.verified ? 'Unverify' : 'Verify'}</button>
+        <button class="btn ghost" data-uid="${uid}" data-action="ban">Ban</button>
+      </div>
+    `;
+    wrap.appendChild(div);
+  }
+  
+  wrap.querySelectorAll('button[data-action]').forEach(b=>{
+    b.onclick = async ()=>{
+      const uid = b.dataset.uid; 
+      const action = b.dataset.action;
+      
+      if(action==='verify'){
+        const newVerified = !(await get(ref(db, `users/${uid}/verified`))).exists();
+        await update(ref(db, `users/${uid}`), { verified: newVerified });
+        addAdminLog(`User ${newVerified ? 'verified' : 'unverified'}`, `UID: ${uid}`);
+        toast(`${newVerified ? 'Verified' : 'Unverified'} user`, 2000, 'success');
+      }
+      
+      if(action==='ban'){
+        await set(ref(db, `banned/${uid}`), true);
+        addAdminLog('User banned', `UID: ${uid}`);
+        toast('User banned', 2000, 'success');
+      }
+      
+      await refreshAdminUsers(filter);
+    };
+  });
+}
+
+// Enhanced Friend Request System with Notifications
+async function sendFriendRequestByShortId(shortId){
+  $('#friendRequestMsg').textContent = '';
+  if(!me) return toast('Sign in first', 3000, 'error');
+  const v = (shortId||'').trim();
+  if(v.length !== 5) { 
+    $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; 
+    toast('Enter a valid 5-digit ID', 3000, 'error'); 
+    return; 
+  }
+
+  const shortSnap = await get(ref(db, 'shortIds/' + v));
+  if(!shortSnap.exists()){ 
+    $('#friendRequestMsg').textContent = 'No user with that ID'; 
+    toast('No user with that ID', 3000, 'error'); 
+    return; 
+  }
+  const targetUid = shortSnap.val().uid;
+
+  if(targetUid === me.uid){ 
+    $('#friendRequestMsg').textContent = 'Cannot add yourself'; 
+    toast('Cannot add yourself', 3000, 'error'); 
+    return; 
+  }
+
+  const already = await get(ref(db, `friends/${me.uid}/${targetUid}`));
+  if(already.exists()){ 
+    $('#friendRequestMsg').textContent = 'Already friends'; 
+    toast('Already friends', 3000, 'info'); 
+    return; 
+  }
+
+  const pk = pairKey(me.uid, targetUid);
+  const pairSnap = await get(ref(db, `requestPairs/${pk}`));
+  if(pairSnap.exists()){ 
+    $('#friendRequestMsg').textContent = 'Request already pending'; 
+    toast('Request already pending', 3000, 'info'); 
+    return; 
+  }
+
+  const targetUserSnap = await get(ref(db, 'users/' + targetUid));
+  const targetUser = targetUserSnap.val() || {};
+  const reqId = push(ref(db, 'friendRequests/_tmp')).key;
+  const now = Date.now();
+
+  await set(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`), {
+    toUid: targetUid,
+    toName: targetUser.name || targetUser.email || targetUid,
+    toAvatar: targetUser.avatar || '',
+    ts: now
+  });
+
+  await set(ref(db, `friendRequests/${targetUid}/incoming/${reqId}`), {
+    fromUid: me.uid,
+    fromName: me.name || me.email || me.uid,
+    fromAvatar: me.avatar || '',
+    ts: now
+  });
+
+  await set(ref(db, `requestPairs/${pk}`), true);
+
+  addNotification(`You have a new friend request from ${me.name || me.email}`, 'info');
+  
+  $('#friendRequestMsg').textContent = 'Request sent';
+  toast('Friend request sent!', 3000, 'success');
+  await loadFriendRequests();
+  await updateFriendStats();
+  await loadFriendSuggestions();
+}
+
+// Enhanced accept friend request with notifications
+async function acceptFriendRequest(reqId, fromUid){
+  if(!me) return;
+  const pk = pairKey(me.uid, fromUid);
+
+  await set(ref(db, `friends/${me.uid}/${fromUid}`), true);
+  await set(ref(db, `friends/${fromUid}/${me.uid}`), true);
+
+  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
+  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
+  await remove(ref(db, `requestPairs/${pk}`));
+
+  addNotification(`${me.name || me.email} accepted your friend request!`, 'success');
+  
+  toast('Friend added!', 2000, 'success');
+  await refreshFriends();
+  await loadFriendRequests();
+  await updateFriendStats();
+  await loadActivityFeed();
+  await loadFriendSuggestions();
+}
+
+// Get friend requests for statistics
+async function getFriendRequests() {
+  if (!me || !me.uid) return { incoming: [], outgoing: [] };
+  
+  const requestsRef = ref(db, `friendRequests/${me.uid}`);
+  const requestsSnap = await get(requestsRef);
+  
+  if (!requestsSnap.exists()) return { incoming: [], outgoing: [] };
+  
+  const requests = requestsSnap.val();
+  return {
+    incoming: Object.keys(requests.incoming || {}),
+    outgoing: Object.keys(requests.outgoing || {})
+  };
+}
+
+// Initialize enhanced features when user logs in
+function initializeEnhancedFeatures() {
+  loadNotifications();
+  loadFriendSuggestions();
+  updateFriendStats();
+  loadActivityFeed();
+  
+  if (isAdminUser) {
+    updateAdminStats();
+    setInterval(updateAdminStats, 30000);
+    addAdminLog('Admin panel accessed');
+  }
+  
+  $('#notificationBell').onclick = (e) => {
+    e.stopPropagation();
+    const dropdown = $('#notificationDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  };
+  
+  $('#clearNotifications').onclick = async () => {
+    if (!me || !me.uid) return;
+    await remove(ref(db, `notifications/${me.uid}`));
+    notificationCount = 0;
+    updateNotificationBadge();
+    toast('Notifications cleared', 2000, 'success');
+  };
+  
+  document.addEventListener('click', () => {
+    $('#notificationDropdown').style.display = 'none';
+  });
+  
+  $('#findFriendsBtn').onclick = () => {
+    loadFriendSuggestions();
+    toast('Refreshing friend suggestions...', 2000, 'info');
+  };
+  
+  $('#refreshSuggestions').onclick = () => {
+    loadFriendSuggestions();
+    toast('Refreshing suggestions...', 2000, 'info');
+  };
+  
+  $$('.filter-btn').forEach(btn => {
+    btn.onclick = () => {
+      $$('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      refreshAdminUsers(btn.dataset.filter);
+    };
+  });
+  
+  $('#adminRefreshStats').onclick = updateAdminStats;
+  $('#adminSystemCheck').onclick = () => {
+    addAdminLog('System check performed');
+    toast('System check completed', 2000, 'success');
+  };
+  
+  $('#adminClearChat').onclick = async () => {
+    const chatId = $('#adminChatId').value.trim();
+    if (!chatId) {
+      toast('Enter chat ID', 3000, 'error');
+      return;
+    }
+    
+    if (confirm('Are you sure you want to clear this entire chat?')) {
+      await remove(ref(db, `chats/${chatId}/messages`));
+      await remove(ref(db, `communityMessages/${chatId}/messages`));
+      addAdminLog('Chat cleared', `Chat ID: ${chatId}`);
+      toast('Chat cleared', 2000, 'success');
+    }
+  };
+}
+
+// Existing functions from original code
 $('#loginBtn').onclick = async () => {
   try {
     await signInWithEmailAndPassword(auth, $('#loginEmail').value, $('#loginPass').value);
@@ -1720,37 +2600,6 @@ async function injectAdminPanel(){
   };
 
   await refreshAdminUsers();
-}
-
-async function refreshAdminUsers(){
-  const wrap = $('#adminUsersList'); wrap.innerHTML = '';
-  const s = await get(ref(db, 'users'));
-  if(!s.exists()){ wrap.textContent = 'No users yet'; return; }
-  const users = s.val();
-  for(const uid in users){
-    const u = users[uid];
-    const div = document.createElement('div'); div.className='item';
-    div.innerHTML = `
-      <img src="${u.avatar||defaultAvatar(uid)}" class="avatar" />
-      <div style="flex:1">
-        <div style="font-weight:700">${u.name || u.email || uid}</div>
-        <div style="color:var(--muted);font-size:.85rem">${u.email||''} - ${u.shortId||''} - ${u.verified? '✅ verified':''}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <button class="btn ghost" data-uid="${uid}" data-action="verify">Verify</button>
-        <button class="btn ghost" data-uid="${uid}" data-action="ban">Ban</button>
-      </div>
-    `;
-    wrap.appendChild(div);
-  }
-  wrap.querySelectorAll('button[data-action]').forEach(b=>{
-    b.onclick = async ()=>{
-      const uid = b.dataset.uid; const action = b.dataset.action;
-      if(action==='verify'){ await update(ref(db,'users/'+uid), { verified: true }); toast('Verified', 2000, 'success'); }
-      if(action==='ban'){ await set(ref(db,'banned/'+uid), true); toast('Banned', 2000, 'success'); }
-      await refreshAdminUsers();
-    };
-  });
 }
 
 async function isBanned(uid){
@@ -2339,91 +3188,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-async function sendFriendRequestByShortId(shortId){
-  $('#friendRequestMsg').textContent = '';
-  if(!me) return toast('Sign in first', 3000, 'error');
-  const v = (shortId||'').trim();
-  if(v.length !== 5) { $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; toast('Enter a valid 5-digit ID', 3000, 'error'); return; }
-
-  const shortSnap = await get(ref(db, 'shortIds/' + v));
-  if(!shortSnap.exists()){ $('#friendRequestMsg').textContent = 'No user with that ID'; toast('No user with that ID', 3000, 'error'); return; }
-  const targetUid = shortSnap.val().uid;
-
-  if(targetUid === me.uid){ $('#friendRequestMsg').textContent = 'Cannot add yourself'; toast('Cannot add yourself', 3000, 'error'); return; }
-
-  const already = await get(ref(db, `friends/${me.uid}/${targetUid}`));
-  if(already.exists()){ $('#friendRequestMsg').textContent = 'Already friends'; toast('Already friends', 3000, 'info'); return; }
-
-  const pk = pairKey(me.uid, targetUid);
-  const pairSnap = await get(ref(db, `requestPairs/${pk}`));
-  if(pairSnap.exists()){ $('#friendRequestMsg').textContent = 'Request already pending'; toast('Request already pending', 3000, 'info'); return; }
-
-  const targetUserSnap = await get(ref(db, 'users/' + targetUid));
-  const targetUser = targetUserSnap.val() || {};
-  const reqId = push(ref(db, 'friendRequests/_tmp')).key;
-  const now = Date.now();
-
-  await set(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`), {
-    toUid: targetUid,
-    toName: targetUser.name || targetUser.email || targetUid,
-    toAvatar: targetUser.avatar || '',
-    ts: now
-  });
-
-  await set(ref(db, `friendRequests/${targetUid}/incoming/${reqId}`), {
-    fromUid: me.uid,
-    fromName: me.name || me.email || me.uid,
-    fromAvatar: me.avatar || '',
-    ts: now
-  });
-
-  await set(ref(db, `requestPairs/${pk}`), true);
-
-  $('#friendRequestMsg').textContent = 'Request sent';
-  toast('Friend request sent!', 3000, 'success');
-  await loadFriendRequests();
-}
-
-async function acceptFriendRequest(reqId, fromUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, fromUid);
-
-  await set(ref(db, `friends/${me.uid}/${fromUid}`), true);
-  await set(ref(db, `friends/${fromUid}/${me.uid}`), true);
-
-  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
-  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
-
-  toast('Friend added!', 2000, 'success');
-  await refreshFriends();
-  await loadFriendRequests();
-}
-
-async function declineFriendRequest(reqId, fromUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, fromUid);
-
-  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
-  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
-
-  toast('Request declined', 2000, 'info');
-  await loadFriendRequests();
-}
-
-async function cancelFriendRequest(reqId, toUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, toUid);
-
-  await remove(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`));
-  await remove(ref(db, `friendRequests/${toUid}/incoming/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
-
-  toast('Request canceled', 2000, 'info');
-  await loadFriendRequests();
-}
-
 async function loadFriendRequests(){
   if(!me) return;
   const incomingWrap = $('#incomingReqs');
@@ -2473,6 +3237,32 @@ async function loadFriendRequests(){
     cancelBtn.onclick = ()=> cancelFriendRequest(reqId, r.toUid);
     outgoingWrap.appendChild(it);
   }
+}
+
+async function declineFriendRequest(reqId, fromUid){
+  if(!me) return;
+  const pk = pairKey(me.uid, fromUid);
+
+  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
+  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
+  await remove(ref(db, `requestPairs/${pk}`));
+
+  toast('Request declined', 2000, 'info');
+  await loadFriendRequests();
+  await updateFriendStats();
+}
+
+async function cancelFriendRequest(reqId, toUid){
+  if(!me) return;
+  const pk = pairKey(me.uid, toUid);
+
+  await remove(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`));
+  await remove(ref(db, `friendRequests/${toUid}/incoming/${reqId}`));
+  await remove(ref(db, `requestPairs/${pk}`));
+
+  toast('Request canceled', 2000, 'info');
+  await loadFriendRequests();
+  await updateFriendStats();
 }
 
 async function setPresence(uid){
@@ -2782,6 +3572,11 @@ onAuthStateChanged(auth, async (user) => {
       b.textContent = '';
     }
   });
+
+  // Initialize enhanced features
+  if (user) {
+    initializeEnhancedFeatures();
+  }
 });
 
 $('#navAvatar').onclick = () => {
