@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>QuickChat — Enhanced Edition</title>
+<title>QuickChat | Private Messaging with In-Built Games & Reactions</title>
+<meta name="description" content="QuickChat is an enhanced, real-time private messaging application featuring user-to-user chats, community rooms, message reactions, and built-in games like Tic Tac Toe.">
+<meta name="keywords" content="quickchat, chat app, firebase chat, web chat, private messaging, in-chat games, tic tac toe">
 <style>
 :root{--bg:#0b0f14;--elev:#111723;--border:#1b2435;--text:#e6eefc;--muted:#98a7c0;--brand:#4f8cff}
 body.theme-high { --bg:#05070b; --elev:#0a1120; --border:#172135; --text:#eaf2ff; --muted:#9fb1cc; --brand:#4f8cff }
@@ -12,1978 +14,664 @@ body.theme-dim { --bg:#0b0f14; --elev:#111723; --border:#1b2435; --text:#e6eefc;
 html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)} 
 .app{display:flex;flex-direction:column;height:100%} 
 header{display:flex;align-items:center;gap:.6rem;padding:.7rem;background:linear-gradient(180deg,var(--elev),#0e1420);border-bottom:1px solid var(--border)} 
-.title{font-weight:800} 
-main{flex:1;overflow:auto;padding:0.8rem} 
-.card{background:#0e1420;border:1px solid var(--border);border-radius:12px;padding:.75rem} 
-.hidden{display:none} 
-.input{width:100%;padding:.6rem;border-radius:10px;border:1px solid var(--border);background:#0b1220;color:var(--text);margin:.4rem 0} 
-.btn{background:var(--brand);border:none;color:#fff;padding:.6rem.8rem;border-radius:10px;cursor:pointer} 
-.btn.ghost{background:transparent;border:1px solid var(--border)} 
-.list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem} 
-.item{display:flex;align-items:center;gap:.5rem;padding:.5rem;border-radius:10px;background:#0b1424;border:1px solid var(--border)} 
-.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover} 
-.admin-floating{position:fixed;left:12px;top:72px;z-index:9999} 
-pre{white-space:pre-wrap;word-break:break-word}
-
-/* Fullscreen chat mode */
-.fullscreen-chat#appUI > div { display:flex; flex-direction:column; } 
-.fullscreen-chat#appUI > div > div:first-child { display:none; /* Hide sidebar */ } 
-.fullscreen-chat#appUI > div > div:last-child { width:100% !important; /* Expand chat */ }
-
-/* NEW: Message reactions */ 
-.reaction-container{ display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
-
-.reaction { background: var(--elev); border: 1px solid var(--border); border-radius: 12px; padding: 2px 6px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-
-.reaction:hover { background: var(--brand); }
-
-.reaction-picker { position: absolute; background: var(--elev); border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
-.reaction-emoji { cursor: pointer; padding: 4px; border-radius: 4px; font-size: 1.2rem; }
-
-.reaction-emoji:hover { background: var(--brand); }
-
-/* NEW: Message status indicators */ 
-.message-status{ font-size: 0.7rem; color: var(--muted); margin-left: 6px; }
-
-/* NEW: Pinned messages */ 
-.pinned-message{ border-left: 3px solid var(--brand); background: #0c1a30 !important; }
-
-.pin-indicator { color: var(--brand); font-size: 0.8rem; margin-right: 6px; }
-
-/* NEW: Online status indicator */ 
-.status-indicator{ width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-
-.status-online { background: #4caf50; }
-
-.status-offline { background: #f44336; }
-
-.status-away { background: #ff9800; }
-
-/* NEW: Theme selector */ 
-.theme-selector{ display: flex; gap: 8px; margin-top: 12px; }
-
-.theme-option { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-
-.theme-option.active { border-color: var(--text); }
-
-.theme-blue { background: #4f8cff; } 
-.theme-green{ background: #4caf50; } 
-.theme-purple{ background: #9c27b0; } 
-.theme-red{ background: #f44336; }
-
-/* NEW: Message context menu */ 
-.context-menu{ position: absolute; background: var(--elev); border: 1px solid var(--border); border-radius: 8px; padding: 8px 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
-.context-menu-item { padding: 8px 16px; cursor: pointer; }
-
-.context-menu-item:hover { background: var(--brand); }
-
-/* NEW: File preview */ 
-.file-preview{ max-width: 200px; margin-top: 8px; border-radius: 8px; overflow: hidden; }
-
-.file-preview img { width: 100%; height: auto; }
-
-.file-info { background: rgba(0,0,0,0.7); padding: 4px 8px; font-size: 0.8rem; color: white; }
-
-/* NEW: Voice message player */ 
-.voice-message{ display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-
-.voice-play-btn { background: var(--brand); border: none; width: 32px; height: 32px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-.voice-progress { flex: 1; height: 4px; background: var(--border); border-radius: 2px; position: relative; }
-
-.voice-progress-bar { position: absolute; height: 100%; background: var(--brand); border-radius: 2px; width: 0%; }
-
-.voice-duration { font-size: 0.8rem; color: var(--muted); }
-
-/* NEW: Message search */ 
-.search-container{ position: relative; margin-bottom: 12px; }
-
-.search-results { position: absolute; top: 100%; left: 0; right: 0; background: var(--elev); border: 1px solid var(--border); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; display: none; }
-
-.search-result-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid var(--border); }
-
-.search-result-item:hover { background: var(--brand); }
-
-/* NEW: User status selector */ 
-.status-selector{ display: flex; gap: 8px; margin-top: 8px; }
-
-.status-option { padding: 4px 8px; border-radius: 16px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border); }
-
-.status-option.active { background: var(--brand); border-color: var(--brand); }
-
-/* NEW: Bottom Navigation */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  background: var(--elev);
-  border-top: 1px solid var(--border);
-  z-index: 1000;
-}
-
-.nav-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  cursor: pointer;
-  color: var(--muted);
-  font-size: 0.8rem;
-  transition: all 0.2s;
-}
-
-.nav-item.active {
-  color: var(--brand);
-}
-
-.nav-icon {
-  font-size: 1.2rem;
-  margin-bottom: 4px;
-}
-
-/* NEW: Page containers */
-.page {
-  display: none;
-  padding-bottom: 60px; /* Space for bottom nav */
-}
-
-.page.active {
-  display: block;
-}
-
-/* NEW: Games section */
-.game-container {
-  background: var(--elev);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-  border: 1px solid var(--border);
-}
-
-.game-title {
-  font-size: 1.2rem;
-  margin-bottom: 12px;
-  color: var(--brand);
-}
-
-.game-btn {
-  background: var(--brand);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 12px;
-}
-
-/* Tic Tac Toe Game */
-.tic-tac-toe {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  margin: 12px 0;
-  max-width: 200px;
-}
-
-.ttt-cell {
-  width: 60px;
-  height: 60px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-/* NEW: Settings page */
-.settings-section {
-  margin-bottom: 20px;
-}
-
-.settings-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.settings-item:last-child {
-  border-bottom: none;
-}
-
-/* NEW: Calls page */
-.call-item {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.call-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 12px;
-}
-
-.call-details {
-  flex: 1;
-}
-
-.call-name {
-  font-weight: bold;
-}
-
-.call-info {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.call-status {
-  margin-left: 8px;
-  font-size: 0.8rem;
-}
-
-.call-incoming {
-  color: #4caf50;
-}
-
-.call-missed {
-  color: #f44336;
-}
-
-.call-outgoing {
-  color: #2196f3;
-}
+.title{font-weight:700;font-size:1.4rem} 
+.spacer{flex-grow:1} 
+.nav-btn{background:var(--elev);color:var(--text);border:1px solid var(--border);border-radius:.3rem;padding:.5rem;cursor:pointer;font-weight:600;transition:background-color .2s} 
+.nav-btn:hover{background:#1b2435} 
+.nav-btn:active{background:#233045} 
+#loginScreen,#loadingScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100} 
+#loadingScreen p{font-size:1.2rem;font-weight:500} 
+#chatScreen{display:none;flex-grow:1;overflow:hidden} 
+.chat-container{display:flex;flex-grow:1;overflow:hidden} 
+#userList,#roomList{width:250px;overflow-y:auto;border-right:1px solid var(--border);background:var(--elev)} 
+.user-item,.room-item{padding:.8rem;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;transition:background-color .2s} 
+.user-item:hover,.room-item:hover{background:#151d2c} 
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--brand)} 
+.active-dot{width:10px;height:10px;background:lime;border-radius:50%;position:absolute;transform:translate(25px,15px);border:2px solid var(--elev)} 
+.user-name{font-weight:600} 
+.room-name{font-weight:600} 
+#mainChat{flex-grow:1;display:flex;flex-direction:column;overflow:hidden} 
+.message-list{flex-grow:1;overflow-y:auto;padding:.5rem 1rem} 
+.message{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.5rem;background:var(--bg);padding:.3rem;border-radius:.5rem} 
+.message-content{flex-grow:1} 
+.message-header{display:flex;align-items:center;gap:.5rem;font-size:.9rem} 
+.message-sender{font-weight:700;color:var(--brand)} 
+.message-time{font-size:.8rem;color:var(--muted)} 
+.message-text{margin-top:.3rem;white-space:pre-wrap;word-break:break-word} 
+.reaction-container{font-size:.8rem;color:var(--muted);margin-top:.2rem} 
+.reaction-btn{cursor:pointer;margin-right:.5rem} 
+.chat-input{display:flex;padding:.5rem;border-top:1px solid var(--border);gap:.5rem;background:var(--elev)} 
+#msgInput{flex-grow:1;padding:.7rem;border:1px solid var(--border);border-radius:.3rem;background:var(--bg);color:var(--text);font-size:1rem} 
+#msgInput:focus{outline:none;border-color:var(--brand)} 
+#sendBtn{padding:.7rem 1.2rem;background:var(--brand);color:#fff;border:none;border-radius:.3rem;cursor:pointer;font-weight:600;transition:opacity .2s} 
+#sendBtn:disabled{opacity:.5;cursor:not-allowed} 
+.emoji-picker{position:absolute;bottom:70px;right:20px;background:var(--elev);border:1px solid var(--border);border-radius:.5rem;padding:.5rem;display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;z-index:50} 
+.emoji-btn{cursor:pointer;font-size:1.2rem;background:transparent;border:none;padding:.2rem} 
+.active-room-header{padding:.7rem;border-bottom:1px solid var(--border);background:var(--elev);font-weight:600} 
+#profileAdminPanel{position:absolute;top:50px;right:10px;background:var(--elev);border:1px solid var(--border);border-radius:.5rem;padding:.8rem;z-index:60;display:none;min-width:150px} 
+#profileAdminPanel button{width:100%;padding:.5rem;margin-top:.5rem;background:var(--brand);color:#fff;border:none;border-radius:.3rem;cursor:pointer} 
+.game-container{padding:1rem;background:var(--bg);border-radius:.5rem;margin-top:.5rem} 
+.game-board{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;width:150px;margin:0 auto} 
+.game-cell{width:50px;height:50px;background:var(--elev);display:flex;align-items:center;justify-content:center;font-size:2rem;cursor:pointer;border-radius:.3rem;border:1px solid var(--border)} 
+.game-cell:hover{background:#151d2c} 
+.game-status{text-align:center;margin-top:.5rem;font-weight:600;color:var(--brand)}
+#typingIndicator{font-size:.8rem;color:var(--brand);padding:0 10px;display:none}
 </style>
 </head>
 <body>
-<div class="app" id="app">
-<header>
-<div class="title">QuickChat</div>
-<div style="flex:1"></div>
-<div style="display:flex;align-items:center;gap:0.5rem">
-<img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
-<button id="darkModeToggle" class="btn ghost" title="Toggle Dark Mode" style="padding:0.3rem 0.6rem;">Dark Mode</button>
-<button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
+
+<div id="loadingScreen">
+  <p>Loading QuickChat...</p>
 </div>
-</header>
 
-<div id="globalBanner" class="hidden" style="background:#0c2140;border-bottom:1px solid var(--border);padding:.5rem;text-align:center;color:#dfefff"></div>
-
-<main>
-<!-- AUTH CARD -->
-<section id="auth" class="card" style="max-width:720px;margin:auto">
-<h3>Sign in / Register</h3>
-<input id="loginEmail" class="input" placeholder="Email" type="email" />
-<input id="loginPass" class="input" placeholder="Password" type="password" />
-<div style="display:flex;gap:.5rem;margin-top:.5rem">
-<button id="loginBtn" class="btn">Log in</button>
-<button id="registerBtn" class="btn ghost">Register</button>
-<button id="googleBtn" class="btn ghost">Sign in with Google</button>
-</div>
-<div id="authMsg" style="color:var(--muted);margin-top:.5rem"></div>
-</section>
-
-<!-- APP PAGES -->
-<section id="appUI" class="hidden" style="max-width:1100px;margin:16px auto 80px">
-<!-- Navigation Tabs -->
-<div class="bottom-nav">
-  <div class="nav-item active" data-page="chats-page">
-    <div class="nav-icon">💬</div>
-    <div>Chats</div>
-  </div>
-  <div class="nav-item" data-page="calls-page">
-    <div class="nav-icon">📞</div>
-    <div>Calls</div>
-  </div>
-  <div class="nav-item" data-page="games-page">
-    <div class="nav-icon">🎮</div>
-    <div>Games</div>
-  </div>
-  <div class="nav-item" data-page="settings-page">
-    <div class="nav-icon">⚙️</div>
-    <div>Settings</div>
+<div id="loginScreen" style="display:none;">
+  <div style="background:var(--elev);padding:2rem;border-radius:.5rem;border:1px solid var(--border);text-align:center">
+    <h2>Welcome to QuickChat</h2>
+    <p>Sign in to start messaging and playing games!</p>
+    <button id="googleSignInBtn" class="nav-btn" style="background:#4285f4;color:#fff;margin-top:1rem">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_Google_g_standard.png" alt="Google logo" style="width:20px;vertical-align:middle;margin-right:.5rem">
+      Sign in with Google
+    </button>
   </div>
 </div>
 
-<!-- Chats Page -->
-<div id="chats-page" class="page active">
-  <div style="display:flex;gap:1rem;align-items:flex-start">
-    <div style="flex:1">
-      <!-- Profile and Admin Panel Container -->
-      <div id="profileAdminPanel" class="card" style="margin-bottom:.8rem; display:none;">
-        <strong>My Profile</strong>
-        <input id="profName" class="input" placeholder="Display name" />
-        <input id="profAvatarUrl" class="input" placeholder="Avatar URL (optional)" />
-
-        <!-- NEW: User status selector -->
-        <div class="status-selector">
-          <div class="status-option" data-status="online">🟢 Online</div>
-          <div class="status-option" data-status="away">🟡 Away</div>
-          <div class="status-option" data-status="busy">🔴 Busy</div>
-        </div>
-
-        <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-          <button id="saveProfileBtn" class="btn">Save</button>
-          <button id="resetAvatarBtn" class="btn ghost">Reset Avatar</button>
-        </div>
-
-        <!-- NEW: Theme selector -->
-        <div style="margin-bottom: 1rem;">
-          <strong>Chat Theme</strong>
-          <div class="theme-selector">
-            <div class="theme-option theme-blue active" data-theme="blue"></div>
-            <div class="theme-option theme-green" data-theme="green"></div>
-            <div class="theme-option theme-purple" data-theme="purple"></div>
-            <div class="theme-option theme-red" data-theme="red"></div>
-          </div>
-        </div>
-
-        <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:10px; margin-top: 8px;">
-          <div style="font-weight:700; margin-bottom:8px;">Admin Panel 👑</div>
-
-          <div style="display:flex;gap:6px;margin-bottom:8px">
-            <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="padding:.4rem" />
-            <button id="adminLookupBtn" class="btn ghost">Lookup</button>
-          </div>
-
-          <div style="display:flex;gap:6px;margin-bottom:8px">
-            <button id="adminVerifyBtn" class="btn">Verify</button>
-            <button id="adminUnverifyBtn" class="btn ghost">Unverify</button>
-          </div>
-
-          <div style="display:flex;gap:6px;margin-bottom:8px">
-            <button id="adminBanBtn" class="btn ghost">Ban</button>
-            <button id="adminUnbanBtn" class="btn ghost">Unban</button>
-          </div>
-
-          <div style="margin-bottom:8px">
-            <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:6px;padding:.4rem" />
-            <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.4rem" />
-            <div style="display:flex;gap:6px;margin-top:6px">
-              <button id="adminDelMsgBtn" class="btn secondary">Delete Message</button>
-            </div>
-          </div>
-
-          <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;margin-bottom:8px;">
-            <div style="font-weight:700;margin-bottom:6px">Global Announcement</div>
-            <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.4rem" />
-            <div style="display:flex;gap:6px;margin-top:6px">
-              <button id="adminAnnSet" class="btn">Set</button>
-              <button id="adminAnnClear" class="btn ghost">Clear</button>
-            </div>
-          </div>
-
-          <div>
-            <button id="adminRefreshUsers" class="btn ghost">Refresh Users</button>
-            <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
-          </div>
-        </div>
+<div id="chatScreen">
+  <div class="app">
+    <header>
+      <div class="title">QuickChat</div>
+      <div class="spacer"></div>
+      <div id="userStatus" class="nav-btn" style="background:lime;color:#000;font-weight:bold;display:none;">Online</div>
+      <button id="darkModeToggle" class="nav-btn"></button>
+      <img id="navAvatar" class="avatar" style="cursor:pointer;" src="" alt="User Avatar">
+      <div id="profileAdminPanel">
+        <p id="profileName" style="font-weight:bold;margin-bottom:.5rem;"></p>
+        <button id="logoutBtn">Sign Out</button>
       </div>
-
-      <!-- ADD FRIENDS + REQUESTS PANELS -->
-      <div class="card" style="margin-bottom:.8rem">
-        <strong>Add friends</strong>
-        <div style="display:flex;gap:.5rem;margin-top:.5rem">
-          <input id="addByShort" class="input" placeholder="Enter 5-digit ID" style="flex:1" />
-          <button id="addFriendBtn" class="btn">Add</button>
-        </div>
-        <div id="friendRequestMsg" style="color:var(--muted);margin-top:.4rem"></div>
+    </header>
+    
+    <div class="chat-container">
+      <div id="roomList">
+        <div style="padding:.7rem;font-weight:bold;border-bottom:1px solid var(--border);background:#0e1420;">Community Rooms</div>
       </div>
-
-      <div class="card" style="margin-bottom:.8rem">
-        <strong>Requests</strong>
-        <div style="display:flex;gap:1rem;margin-top:.5rem">
-          <div style="flex:1">
-            <div style="font-weight:700;margin-bottom:.4rem">Incoming</div>
-            <div id="incomingReqs" class="list"></div>
-          </div>
-          <div style="flex:1">
-            <div style="font-weight:700;margin-bottom:.4rem">Outgoing</div>
-            <div id="outgoingReqs" class="list"></div>
-          </div>
-        </div>
+      
+      <div id="userList">
+        <div style="padding:.7rem;font-weight:bold;border-bottom:1px solid var(--border);background:#0e1420;">Direct Messages</div>
       </div>
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Friends</strong>
-          <div id="myShort" style="color:var(--muted)"></div>
+      
+      <div id="mainChat">
+        <div id="activeRoomHeader" class="active-room-header">
+          Welcome to QuickChat! Select a Room or User to begin.
         </div>
-        <div id="friendsList" class="list" style="margin-top:.6rem;max-height:280px;overflow:auto"></div>
-      </div>
+        
+        <div id="typingIndicator"></div>
 
-      <div class="card" style="margin-top:.8rem">
-        <strong>Communities</strong>
-        <div id="communitiesList" class="list"></div>
-      </div>
-    </div>
-
-    <div style="width:420px">
-      <div class="card" id="chatCard">
-        <div style="display:flex;align-items:center;gap:.6rem;position:relative">
-          <button id="chatBackBtn" class="btn ghost" style="display:none;position:absolute;left:0;">Back</button>
-          <img id="chatAvatar" class="avatar" src="" alt="" style="margin-left:30px">
-          <div style="flex:1">
-            <div id="chatTitle" style="font-weight:800">No chat</div>
-            <div id="chatPresence" style="color:var(--muted);font-size:.85rem">—</div>
+        <div class="message-list">
           </div>
-          <div>
-            <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">Audio</button>
-            <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">Video</button>
+        
+        <div class="chat-input">
+          <input type="text" id="msgInput" placeholder="Send a message...">
+          <button id="emojiBtn" class="nav-btn" style="padding:0 .8rem;">😀</button>
+          <button id="sendBtn" disabled>Send</button>
+        </div>
+        
+        <div id="emojiPicker" class="emoji-picker" style="display:none;">
           </div>
-        </div>
-
-        <!-- NEW: Search container -->
-        <div class="search-container">
-          <input id="messageSearch" class="input" placeholder="Search messages..." style="margin-bottom:0" />
-          <div id="searchResults" class="search-results"></div>
-        </div>
-
-        <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.6rem;border-radius:8px"></div>
-
-        <div style="display:flex;gap:.5rem;margin-top:.6rem">
-          <input id="msgInput" class="input" placeholder="Message..." style="flex:1" autocomplete="off" />
-          <input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt" style="display:none" />
-          <button id="attachBtn" class="btn ghost" title="Attach file">Attach</button>
-          <button id="sendBtn" class="btn">Send</button>
-        </div>
-        <div id="typingIndicator" style="color:var(--muted);margin-top:.4rem;display:none">Someone is typing…</div>
+        
+        <div id="gameArea" style="padding:0 1rem;">
+          </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Calls Page -->
-<div id="calls-page" class="page">
-  <div class="card">
-    <strong>Recent Calls</strong>
-    <div id="callHistory" class="list"></div>
-  </div>
-  
-  <!-- NEW: Call history items will be populated here -->
-  <div id="callsList">
-    <!-- Sample call items -->
-    <div class="call-item">
-      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user1" class="call-avatar" alt="User 1">
-      <div class="call-details">
-        <div class="call-name">John Doe</div>
-        <div class="call-info">
-          <span>Yesterday 14:30</span>
-          <span class="call-status call-outgoing">Outgoing</span>
-        </div>
-      </div>
-      <div>📞</div>
-    </div>
-    
-    <div class="call-item">
-      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user2" class="call-avatar" alt="User 2">
-      <div class="call-details">
-        <div class="call-name">Jane Smith</div>
-        <div class="call-info">
-          <span>Today 09:15</span>
-          <span class="call-status call-incoming">Incoming</span>
-        </div>
-      </div>
-      <div>📞</div>
-    </div>
-    
-    <div class="call-item">
-      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user3" class="call-avatar" alt="User 3">
-      <div class="call-details">
-        <div class="call-name">Alex Johnson</div>
-        <div class="call-info">
-          <span>Today 11:42</span>
-          <span class="call-status call-missed">Missed</span>
-        </div>
-      </div>
-      <div>📞</div>
-    </div>
-  </div>
-</div>
-
-<!-- Games Page -->
-<div id="games-page" class="page">
-  <div class="card">
-    <strong>In-Chat Games</strong>
-    <p>Play games with your friends directly in the chat!</p>
-  </div>
-  
-  <!-- Tic Tac Toe Game -->
-  <div class="game-container">
-    <div class="game-title">Tic Tac Toe</div>
-    <p>Challenge a friend to a game of Tic Tac Toe</p>
-    
-    <div class="tic-tac-toe">
-      <div class="ttt-cell" data-index="0"></div>
-      <div class="ttt-cell" data-index="1"></div>
-      <div class="ttt-cell" data-index="2"></div>
-      <div class="ttt-cell" data-index="3"></div>
-      <div class="ttt-cell" data-index="4"></div>
-      <div class="ttt-cell" data-index="5"></div>
-      <div class="ttt-cell" data-index="6"></div>
-      <div class="ttt-cell" data-index="7"></div>
-      <div class="ttt-cell" data-index="8"></div>
-    </div>
-    
-    <div id="gameStatus">Your turn (X)</div>
-    <button class="game-btn" id="startTicTacToe">Start Game with Friend</button>
-    <button class="game-btn ghost" id="resetTicTacToe">Reset Game</button>
-  </div>
-  
-  <!-- Word Game -->
-  <div class="game-container">
-    <div class="game-title">Word Challenge</div>
-    <p>Test your vocabulary with friends</p>
-    <div id="wordGame">
-      <p>Current word: <span id="currentWord">_____</span></p>
-      <input type="text" class="input" id="wordInput" placeholder="Enter a word">
-      <button class="game-btn" id="submitWord">Submit Word</button>
-      <p id="wordScore">Score: 0</p>
-    </div>
-  </div>
-  
-  <!-- Trivia Game -->
-  <div class="game-container">
-    <div class="game-title">Quick Trivia</div>
-    <p>Answer trivia questions with friends</p>
-    <div id="triviaGame">
-      <p id="triviaQuestion">Question will appear here</p>
-      <div id="triviaOptions">
-        <button class="btn ghost">Option 1</button>
-        <button class="btn ghost">Option 2</button>
-        <button class="btn ghost">Option 3</button>
-        <button class="btn ghost">Option 4</button>
-      </div>
-      <p id="triviaScore">Score: 0/0</p>
-    </div>
-    <button class="game-btn" id="startTrivia">Start Trivia</button>
-  </div>
-</div>
-
-<!-- Settings Page -->
-<div id="settings-page" class="page">
-  <div class="card">
-    <strong>Account Settings</strong>
-    
-    <div class="settings-item">
-      <div>Notifications</div>
-      <label class="switch">
-        <input type="checkbox" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    
-    <div class="settings-item">
-      <div>Message Preview</div>
-      <label class="switch">
-        <input type="checkbox" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    
-    <div class="settings-item">
-      <div>Read Receipts</div>
-      <label class="switch">
-        <input type="checkbox" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-  </div>
-  
-  <div class="card">
-    <strong>Privacy & Security</strong>
-    
-    <div class="settings-item">
-      <div>Last Seen</div>
-      <select class="input">
-        <option>Everyone</option>
-        <option>My Contacts</option>
-        <option>Nobody</option>
-      </select>
-    </div>
-    
-    <div class="settings-item">
-      <div>Profile Photo</div>
-      <select class="input">
-        <option>Everyone</option>
-        <option>My Contacts</option>
-        <option>Nobody</option>
-      </select>
-    </div>
-    
-    <div class="settings-item">
-      <div>Two-Step Verification</div>
-      <button class="btn ghost">Enable</button>
-    </div>
-  </div>
-  
-  <div class="card">
-    <strong>Chat Settings</strong>
-    
-    <div class="settings-item">
-      <div>Chat Background</div>
-      <button class="btn ghost">Change</button>
-    </div>
-    
-    <div class="settings-item">
-      <div>Font Size</div>
-      <select class="input">
-        <option>Small</option>
-        <option selected>Medium</option>
-        <option>Large</option>
-      </select>
-    </div>
-    
-    <div class="settings-item">
-      <div>Enter Key Sends</div>
-      <label class="switch">
-        <input type="checkbox">
-        <span class="slider"></span>
-      </label>
-    </div>
-  </div>
-  
-  <div class="card">
-    <strong>Storage & Data</strong>
-    
-    <div class="settings-item">
-      <div>Network Usage</div>
-      <div>1.2 GB</div>
-    </div>
-    
-    <div class="settings-item">
-      <div>Storage Usage</div>
-      <div>2.5 GB</div>
-    </div>
-    
-    <div class="settings-item">
-      <div>Auto-Download Media</div>
-      <button class="btn ghost">Configure</button>
-    </div>
-  </div>
-  
-  <div class="card">
-    <strong>About</strong>
-    
-    <div class="settings-item">
-      <div>Version</div>
-      <div>2.1.0</div>
-    </div>
-    
-    <div class="settings-item">
-      <div>Privacy Policy</div>
-      <button class="btn ghost">View</button>
-    </div>
-    
-    <div class="settings-item">
-      <div>Terms of Service</div>
-      <button class="btn ghost">View</button>
-    </div>
-  </div>
-</div>
-</section>
-</main>
-</div>
-
-<!-- Toast area -->
-<div id="toasts" style="position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:9999"></div>
-
-<!-- NEW: Context menu -->
-<div id="contextMenu" class="context-menu hidden"></div>
-
-<!-- Firebase + logic -->
 <script type="module">
-/* ========================== CONFIG ========================== */
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
-import { getDatabase, ref, set, push, onValue, get, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
-import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js';
-
+// NOTE: You must replace these placeholders with your actual Firebase configuration
+// If you used AI to create the site, this part should already be connected to your database.
 const firebaseConfig = {
-  apiKey: "AIzaSyDEOHYkQnyaeDbdVGisC2B2H02kxNfp3F8",
-  authDomain: "meaww-chat-4f6bd.firebaseapp.com",
-  databaseURL: "https://meaww-chat-4f6bd-default-rtdb.firebaseio.com",
-  projectId: "meaww-chat-4f6bd",
-  storageBucket: "meaww-chat-4f6bd.appspot.com",
-  messagingSenderId: "162714330727",
-  appId: "1:162714330727:dd1ce1da5806c0316c2",
-  measurementId: "G-L7Y3NV8L88"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
-const adminEmail = "flashdc4178@gmail.com";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, collection, doc, query, orderBy, limit, addDoc, serverTimestamp, onSnapshot, updateDoc, arrayUnion, arrayRemove, setDoc, deleteDoc, where, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-/* ========================== INIT ========================== */
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getDatabase(app);
-const storage = getStorage(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
-/* ========================== HELPERS ========================== */
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
-function toast(msg, t = 2500){
-  const d = document.createElement('div');
-  d.style.padding='8px 12px';
-  d.style.background='#0e2238';
-  d.style.border='1px solid #12233b';
-  d.style.borderRadius='10px';
-  d.style.color='#dfefff';
-  d.style.marginTop='6px';
-  d.textContent=msg;
-  $('#toasts').appendChild(d);
-  setTimeout(() => d.remove(), t);
-}
-function defaultAvatar(seed){
-  return `https://api.dicebear.com/8.x/thumbs/svg?seed=${(seed||'quick').slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
-}
-function timeAgo(ts){
-  if(!ts) return '—';
-  const d = Math.floor((Date.now()-ts)/1000);
-  if(d<60) return d+'s';
-  if(d<3600) return Math.floor(d/60)+'m';
-  if(d<86400) return Math.floor(d/3600)+'h';
-  return Math.floor(d/86400)+'d';
-}
-function typingRef(chatId, uid){
-  return ref(db, `typing/${chatId}/${uid}`);
-}
-function pairKey(a,b){ return [a,b].sort().join('_'); }
+// ========================== GLOBAL STATE ==========================
+let currentUser = null;
+let activeChatType = 'room'; // 'room' or 'user'
+let activeChatId = 'general';
+let unsubscribeMessages = null;
 
-/* ========================== VARIABLES ========================== */
-let isAdminUser = false;
-let me = null;
-let currentChat = null;
-let unsubMessages = null;
-let typingTimer = null;
-let pendingFile = null;
-let lastSendAt = 0;
-const SEND_COOLDOWN_MS = 1200;
+// ========================== DOM ELEMENTS ==========================
+const $ = (id) => document.getElementById(id);
+const $msgInput = $('msgInput');
+const $sendBtn = $('sendBtn');
+const $messageList = document.querySelector('.message-list');
+const $userList = $('userList');
+const $roomList = $('roomList');
+const $loginScreen = $('loginScreen');
+const $loadingScreen = $('loadingScreen');
+const $chatScreen = $('chatScreen');
+const $activeRoomHeader = $('activeRoomHeader');
+const $navAvatar = $('navAvatar');
+const $profileName = $('profileName');
 
-// NEW: Available emojis for reactions
-const EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🔥'];
-
-// NEW: Game state
-let ticTacToeGame = {
-  board: ['', '', '', '', '', '', '', '', ''],
-  currentPlayer: 'X',
-  gameActive: false,
-  playerSymbol: 'X'
-};
-
-/* ========================== AUTH UI HANDLERS ========================== */
-$('#loginBtn').onclick = async () => {
-  try {
-    await signInWithEmailAndPassword(auth, $('#loginEmail').value, $('#loginPass').value);
-    $('#authMsg').textContent = '';
-  } catch (e) { $('#authMsg').textContent = e.message; }
-};
-$('#registerBtn').onclick = async () => {
-  try {
-    const email = $('#loginEmail').value.trim();
-    const pass = $('#loginPass').value;
-    if(!email||!pass){ $('#authMsg').textContent='Enter email & password'; return; }
-    if(pass.length < 6){ $('#authMsg').textContent='Password must be at least 6 characters'; return; }
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    const uid = cred.user.uid;
-    const short = String(10000 + Math.floor(Math.random()*90000));
-    await set(ref(db, 'users/' + uid), {
-      uid,
-      email,
-      name: cred.user.displayName || email.split('@'),
-      avatar: defaultAvatar(uid),
-      shortId: short,
-      createdAt: Date.now(),
-      online: true,
-      lastSeen: Date.now(),
-      status: 'online' // NEW: Default status
-    });
-    await set(ref(db, 'shortIds/' + short), { uid });
-    toast('Registered — check profile to edit');
-  } catch ( e){ $('#authMsg').textContent = e.message; }
-};
-$('#googleBtn').onclick = async () => {
-  try {
-    const prov = new GoogleAuthProvider();
-    const cred = await signInWithPopup(auth, prov);
-    const uid = cred.user.uid;
-    const uref = ref(db, 'users/' + uid);
-    const s = await get(uref);
-    if(!s.exists()){
-      const short = String(10000 + Math.floor(Math.random()*90000));
-      await set(uref, {
-        uid,
-        email: cred.user.email,
-        name: cred.user.displayName || cred.user.email,
-        avatar: cred.user.photoURL || defaultAvatar(uid),
-        shortId: short,
-        createdAt: Date.now(),
-        online: true,
-        lastSeen: Date.now(),
-        status: 'online' // NEW: Default status
-      });
-      await set(ref(db, 'shortIds/' + short), { uid });
-    }
-  } catch (e){ $('#authMsg').textContent = e.message; }
-};
-
-/* ========================== ADMIN UI + ACTIONS ========================== */
-async function injectAdminPanel(){
-  if(!isAdminUser) return;
-  // Attach buttons inside #adminControls
-  $('#adminLookupBtn').onclick = async () => {
-    const v = $('#adminTarget').value.trim();
-    if(!v){ toast('Enter UID or 5-digit ID'); return; }
-    let uid = v;
-    if(v.length === 5){
-      const s = await get(ref(db, 'shortIds/' + v));
-      if(!s.exists()){ toast('No such shortId'); return; }
-      uid = s.val().uid;
-    }
-    const u = await get(ref(db, 'users/' + uid));
-    if(!u.exists()){ toast('User not found'); return; }
-    const data = u.val();
-    toast('Found: ' + (data.name || data.email || uid));
-  };
-
-  $('#adminVerifyBtn').onclick = async () => {
-    const v = $('#adminTarget').value.trim(); if(!v){ toast('Enter UID or 5-digit ID'); return; }
-    let uid = v;
-    if(v.length===5){
-      const s = await get(ref(db,'shortIds/'+v));
-      if(!s.exists()){ toast('No such shortId'); return; }
-      uid = s.val().uid;
-    }
-    await update(ref(db, 'users/' + uid), { verified: true });
-    toast('User verified');
-    await refreshAdminUsers();
-  };
-  $('#adminUnverifyBtn').onclick = async ()=> {
-    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID');
-    let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
-    await update(ref(db,'users/'+uid), { verified: false });
-    toast('User unverified'); await refreshAdminUsers();
-  };
-  $('#adminBanBtn').onclick = async () => {
-    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID'); let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
-    await set(ref(db,'banned/'+uid), true); toast('User banned'); await refreshAdminUsers();
-  };
-  $('#adminUnbanBtn').onclick = async () => {
-    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID'); let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
-    await remove(ref(db,'banned/'+uid)); toast('User unbanned'); await refreshAdminUsers();
-  };
-  $('#adminDelMsgBtn').onclick = async () => {
-    const chatId = $('#adminChatId').value.trim(); const msgKey = $('#adminMsgKey').value.trim();
-    if(!chatId || !msgKey){ toast('Enter chat id and message key'); return; }
-    await remove(ref(db, `chats/${chatId}/messages/${msgKey}`));
-    await remove(ref(db, `communityMessages/${chatId}/${msgKey}`));
-    toast('Message removed (if existed)');
-  };
-  $('#adminRefreshUsers').onclick = refreshAdminUsers;
-
-  $('#adminAnnSet').onclick = async ()=>{
-    const t = $('#adminAnnText').value.trim();
-    await set(ref(db, 'announcements/global'), { text: t, ts: Date.now(), by: me.uid });
-    toast('Announcement set');
-  };
-  $('#adminAnnClear').onclick = async ()=>{
-    await remove(ref(db, 'announcements/global'));
-    toast('Announcement cleared');
-  };
-
-  await refreshAdminUsers();
-}
-
-async function refreshAdminUsers(){
-  const wrap = $('#adminUsersList'); wrap.innerHTML = '';
-  const s = await get(ref(db, 'users'));
-  if(!s.exists()){ wrap.textContent = 'No users yet'; return; }
-  const users = s.val();
-  for(const uid in users){
-    const u = users[uid];
-    const div = document.createElement('div'); div.className='item';
-    div.innerHTML = `
-      <img src="${u.avatar||defaultAvatar(uid)}" class="avatar" />
-      <div style="flex:1">
-        <div style="font-weight:700">${u.name || u.email || uid}</div>
-        <div style="color:var(--muted);font-size:.85rem">${u.email||''} - ${u.shortId||''} - ${u.verified? '✅ verified':''}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <button class="btn ghost" data-uid="${uid}" data-action="verify">Verify</button>
-        <button class="btn ghost" data-uid="${uid}" data-action="ban">Ban</button>
-      </div>
-    `;
-    wrap.appendChild(div);
-  }
-  wrap.querySelectorAll('button[data-action]').forEach(b=>{
-    b.onclick = async ()=>{
-      const uid = b.dataset.uid; const action = b.dataset.action;
-      if(action==='verify'){ await update(ref(db,'users/'+uid), { verified: true }); toast('Verified'); }
-      if(action==='ban'){ await set(ref(db,'banned/'+uid), true); toast('Banned'); }
-      await refreshAdminUsers();
-    };
-  });
-}
-
-/* ========================== BAN CHECK ========================== */
-async function isBanned(uid){
-  const s = await get(ref(db, 'banned/' + uid));
-  return s.exists();
-}
-
-/* ========================== APP CORE ========================== */
-function roomIdFor(a,b){ return [a,b].sort().join('_'); }
-
-async function getUnreadCount(chatId){
-  const readsSnap = await get(ref(db, `reads/${chatId}`));
-  if(!readsSnap.exists()) return 0;
-  const reads = readsSnap.val();
-  let count = 0;
-  for(const mk in reads){
-    if(!reads[mk] || !reads[mk][me.uid]) count++;
-  }
-  return count;
-}
-
-async function refreshFriends(){
-  if(!me) return;
-  const wrap = $('#friendsList'); wrap.innerHTML = '';
-  const s = await get(ref(db, 'friends/' + me.uid));
-  const ids = s.exists()? Object.keys(s.val()): [];
-  for(const fid of ids){
-    const uSnap = await get(ref(db, 'users/' + fid));
-    const u = uSnap.val(); if(!u) continue;
-    const id = roomIdFor(me.uid, u.uid);
-    const unread = await getUnreadCount(id);
-    const it = document.createElement('div'); it.className = 'item';
-    it.innerHTML = `<img class="avatar" src="${u.avatar||defaultAvatar(u.uid)}" />
-      <div style="flex:1">
-        <div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">
-          <span>${u.name||u.email}</span>
-          ${unread>0? `<span style="background:#1b3d74;color:#dfefff;font-size:.75rem;padding:2px 8px;border-radius:999px">${unread}</span>`:''}
-        </div>
-        <div style="color:var(--muted);font-size:.85rem">
-          <span class="status-indicator status-${u.status || (u.online ? 'online' : 'offline')}"></span>
-          ${u.status === 'online' ? 'online' : u.status === 'away' ? 'away' : u.status === 'busy' ? 'busy' : 'last '+timeAgo(u.lastSeen)}
-        </div>
-      </div>`;
-    it.onclick = ()=> openDM(u);
-    wrap.appendChild(it);
-  }
-}
-
-async function loadCommunities(){
-  const wrap = $('#communitiesList'); wrap.innerHTML = '';
-  const cs = await get(ref(db, 'communities'));
-  if(!cs.exists()) return;
-  const data = cs.val();
-  for(const id in data){
-    const c = data[id];
-    const unread = await getUnreadCount(c.id);
-    const it = document.createElement('div'); it.className='item';
-    it.innerHTML = `<div style="flex:1">
-        <div style="font-weight:700;display:flex;justify-content:space-between;align-items:center">
-          <span>${c.name}</span>
-          ${unread>0? `<span style="background:#1b3d74;color:#dfefff;font-size:.75rem;padding:2px 8px;border-radius:999px">${unread}</span>`:''}
-        </div>
-        <div style="color:var(--muted)">${c.id}</div></div>
-      <button class="btn ghost">Open</button>`;
-    it.querySelector('button').onclick = ()=> openGroup(c);
-    wrap.appendChild(it);
-  }
-}
-
-function openChatPanel(peer){
-  currentChat = peer;
-  $('#chatTitle').textContent = peer.name || peer.id || 'Chat';
-  $('#chatAvatar').src = peer.avatar || defaultAvatar(peer.uid || peer.id);
-  $('#messages').innerHTML = '';
-}
-
-const chatBackBtn = $('#chatBackBtn');
-chatBackBtn.onclick = () => {
-  document.getElementById('appUI').classList.remove('fullscreen-chat');
-  chatBackBtn.style.display = 'none';
-  currentChat = null;
-  $('#chatTitle').textContent = 'No chat';
-  $('#chatAvatar').src = '';
-  $('#messages').innerHTML = '';
-};
-
-async function openDM(u){
-  openChatPanel(u);
-  document.getElementById('appUI').classList.add('fullscreen-chat');
-  chatBackBtn.style.display = 'inline-block';
-  const id = roomIdFor(me.uid, u.uid);
-  subscribeMessages('chats/' + id + '/messages', id, 'dm', u);
-}
-
-async function openGroup(c){
-  openChatPanel(c);
-  document.getElementById('appUI').classList.remove('fullscreen-chat');
-  chatBackBtn.style.display = 'none';
-  subscribeMessages('communityMessages/' + c.id, c.id, 'group', c);
-}
-
-// NEW: Show reaction picker
-function showReactionPicker(messageKey, chatId, buttonElement) {
-  const picker = document.createElement('div');
-  picker.className = 'reaction-picker';
-  
-  EMOJIS.forEach(emoji => {
-    const emojiEl = document.createElement('div');
-    emojiEl.className = 'reaction-emoji';
-    emojiEl.textContent = emoji;
-    emojiEl.onclick = () => {
-      addReactionToMessage(messageKey, chatId, emoji);
-      picker.remove();
-    };
-    picker.appendChild(emojiEl);
-  });
-  
-  const rect = buttonElement.getBoundingClientRect();
-  picker.style.top = (rect.top - 50) + 'px';
-  picker.style.left = rect.left + 'px';
-  
-  document.body.appendChild(picker);
-  
-  // Close picker when clicking outside
-  setTimeout(() => {
-    const closePicker = (e) => {
-      if (!picker.contains(e.target) && e.target !== buttonElement) {
-        picker.remove();
-        document.removeEventListener('click', closePicker);
-      }
-    };
-    document.addEventListener('click', closePicker);
-  }, 100);
-}
-
-// NEW: Add reaction to message
-async function addReactionToMessage(messageKey, chatId, reaction) {
-  const basePath = currentChat.uid 
-    ? `chats/${chatId}/messages/${messageKey}/reactions/${reaction}/${me.uid}`
-    : `communityMessages/${chatId}/messages/${messageKey}/reactions/${reaction}/${me.uid}`;
-  
-  // Toggle reaction
-  const reactionRef = ref(db, basePath);
-  const snap = await get(reactionRef);
-  
-  if (snap.exists()) {
-    await remove(reactionRef);
-  } else {
-    await set(reactionRef, true);
-  }
-}
-
-// NEW: Show context menu for messages
-function showMessageContextMenu(e, message, messageKey, chatId) {
-  e.preventDefault();
-  
-  const contextMenu = $('#contextMenu');
-  contextMenu.innerHTML = '';
-  contextMenu.classList.remove('hidden');
-  
-  contextMenu.style.left = e.pageX + 'px';
-  contextMenu.style.top = e.pageY + 'px';
-  
-  // Add reaction option
-  const reactOption = document.createElement('div');
-  reactOption.className = 'context-menu-item';
-  reactOption.textContent = 'Add Reaction';
-  reactOption.onclick = () => {
-    showReactionPicker(messageKey, chatId, reactOption);
-    contextMenu.classList.add('hidden');
-  };
-  contextMenu.appendChild(reactOption);
-  
-  // Add reply option
-  const replyOption = document.createElement('div');
-  replyOption.className = 'context-menu-item';
-  replyOption.textContent = 'Reply';
-  replyOption.onclick = () => {
-    $('#msgInput').value = `@${message.fromName} `;
-    $('#msgInput').focus();
-    contextMenu.classList.add('hidden');
-  };
-  contextMenu.appendChild(replyOption);
-  
-  // Add pin option for admins
-  if (isAdminUser) {
-    const pinOption = document.createElement('div');
-    pinOption.className = 'context-menu-item';
-    pinOption.textContent = message.pinned ? 'Unpin Message' : 'Pin Message';
-    pinOption.onclick = async () => {
-      const basePath = currentChat.uid 
-        ? `chats/${chatId}/messages/${messageKey}`
-        : `communityMessages/${chatId}/messages/${messageKey}`;
-      
-      await update(ref(db, basePath), { pinned: !message.pinned });
-      contextMenu.classList.add('hidden');
-    };
-    contextMenu.appendChild(pinOption);
-  }
-  
-  // Close menu when clicking outside
-  setTimeout(() => {
-    const closeMenu = (e) => {
-      if (!contextMenu.contains(e.target)) {
-        contextMenu.classList.add('hidden');
-        document.removeEventListener('click', closeMenu);
-      }
-    };
-    document.addEventListener('click', closeMenu);
-  }, 100);
-}
-
-function subscribeMessages(path, chatId, kind, peer){
-  if(unsubMessages) unsubMessages();
-  const r = ref(db, path);
-  onValue(r, async snap => {
-    const data = snap.val() || {};
-    $('#messages').innerHTML = '';
-    const entries = Object.entries(data).sort((a,b)=>a.ts - b.ts);
-
-    // NEW: Check for pinned messages
-    let pinnedMessages = [];
-    let regularMessages = [];
-
-    for(const [key,m] of entries){
-      if (m.pinned) {
-        pinnedMessages.push([key, m]);
-      } else {
-        regularMessages.push([key, m]);
-      }
-    }
-
-    // Display pinned messages first
-    if (pinnedMessages.length > 0) {
-      const pinnedHeader = document.createElement('div');
-      pinnedHeader.textContent = '📌 Pinned Messages';
-      pinnedHeader.style.color = 'var(--muted)';
-      pinnedHeader.style.marginBottom = '8px';
-      $('#messages').appendChild(pinnedHeader);
-      
-      for(const [key,m] of pinnedMessages){
-        renderMessage(key, m, chatId);
-      }
-      
-      const divider = document.createElement('div');
-      divider.style.borderTop = '1px solid var(--border)';
-      divider.style.margin = '12px 0';
-      $('#messages').appendChild(divider);
-    }
-
-    // Display regular messages
-    for(const [key,m] of regularMessages){
-      renderMessage(key, m, chatId);
-    }
-
-    $('#messages').scrollTop = $('#messages').scrollHeight;
-  });
-
-  // NEW: Typing observer
-  const tRef = ref(db, `typing/${chatId}`);
-  const offTyping = onValue(tRef, snap=>{
-    const obj = snap.val() || {};
-    const someoneElseTyping = Object.keys(obj).some(uid => uid !== me.uid && obj[uid] === true);
-    $('#typingIndicator').style.display = someoneElseTyping ? 'block' : 'none';
-  });
-
-  unsubMessages = ()=>{
-    offTyping();
-  };
-}
-
-// NEW: Render message function
-async function renderMessage(key, m, chatId) {
-  const div = document.createElement('div'); 
-  div.className = 'item';
-  div.style.background = m.from===me.uid? '#08263f':'#071328';
-  
-  // Add pinned class if message is pinned
-  if (m.pinned) {
-    div.classList.add('pinned-message');
-  }
-  
-  div.innerHTML = `
-    <div style="flex:1">
-      <div style="font-weight:700">
-        ${m.pinned ? '<span class="pin-indicator">📌</span>' : ''}
-        ${m.fromName||''}
-        ${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> - edited</span>':''}
-      </div>
-      <div>${m.text||''}</div>
-      ${m.replyTo ? '<div style="color:var(--muted);font-size:.85rem;border-left:2px solid var(--brand);padding-left:8px;margin:4px 0">↪️ ' + (m.replyToText || 'Replied to a message') + '</div>' : ''}
-      <div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div>
-    </div>
-    <div style="color:var(--muted);font-size:.7rem">${key.slice(0,6)}</div>`;
-  
-  // Add image if exists
-  if(m.imageURL){
-    const imgContainer = document.createElement('div');
-    imgContainer.className = 'file-preview';
-    
-    const img = document.createElement('img');
-    img.src = m.imageURL;
-    img.style.cursor = 'pointer';
-    img.onclick = () => window.open(m.imageURL, '_blank');
-    
-    const fileInfo = document.createElement('div');
-    fileInfo.className = 'file-info';
-    fileInfo.textContent = 'Click to view full image';
-    
-    imgContainer.appendChild(img);
-    imgContainer.appendChild(fileInfo);
-    div.querySelector('div[style*="flex:1"]').appendChild(imgContainer);
-  }
-  
-  // Add audio player if audio exists
-  if(m.audioURL){
-    const audioContainer = document.createElement('div');
-    audioContainer.className = 'voice-message';
-    
-    const playBtn = document.createElement('button');
-    playBtn.className = 'voice-play-btn';
-    playBtn.innerHTML = '▶';
-    
-    const progress = document.createElement('div');
-    progress.className = 'voice-progress';
-    
-    const progressBar = document.createElement('div');
-    progressBar.className = 'voice-progress-bar';
-    
-    const duration = document.createElement('div');
-    duration.className = 'voice-duration';
-    duration.textContent = m.audioDuration ? formatDuration(m.audioDuration) : '0:00';
-    
-    progress.appendChild(progressBar);
-    audioContainer.appendChild(playBtn);
-    audioContainer.appendChild(progress);
-    audioContainer.appendChild(duration);
-    
-    // Audio player functionality
-    let audio = new Audio(m.audioURL);
-    audio.addEventListener('loadedmetadata', () => {
-      if (!m.audioDuration) {
-        duration.textContent = formatDuration(audio.duration);
-      }
-    });
-    
-    audio.addEventListener('timeupdate', () => {
-      const percent = (audio.currentTime / audio.duration) * 100;
-      progressBar.style.width = percent + '%';
-    });
-    
-    audio.addEventListener('ended', () => {
-      playBtn.innerHTML = '▶';
-      progressBar.style.width = '0%';
-      audio.currentTime = 0;
-    });
-    
-    playBtn.onclick = () => {
-      if (audio.paused) {
-        audio.play();
-        playBtn.innerHTML = '⏸';
-      } else {
-        audio.pause();
-        playBtn.innerHTML = '▶';
-      }
-    };
-    
-    div.querySelector('div[style*="flex:1"]').appendChild(audioContainer);
-  }
-  
-  // NEW: Add message reactions if they exist
-  if (m.reactions) {
-    const reactionContainer = document.createElement('div');
-    reactionContainer.className = 'reaction-container';
-    
-    for (const [emoji, users] of Object.entries(m.reactions)) {
-      const count = Object.keys(users || {}).length;
-      if (count > 0) {
-        const reactionBtn = document.createElement('div');
-        reactionBtn.className = 'reaction';
-        reactionBtn.innerHTML = `${emoji} ${count}`;
-        reactionBtn.onclick = () => addReactionToMessage(key, chatId, emoji);
-        reactionContainer.appendChild(reactionBtn);
-      }
-    }
-    
-    if (reactionContainer.children.length > 0) {
-      div.appendChild(reactionContainer);
-    }
-  }
-  
-  // Add action buttons for user's own messages
-  if(m.from === me.uid){
-    const row = document.createElement('div');
-    row.style.display='flex'; row.style.gap='6px'; row.style.marginTop='6px';
-    
-    const delBtn = document.createElement('button');
-    delBtn.className = 'btn ghost'; delBtn.textContent = 'Delete';
-    delBtn.onclick = async ()=>{
-      const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
-      await remove(ref(db, basePath));
-      toast('Deleted');
-    };
-    row.appendChild(delBtn);
-    
-    const EDIT_WINDOW_MS = 120000;
-    if(Date.now() - m.ts <= EDIT_WINDOW_MS){
-      const editBtn = document.createElement('button');
-      editBtn.className = 'btn ghost'; editBtn.textContent = 'Edit';
-      editBtn.onclick = async ()=>{
-        const newText = prompt('Edit message:', m.text||'');
-        if(newText===null) return;
-        const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
-        await update(ref(db, basePath), { text: newText, editedAt: Date.now() });
-        toast('Edited');
-      };
-      row.appendChild(editBtn);
-      
-      const reactBtn = document.createElement('button');
-      reactBtn.className = 'btn ghost'; reactBtn.textContent = 'React';
-      reactBtn.onclick = () => showReactionPicker(key, chatId, reactBtn);
-      row.appendChild(reactBtn);
-    }
-    
-    div.appendChild(row);
-  }
-  
-  // Add context menu on right-click
-  div.addEventListener('contextmenu', (e) => {
-    showMessageContextMenu(e, m, key, chatId);
-  });
-  
-  // read-by badge
-  const readsSnap = await get(ref(db, `reads/${chatId}/${key}`));
-  if(readsSnap.exists()){
-    const readers = Object.keys(readsSnap.val() || {});
-    if(readers.length){
-      const readBadge = document.createElement('div');
-      readBadge.style.color='var(--muted)'; readBadge.style.fontSize='.7rem'; readBadge.style.marginTop='4px';
-      readBadge.textContent = `Read by ${readers.length}`;
-      div.appendChild(readBadge);
-    }
-  }
-  
-  $('#messages').appendChild(div);
-  
-  // Mark as read if not sender
-  if(m.from !== me.uid){
-    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
-  }
-}
-
-// NEW: Format duration for audio messages
-function formatDuration(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
-
-$('#msgInput').addEventListener('input', async ()=>{
-  if(!currentChat || !me) return;
-  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
-  try{
-    await set(typingRef(chatId, me.uid), true);
-  }catch{}
-  if(typingTimer) clearTimeout(typingTimer);
-  typingTimer = setTimeout(async ()=>{
-    try{ await remove(typingRef(chatId, me.uid)); }catch{}
-  }, 1800);
-});
-
-$('#attachBtn').onclick = ()=> $('#fileInput').click();
-$('#fileInput').onchange = (e)=> {
-  pendingFile = e.target.files && e.target.files ? e.target.files : null;
-  if(pendingFile) toast('File selected: '+pendingFile.name);
-};
-
-$('#sendBtn').onclick = async () => {
-  const now = Date.now();
-  if(now - lastSendAt < SEND_COOLDOWN_MS){ toast('Slow down a bit…'); return; }
-  lastSendAt = now;
-
-  const text = $('#msgInput').value.trim();
-  if(!currentChat || (!text && !pendingFile)) return;
-
-  let imageURL = null;
-  let audioURL = null;
-  let audioDuration = null;
-  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
-
-  if(pendingFile){
+// ========================== AUTHENTICATION ==========================
+$('googleSignInBtn').onclick = async () => {
     try {
-      // Check if it's an audio file
-      if (pendingFile[0].type.startsWith('audio/')) {
-        const filePath = `uploads/${me.uid}/${chatId}/audio/${Date.now()}_${pendingFile[0].name}`;
-        const sr = sref(storage, filePath);
-        await uploadBytes(sr, pendingFile[0]);
-        audioURL = await getDownloadURL(sr);
-        
-        // Get audio duration
-        const audio = new Audio();
-        audio.src = URL.createObjectURL(pendingFile[0]);
-        await new Promise(resolve => {
-          audio.addEventListener('loadedmetadata', () => {
-            audioDuration = audio.duration;
-            resolve();
-          });
-        });
-      } else {
-        // Handle image or other files
-        const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile[0].name}`;
-        const sr = sref(storage, filePath);
-        await uploadBytes(sr, pendingFile[0]);
-        imageURL = await getDownloadURL(sr);
-      }
-    } catch(e) {
-      toast('Upload failed');
-      console.error(e);
+        await signInWithPopup(auth, provider);
+    } catch (error) {
+        console.error("Sign-in error:", error);
     }
-  }
-
-  const payload = { 
-    from: me.uid, 
-    fromName: me.name, 
-    text: text || '', 
-    ts: Date.now(), 
-    imageURL: imageURL || null,
-    audioURL: audioURL || null,
-    audioDuration: audioDuration || null
-  };
-  const key = push(ref(db)).key;
-
-  if(currentChat.uid){
-    await set(ref(db, `chats/${chatId}/messages/${key}`), payload);
-    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
-    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
-  } else if(currentChat.id){
-    await set(ref(db, `communityMessages/${chatId}/messages/${key}`), payload);
-    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
-    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
-  }
-
-  $('#msgInput').value = '';
-  if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Sent'); }
 };
 
-// NEW: Message search functionality
-$('#messageSearch').addEventListener('input', async (e) => {
-  const query = e.target.value.trim().toLowerCase();
-  const resultsContainer = $('#searchResults');
-  
-  if (query.length < 2) {
-    resultsContainer.style.display = 'none';
-    return;
-  }
-  
-  if (!currentChat) return;
-  
-  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
-  const path = currentChat.uid ? `chats/${chatId}/messages` : `communityMessages/${chatId}/messages`;
-  
-  const messagesSnap = await get(ref(db, path));
-  if (!messagesSnap.exists()) {
-    resultsContainer.style.display = 'none';
-    return;
-  }
-  
-  const messages = messagesSnap.val();
-  resultsContainer.innerHTML = '';
-  resultsContainer.style.display = 'block';
-  
-  let foundResults = false;
-  
-  for (const [key, message] of Object.entries(messages)) {
-    if (message.text && message.text.toLowerCase().includes(query)) {
-      foundResults = true;
-      const resultItem = document.createElement('div');
-      resultItem.className = 'search-result-item';
-      resultItem.innerHTML = `
-        <div style="font-weight:700">${message.fromName}</div>
-        <div>${message.text}</div>
-        <div style="color:var(--muted);font-size:.8rem">${new Date(message.ts).toLocaleString()}</div>
-      `;
-      
-      resultItem.onclick = () => {
-        // Scroll to message
-        const messageElement = $(`[data-message-id="${key}"]`);
-        if (messageElement) {
-          messageElement.scrollIntoView({ behavior: 'smooth' });
-          messageElement.style.backgroundColor = '#1b3d74';
-          setTimeout(() => {
-            messageElement.style.backgroundColor = '';
-          }, 2000);
-        }
-        resultsContainer.style.display = 'none';
-        $('#messageSearch').value = '';
-      };
-      
-      resultsContainer.appendChild(resultItem);
-    }
-  }
-  
-  if (!foundResults) {
-    resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
-  }
-});
-
-// Close search results when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-container')) {
-    $('#searchResults').style.display = 'none';
-  }
-});
-
-/* ========================== FRIEND REQUESTS ========================== */
-// Data structure:
-// friendRequests/{uid}/incoming/{reqId} = { fromUid, fromName, fromAvatar, ts }
-// friendRequests/{uid}/outgoing/{reqId} = { toUid, toName, toAvatar, ts }
-// requestPairs/{pairKey} = true // guard against duplicate pending requests
-// friends/{uid}/{friendUid} = true
-
-async function sendFriendRequestByShortId(shortId){
-  $('#friendRequestMsg').textContent = '';
-  if(!me) return toast('Sign in first');
-  const v = (shortId||'').trim();
-  if(v.length !== 5) { $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; return; }
-
-  // Lookup target UID
-  const shortSnap = await get(ref(db, 'shortIds/' + v));
-  if(!shortSnap.exists()){ $('#friendRequestMsg').textContent = 'No user with that ID'; return; }
-  const targetUid = shortSnap.val().uid;
-
-  if(targetUid === me.uid){ $('#friendRequestMsg').textContent = 'Cannot add yourself'; return; }
-
-  // Already friends?
-  const already = await get(ref(db, `friends/${me.uid}/${targetUid}`));
-  if(already.exists()){ $('#friendRequestMsg').textContent = 'Already friends'; return; }
-
-  // Pair guard
-  const pk = pairKey(me.uid, targetUid);
-  const pairSnap = await get(ref(db, `requestPairs/${pk}`));
-  if(pairSnap.exists()){ $('#friendRequestMsg').textContent = 'Request already pending'; return; }
-
-  // Compose target user display
-  const targetUserSnap = await get(ref(db, 'users/' + targetUid));
-  const targetUser = targetUserSnap.val() || {};
-  const reqId = push(ref(db, 'friendRequests/_tmp')).key;
-  const now = Date.now();
-
-  // Write outgoing for me
-  await set(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`), {
-    toUid: targetUid,
-    toName: targetUser.name || targetUser.email || targetUid,
-    toAvatar: targetUser.avatar || '',
-    ts: now
-  });
-
-  // Write incoming for target
-  await set(ref(db, `friendRequests/${targetUid}/incoming/${reqId}`), {
-    fromUid: me.uid,
-    fromName: me.name || me.email || me.uid,
-    fromAvatar: me.avatar || '',
-    ts: now
-  });
-
-  // Mark pair as pending
-  await set(ref(db, `requestPairs/${pk}`), true);
-
-  $('#friendRequestMsg').textContent = 'Request sent';
-  toast('Friend request sent');
-  await loadFriendRequests(); // refresh UI
-}
-
-async function acceptFriendRequest(reqId, fromUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, fromUid);
-
-  // Add both sides as friends
-  await set(ref(db, `friends/${me.uid}/${fromUid}`), true);
-  await set(ref(db, `friends/${fromUid}/${me.uid}`), true);
-
-  // Remove request entries
-  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
-  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
-
-  toast('Friend added');
-  await refreshFriends();
-  await loadFriendRequests();
-}
-
-async function declineFriendRequest(reqId, fromUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, fromUid);
-
-  await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
-  await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
-
-  toast('Request declined');
-  await loadFriendRequests();
-}
-
-async function cancelFriendRequest(reqId, toUid){
-  if(!me) return;
-  const pk = pairKey(me.uid, toUid);
-
-  await remove(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`));
-  await remove(ref(db, `friendRequests/${toUid}/incoming/${reqId}`));
-  await remove(ref(db, `requestPairs/${pk}`));
-
-  toast('Request canceled');
-  await loadFriendRequests();
-}
-
-async function loadFriendRequests(){
-  if(!me) return;
-  const incomingWrap = $('#incomingReqs');
-  const outgoingWrap = $('#outgoingReqs');
-  incomingWrap.innerHTML = '';
-  outgoingWrap.innerHTML = '';
-
-  const inSnap = await get(ref(db, `friendRequests/${me.uid}/incoming`));
-  const outSnap = await get(ref(db, `friendRequests/${me.uid}/outgoing`));
-  const incoming = inSnap.val() || {};
-  const outgoing = outSnap.val() || {};
-
-  // Incoming
-  for(const reqId in incoming){
-    const r = incoming[reqId];
-    const it = document.createElement('div'); it.className = 'item';
-    it.innerHTML = `
-      <img class="avatar" src="${r.fromAvatar || defaultAvatar(r.fromUid)}" />
-      <div style="flex:1">
-        <div style="font-weight:700">${r.fromName || r.fromUid}</div>
-        <div style="color:var(--muted);font-size:.85rem">${timeAgo(r.ts)} ago</div>
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn">Accept</button>
-        <button class="btn ghost">Decline</button>
-      </div>
-    `;
-    const [acceptBtn, declineBtn] = it.querySelectorAll('button');
-    acceptBtn.onclick = ()=> acceptFriendRequest(reqId, r.fromUid);
-    declineBtn.onclick = ()=> declineFriendRequest(reqId, r.fromUid);
-    incomingWrap.appendChild(it);
-  }
-
-  // Outgoing
-  for(const reqId in outgoing){
-    const r = outgoing[reqId];
-    const it = document.createElement('div'); it.className = 'item';
-    it.innerHTML = `
-      <img class="avatar" src="${r.toAvatar || defaultAvatar(r.toUid)}" />
-      <div style="flex:1">
-        <div style="font-weight:700">${r.toName || r.toUid}</div>
-        <div style="color:var(--muted);font-size:.85rem">Pending - ${timeAgo(r.ts)} ago</div>
-      </div>
-      <div style="display:flex;gap:6px">
-        <button class="btn ghost">Cancel</button>
-      </div>
-    `;
-    const cancelBtn = it.querySelector('button');
-    cancelBtn.onclick = ()=> cancelFriendRequest(reqId, r.toUid);
-    outgoingWrap.appendChild(it);
-  }
-}
-
-/* ========================== PRESENCE ========================== */
-async function setPresence(uid){
-  await update(ref(db, 'users/' + uid), { online: true, lastSeen: Date.now() });
-}
-
-window.addEventListener('beforeunload', () => {
-  if(me && me.uid){
-    navigator.sendBeacon(
-      `https://meaww-chat-4f6bd-default-rtdb.firebaseio.com/users/${me.uid}.json`,
-      JSON.stringify({ online:false, lastSeen: Date.now() })
-    );
-  }
-});
-document.addEventListener('visibilitychange', async () => {
-  if(!me) return;
-  if(document.hidden) {
-    await update(ref(db,'users/'+me.uid), { online:false, lastSeen: Date.now() });
-  } else {
-    await update(ref(db,'users/'+me.uid), { online:true, lastSeen: Date.now() });
-  }
-});
-
-/* ========================== NEW: GAME FUNCTIONS ========================== */
-function initializeTicTacToe() {
-  const cells = $$('.ttt-cell');
-  cells.forEach(cell => {
-    cell.textContent = '';
-    cell.addEventListener('click', handleTicTacToeClick);
-  });
-  
-  ticTacToeGame = {
-    board: ['', '', '', '', '', '', '', '', ''],
-    currentPlayer: 'X',
-    gameActive: true,
-    playerSymbol: 'X'
-  };
-  
-  $('#gameStatus').textContent = 'Your turn (X)';
-}
-
-function handleTicTacToeClick(e) {
-  const cell = e.target;
-  const index = parseInt(cell.dataset.index);
-  
-  if (ticTacToeGame.board[index] !== '' || !ticTacToeGame.gameActive) {
-    return;
-  }
-  
-  // Make move
-  ticTacToeGame.board[index] = ticTacToeGame.currentPlayer;
-  cell.textContent = ticTacToeGame.currentPlayer;
-  
-  // Check for win or draw
-  if (checkWin()) {
-    $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer} wins!`;
-    ticTacToeGame.gameActive = false;
-    return;
-  }
-  
-  if (checkDraw()) {
-    $('#gameStatus').textContent = 'Game ended in a draw!';
-    ticTacToeGame.gameActive = false;
-    return;
-  }
-  
-  // Switch player
-  ticTacToeGame.currentPlayer = ticTacToeGame.currentPlayer === 'X' ? 'O' : 'X';
-  $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer}'s turn`;
-}
-
-function checkWin() {
-  const winPatterns = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-    [0, 4, 8], [2, 4, 6]             // diagonals
-  ];
-  
-  return winPatterns.some(pattern => {
-    const [a, b, c] = pattern;
-    return ticTacToeGame.board[a] !== '' && 
-           ticTacToeGame.board[a] === ticTacToeGame.board[b] && 
-           ticTacToeGame.board[a] === ticTacToeGame.board[c];
-  });
-}
-
-function checkDraw() {
-  return ticTacToeGame.board.every(cell => cell !== '');
-}
-
-/* ========================== NEW: NAVIGATION ========================== */
-function setupNavigation() {
-  const navItems = $$('.nav-item');
-  const pages = $$('.page');
-  
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      const targetPage = item.dataset.page;
-      
-      // Update active nav item
-      navItems.forEach(nav => nav.classList.remove('active'));
-      item.classList.add('active');
-      
-      // Show target page, hide others
-      pages.forEach(page => {
-        page.classList.remove('active');
-        if (page.id === targetPage) {
-          page.classList.add('active');
-        }
-      });
-    });
-  });
-}
-
-/* ========================== ON AUTH CHANGE ========================== */
 onAuthStateChanged(auth, async (user) => {
-  if(!user){
-    $('#auth').classList.remove('hidden');
-    $('#appUI').classList.add('hidden');
-    isAdminUser = false;
-    me = null;
-    document.getElementById('profileAdminPanel').style.display = 'none';
-    return;
-  }
+    $loadingScreen.style.display = 'flex';
+    if (user) {
+        currentUser = user;
+        
+        // Update user status and profile info
+        await setUserStatus(user.uid, true, user.displayName, user.photoURL);
+        
+        $navAvatar.src = user.photoURL || 'default_avatar.png';
+        $profileName.textContent = user.displayName;
+        
+        $loginScreen.style.display = 'none';
+        $chatScreen.style.display = 'flex';
+        
+        // Initial setup
+        setupRoomsListener();
+        setupUsersListener();
+        
+        // Default to 'general' room
+        await switchChat('room', 'general');
 
-  const bannedSnap = await get(ref(db, 'banned/' + user.uid));
-  if(bannedSnap.exists()){
-    toast('Your account is banned. Signing out.');
-    await signOut(auth);
-    return;
-  }
-
-  const uref = ref(db, 'users/' + user.uid);
-  const s = await get(uref);
-  if(!s.exists()){
-    const short = String(10000 + Math.floor(Math.random()*90000));
-    await set(uref, {
-      uid: user.uid,
-      email: user.email,
-      name: user.displayName || user.email.split('@'),
-      avatar: user.photoURL || defaultAvatar(user.uid),
-      shortId: short,
-      createdAt: Date.now(),
-      online: true,
-      lastSeen: Date.now(),
-      status: 'online' // NEW: Default status
-    });
-    await set(ref(db, 'shortIds/' + short), { uid: user.uid });
-  } else {
-    const data = s.val();
-    const upd = { online: true, lastSeen: Date.now() };
-    if(!data.avatar) upd.avatar = defaultAvatar(user.uid);
-    if(!data.status) upd.status = 'online'; // NEW: Ensure status exists
-    await update(uref, upd);
-  }
-
-  me = (await get(uref)).val();
-
-  $('#navAvatar').src = me.avatar || defaultAvatar(me.uid);
-  $('#myShort').textContent = 'ID: ' + (me.shortId || '');
-  $('#auth').classList.add('hidden');
-  $('#appUI').classList.remove('hidden');
-
-  // fill profile editor
-  $('#profName').value = me.name || '';
-  $('#profAvatarUrl').value = me.avatar || '';
-
-  // NEW: Set status selector
-  $$('.status-option').forEach(option => {
-    if (option.dataset.status === me.status) {
-      option.classList.add('active');
     } else {
-      option.classList.remove('active');
+        currentUser = null;
+        
+        // Clear status if signed out
+        if(currentUser) await setUserStatus(currentUser.uid, false);
+        
+        $chatScreen.style.display = 'none';
+        $loginScreen.style.display = 'flex';
+        
+        // Clear chat area
+        $messageList.innerHTML = '';
+        $userList.innerHTML = '<div style="padding:.7rem;font-weight:bold;border-bottom:1px solid var(--border);background:#0e1420;">Direct Messages</div>';
+        $roomList.innerHTML = '<div style="padding:.7rem;font-weight:bold;border-bottom:1px solid var(--border);background:#0e1420;">Community Rooms</div>';
+        $activeRoomHeader.textContent = 'Welcome to QuickChat! Select a Room or User to begin.';
     }
-  });
-
-  // NEW: Status selector event listeners
-  $$('.status-option').forEach(option => {
-    option.onclick = async () => {
-      $$('.status-option').forEach(opt => opt.classList.remove('active'));
-      option.classList.add('active');
-      
-      await update(ref(db, 'users/' + me.uid), { status: option.dataset.status });
-      toast(`Status set to ${option.dataset.status}`);
-    };
-  });
-
-  // NEW: Theme selector event listeners
-  $$('.theme-option').forEach(option => {
-    option.onclick = () => {
-      $$('.theme-option').forEach(opt => opt.classList.remove('active'));
-      option.classList.add('active');
-      
-      // Update CSS variables based on theme
-      document.documentElement.style.setProperty('--brand', getComputedStyle(option).backgroundColor);
-      localStorage.setItem('chatTheme', option.dataset.theme);
-      toast(`Theme changed to ${option.dataset.theme}`);
-    };
-  });
-
-  // Load saved theme
-  const savedTheme = localStorage.getItem('chatTheme');
-  if (savedTheme) {
-    const themeOption = $(`.theme-option[data-theme="${savedTheme}"]`);
-    if (themeOption) {
-      $$('.theme-option').forEach(opt => opt.classList.remove('active'));
-      themeOption.classList.add('active');
-      
-      // Update CSS variables
-      if (savedTheme === 'green') {
-        document.documentElement.style.setProperty('--brand', '#4caf50');
-      } else if (savedTheme === 'purple') {
-        document.documentElement.style.setProperty('--brand', '#9c27b0');
-      } else if (savedTheme === 'red') {
-        document.documentElement.style.setProperty('--brand', '#f44336');
-      } else {
-        document.documentElement.style.setProperty('--brand', '#4f8cff');
-      }
-    }
-  }
-
-  // profile buttons wired as before...
-  $('#saveProfileBtn').onclick = async ()=>{
-    const name = $('#profName').value.trim() || me.email?.split('@') || 'user';
-    const avatar = $('#profAvatarUrl').value.trim() || me.avatar || defaultAvatar(me.uid);
-    await update(ref(db, 'users/'+me.uid), { name, avatar });
-    try { await updateProfile(auth.currentUser, { displayName: name, photoURL: avatar }); } catch(_) {}
-    $('#navAvatar').src = avatar;
-    toast('Profile updated');
-    await refreshFriends();
-  };
-
-  $('#resetAvatarBtn').onclick = async ()=>{
-    const avatar = defaultAvatar(me.uid);
-    $('#profAvatarUrl').value = avatar;
-    await update(ref(db, 'users/'+me.uid), { avatar });
-    try { await updateProfile(auth.currentUser, { photoURL: avatar }); } catch(_) {}
-    $('#navAvatar').src = avatar;
-    toast('Avatar reset');
-  };
-
-  // Manage admin controls visibility
-  if(user.email && user.email.toLowerCase() === adminEmail.toLowerCase()){
-    isAdminUser = true;
-    $('#adminControls').style.display = 'block';
-    await injectAdminPanel();
-    toast('Admin access granted');
-  } else {
-    isAdminUser = false;
-    $('#adminControls').style.display = 'none';
-  }
-
-  document.getElementById('profileAdminPanel').style.display = 'none';
-
-  // refresh rest of app UI...
-  await refreshFriends();
-  await loadCommunities();
-
-  // NEW: wire Add friend button + load requests and live updates
-  $('#addFriendBtn').onclick = ()=> sendFriendRequestByShortId($('#addByShort').value);
-  await loadFriendRequests();
-  onValue(ref(db, `friendRequests/${me.uid}`), ()=> { loadFriendRequests(); });
-
-  // NEW: Setup navigation
-  setupNavigation();
-  
-  // NEW: Initialize games
-  initializeTicTacToe();
-  $('#startTicTacToe').onclick = initializeTicTacToe;
-  $('#resetTicTacToe').onclick = initializeTicTacToe;
-
-  // subscribe global announcement
-  onValue(ref(db,'announcements/global'), snap=>{
-    const b = $('#globalBanner');
-    if(snap.exists()){
-      b.textContent = snap.val().text || '';
-      b.classList.remove('hidden');
-    } else {
-      b.classList.add('hidden');
-      b.textContent = '';
-    }
-  });
+    $loadingScreen.style.display = 'none';
 });
+
+// ========================== USER STATUS & LISTING ==========================
+async function setUserStatus(uid, isOnline, displayName, photoURL) {
+    const userRef = doc(db, 'users', uid);
+    if (isOnline) {
+        // Set last seen now, but keep displayName and photoURL
+        await setDoc(userRef, { 
+            uid,
+            displayName: displayName, 
+            photoURL: photoURL, 
+            isOnline: true,
+            lastSeen: serverTimestamp() 
+        }, { merge: true });
+    } else {
+        // Set offline and update last seen
+        await updateDoc(userRef, { isOnline: false, lastSeen: serverTimestamp() });
+    }
+}
+
+function setupUsersListener() {
+    const q = query(collection(db, 'users'), orderBy('displayName'));
+    onSnapshot(q, (snapshot) => {
+        // Keep header, clear the rest
+        $userList.innerHTML = '<div style="padding:.7rem;font-weight:bold;border-bottom:1px solid var(--border);background:#0e1420;">Direct Messages</div>'; 
+        snapshot.forEach(doc => {
+            const user = doc.data();
+            if (user.uid === currentUser.uid) return; // Skip current user
+            
+            const userItem = document.createElement('div');
+            userItem.className = 'user-item';
+            userItem.setAttribute('data-uid', user.uid);
+            userItem.innerHTML = `
+                <div style="position:relative;">
+                    <img class="avatar" src="${user.photoURL || 'default_avatar.png'}" alt="${user.displayName}">
+                    ${user.isOnline ? '<div class="active-dot"></div>' : ''}
+                </div>
+                <div class="user-name">${user.displayName}</div>
+            `;
+            userItem.onclick = () => switchChat('user', user.uid, user.displayName);
+            $userList.appendChild(userItem);
+        });
+    });
+}
+
+// ========================== ROOMS & LISTING ==========================
+function setupRoomsListener() {
+    const q = query(collection(db, 'rooms'), orderBy('name'));
+    onSnapshot(q, (snapshot) => {
+        $roomList.innerHTML = '<div style="padding:.7rem;font-weight:bold;border-bottom:1px solid var(--border);background:#0e1420;">Community Rooms</div>';
+        snapshot.forEach(doc => {
+            const room = doc.data();
+            const roomItem = document.createElement('div');
+            roomItem.className = 'room-item';
+            roomItem.setAttribute('data-rid', doc.id);
+            roomItem.innerHTML = `
+                <div class="room-name">#${room.name}</div>
+            `;
+            roomItem.onclick = () => switchChat('room', doc.id, room.name);
+            $roomList.appendChild(roomItem);
+        });
+    });
+}
+
+// ========================== CHAT SWITCHING LOGIC ==========================
+async function switchChat(type, id, name) {
+    if (unsubscribeMessages) {
+        unsubscribeMessages(); // Stop listening to old chat
+    }
+    
+    activeChatType = type;
+    activeChatId = id;
+    
+    // Update header
+    if (type === 'room') {
+        $activeRoomHeader.textContent = `#${name || id}`;
+    } else {
+        $activeRoomHeader.textContent = `Chatting with: ${name || id}`;
+    }
+    
+    $messageList.innerHTML = ''; // Clear old messages
+    $sendBtn.disabled = false; // Enable input
+
+    // Set up message listener for the new chat
+    setupMessageListener(type, id);
+    
+    // Check for active game
+    await checkActiveGame(type, id);
+}
+
+// ========================== MESSAGING ==========================
+function getChatRef(type, id) {
+    if (type === 'room') {
+        return collection(db, 'rooms', id, 'messages');
+    } else {
+        // Direct Message: Use a canonical ID based on UIDs
+        const chatID = [currentUser.uid, id].sort().join('_');
+        return collection(db, 'dms', chatID, 'messages');
+    }
+}
+
+function setupMessageListener(type, id) {
+    const messagesRef = getChatRef(type, id);
+    const q = query(messagesRef, orderBy('createdAt', 'desc'), limit(100)); // Limit to last 100 messages
+
+    unsubscribeMessages = onSnapshot(q, (snapshot) => {
+        $messageList.innerHTML = ''; // Clear and re-render messages
+        
+        snapshot.docChanges().reverse().forEach((change) => {
+            const msg = change.doc.data();
+            if (change.type === 'added' || change.type === 'modified') {
+                displayMessage(msg, change.doc.id);
+            }
+        });
+        
+        // Scroll to bottom after rendering
+        $messageList.scrollTop = $messageList.scrollHeight;
+    });
+}
+
+function displayMessage(msg, docId) {
+    const existingMsg = $(`msg-${docId}`);
+    if (existingMsg) {
+        existingMsg.remove();
+    }
+    
+    const messageEl = document.createElement('div');
+    messageEl.className = 'message';
+    messageEl.id = `msg-${docId}`;
+    
+    const time = msg.createdAt ? new Date(msg.createdAt.seconds * 1000).toLocaleTimeString() : '...';
+    
+    // Get sender's display name, or use 'Unknown' if not available
+    const senderName = msg.senderName || 'Unknown';
+    const isCurrentUser = msg.senderId === currentUser.uid;
+    
+    messageEl.innerHTML = `
+        <img class="avatar" src="${msg.senderPhotoURL || 'default_avatar.png'}" alt="${senderName}" style="width:30px;height:30px;">
+        <div class="message-content">
+            <div class="message-header">
+                <span class="message-sender" style="color:${isCurrentUser ? 'var(--brand)' : 'var(--text)'};">${isCurrentUser ? 'You' : senderName}</span>
+                <span class="message-time">${time}</span>
+            </div>
+            <div class="message-text">${msg.text}</div>
+            <div class="reaction-container">
+                ${renderReactions(docId, msg.reactions)}
+            </div>
+        </div>
+    `;
+    
+    $messageList.appendChild(messageEl);
+}
+
+// ========================== REACTION LOGIC ==========================
+const availableReactions = ['👍', '❤️', '😂', '🔥', '🎉'];
+
+function renderReactions(msgId, reactions = {}) {
+    let html = '';
+    
+    availableReactions.forEach(emoji => {
+        const users = reactions[emoji] || [];
+        if (users.length > 0) {
+            const hasReacted = users.includes(currentUser.uid);
+            const count = users.length;
+            const tooltip = users.map(uid => uid === currentUser.uid ? 'You' : 'User').join(', ');
+            
+            html += `
+                <span class="reaction-btn" 
+                      data-msg-id="${msgId}" 
+                      data-emoji="${emoji}" 
+                      title="${tooltip}"
+                      style="color:${hasReacted ? 'var(--brand)' : 'var(--muted)'};font-weight:${hasReacted ? 'bold' : 'normal'};"
+                      onclick="window.toggleReaction('${msgId}', '${emoji}')">
+                    ${emoji} ${count}
+                </span>
+            `;
+        }
+    });
+    
+    // Add buttons for adding a new reaction
+    availableReactions.forEach(emoji => {
+        const users = reactions[emoji] || [];
+        if (users.length === 0 && !Object.keys(reactions).some(e => reactions[e].includes(currentUser.uid))) {
+             html += `
+                <span class="reaction-btn" 
+                      data-msg-id="${msgId}" 
+                      data-emoji="${emoji}" 
+                      title="Add ${emoji} reaction"
+                      style="color:var(--muted); opacity: 0.5;"
+                      onclick="window.toggleReaction('${msgId}', '${emoji}')">
+                    ${emoji}
+                </span>
+            `;
+        }
+    });
+    
+    return html;
+}
+
+window.toggleReaction = async (msgId, emoji) => {
+    const docRef = doc(getChatRef(activeChatType, activeChatId), msgId);
+    const uid = currentUser.uid;
+
+    try {
+        await runTransaction(db, async (transaction) => {
+            const docSnapshot = await transaction.get(docRef);
+            if (!docSnapshot.exists()) {
+                throw "Document does not exist!";
+            }
+
+            const currentReactions = docSnapshot.data().reactions || {};
+            const newReactions = { ...currentReactions };
+            let alreadyReacted = false;
+
+            // Check if user has reacted with this emoji
+            const users = newReactions[emoji] || [];
+            if (users.includes(uid)) {
+                // User is removing their reaction
+                newReactions[emoji] = users.filter(id => id !== uid);
+                if (newReactions[emoji].length === 0) {
+                    delete newReactions[emoji];
+                }
+            } else {
+                // User is adding a reaction
+                alreadyReacted = Object.keys(newReactions).some(e => newReactions[e].includes(uid));
+                
+                if (alreadyReacted) {
+                    // Remove existing reaction before adding the new one (one reaction per user)
+                    Object.keys(newReactions).forEach(e => {
+                        newReactions[e] = newReactions[e].filter(id => id !== uid);
+                        if (newReactions[e].length === 0) {
+                            delete newReactions[e];
+                        }
+                    });
+                }
+                
+                // Add the new reaction
+                newReactions[emoji] = [...(newReactions[emoji] || []), uid];
+            }
+            
+            transaction.update(docRef, { reactions: newReactions });
+        });
+    } catch (e) {
+        console.error("Reaction transaction failed: ", e);
+    }
+};
+
+// ========================== SEND MESSAGE ==========================
+$msgInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !$sendBtn.disabled) {
+        sendMessage();
+    }
+});
+
+$sendBtn.onclick = sendMessage;
+
+async function sendMessage() {
+    const text = $msgInput.value.trim();
+    if (!text || !currentUser) return;
+    
+    $sendBtn.disabled = true;
+    
+    const newMessage = {
+        text: text,
+        createdAt: serverTimestamp(),
+        senderId: currentUser.uid,
+        senderName: currentUser.displayName,
+        senderPhotoURL: currentUser.photoURL,
+        reactions: {}
+    };
+    
+    try {
+        const messagesRef = getChatRef(activeChatType, activeChatId);
+        await addDoc(messagesRef, newMessage);
+        $msgInput.value = '';
+    } catch (error) {
+        console.error("Error sending message:", error);
+    }
+    
+    $sendBtn.disabled = false;
+    // Scroll to bottom after sending
+    $messageList.scrollTop = $messageList.scrollHeight;
+}
+
+// ========================== EMOJI PICKER ==========================
+const $emojiPicker = $('emojiPicker');
+const $emojiBtn = $('emojiBtn');
+
+availableReactions.forEach(emoji => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-btn';
+    btn.textContent = emoji;
+    btn.onclick = () => {
+        $msgInput.value += emoji;
+        $msgInput.focus();
+        $emojiPicker.style.display = 'none';
+    };
+    $emojiPicker.appendChild(btn);
+});
+
+$emojiBtn.onclick = () => {
+    $emojiPicker.style.display = $emojiPicker.style.display === 'none' ? 'grid' : 'none';
+};
+
+// ========================== GAMES (Tic-Tac-Toe) ==========================
+const $gameArea = $('gameArea');
+let gameRef = null;
+let gameUnsubscribe = null;
+let boardData = Array(9).fill(null);
+let gameStatus = '';
+
+const getGameRef = (type, id) => {
+    if (type === 'room') {
+        return doc(db, 'rooms', id, 'game', 'tictactoe');
+    } else {
+        const chatID = [currentUser.uid, id].sort().join('_');
+        return doc(db, 'dms', chatID, 'game', 'tictactoe');
+    }
+};
+
+function renderGameBoard() {
+    $gameArea.innerHTML = `
+        <div class="game-container">
+            <h4 style="text-align:center; margin:0 0 10px 0;">Tic Tac Toe</h4>
+            <div class="game-board">
+                ${boardData.map((cell, index) => `
+                    <div class="game-cell" data-index="${index}" onclick="window.makeMove(${index})">
+                        ${cell || ''}
+                    </div>
+                `).join('')}
+            </div>
+            <div id="gameStatus" class="game-status">${gameStatus}</div>
+            <div style="text-align:center;margin-top:10px;">
+                <button id="startGameBtn" class="nav-btn" style="background:green;">Start New Game</button>
+                <button id="forfeitGameBtn" class="nav-btn" style="background:red;margin-left:10px;">Forfeit</button>
+            </div>
+        </div>
+    `;
+    $('startGameBtn').onclick = startGame;
+    $('forfeitGameBtn').onclick = forfeitGame;
+}
+
+const checkWinner = (board) => {
+    const lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]            // Diagonals
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+            return board[a];
+        }
+    }
+    if (board.every(cell => cell !== null)) {
+        return 'Draw';
+    }
+    return null;
+};
+
+async function checkActiveGame(type, id) {
+    if (gameUnsubscribe) gameUnsubscribe();
+    $gameArea.innerHTML = '';
+    
+    gameRef = getGameRef(type, id);
+    
+    gameUnsubscribe = onSnapshot(gameRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+            const game = docSnapshot.data();
+            boardData = game.board;
+            gameStatus = formatGameStatus(game);
+            renderGameBoard();
+        } else {
+            $gameArea.innerHTML = `<div class="game-container"><button id="initGameBtn" class="nav-btn" style="background:green;">Start Tic Tac Toe</button></div>`;
+            $('initGameBtn').onclick = startGame;
+        }
+    });
+}
+
+const formatGameStatus = (game) => {
+    const winner = checkWinner(game.board);
+    if (winner === 'Draw') return 'Game Over: Draw!';
+    if (winner) return `Game Over: ${winner === 'X' ? game.playerXName : game.playerOName} (${winner}) wins!`;
+    if (!game.playerOId) return 'Waiting for an opponent...';
+    
+    const currentPlayer = game.turn === 'X' ? game.playerXName : game.playerOName;
+    return `${currentPlayer}'s turn (${game.turn})`;
+};
+
+async function startGame() {
+    const newGame = {
+        board: Array(9).fill(null),
+        turn: 'X',
+        playerXId: currentUser.uid,
+        playerXName: currentUser.displayName,
+        playerOId: activeChatType === 'user' ? activeChatId : null,
+        playerOName: activeChatType === 'user' ? $activeRoomHeader.textContent.replace('Chatting with: ', '') : null,
+        status: 'active',
+        createdAt: serverTimestamp()
+    };
+    try {
+        await setDoc(gameRef, newGame);
+    } catch (e) {
+        console.error('Error starting game:', e);
+    }
+}
+
+async function forfeitGame() {
+    const ok = confirm('Are you sure you want to forfeit this game?');
+    if (!ok) return;
+
+    try {
+        await deleteDoc(gameRef);
+    } catch (e) {
+        console.error('Error forfeiting game:', e);
+    }
+}
+
+window.makeMove = async (index) => {
+    try {
+        await runTransaction(db, async (transaction) => {
+            const gameDoc = await transaction.get(gameRef);
+            if (!gameDoc.exists()) throw "Game not found!";
+            
+            const game = gameDoc.data();
+            const { board, turn, playerXId, playerOId } = game;
+            
+            // Validation
+            if (checkWinner(board)) throw "Game is already over!";
+            if (board[index] !== null) throw "Cell is already taken!";
+            if (turn === 'X' && currentUser.uid !== playerXId) throw "It's not X's turn!";
+            if (turn === 'O' && currentUser.uid !== playerOId) throw "It's not O's turn!";
+            if (!playerOId && activeChatType === 'user' && currentUser.uid !== playerXId) throw "You must be one of the players to make a move!";
+            if (!playerOId && activeChatType === 'room' && currentUser.uid !== playerXId) {
+                // Forfeit game if not player X and no player O
+                transaction.delete(gameRef);
+                throw "No opponent. Game forfeited.";
+            }
+
+            // Make the move
+            board[index] = turn;
+            
+            // Check for winner/draw
+            const winner = checkWinner(board);
+            let nextTurn = turn === 'X' ? 'O' : 'X';
+            
+            // Update the game state
+            transaction.update(gameRef, { 
+                board: board, 
+                turn: winner ? null : nextTurn, // Stop turn if winner found
+                status: winner ? 'finished' : 'active',
+                playerOId: playerOId || (turn === 'O' ? currentUser.uid : playerOId), // Set Player O if it was first move in a room chat
+                playerOName: game.playerOName || (turn === 'O' ? currentUser.displayName : game.playerOName)
+            });
+        });
+    } catch (e) {
+        console.warn("Move failed: " + e);
+    }
+};
 
 /* ========================== PROFILE PANEL TOGGLE + LOGOUT ========================== */
 $('#navAvatar').onclick = () => {
@@ -2028,8 +716,13 @@ msgInput.addEventListener('input', () => {
   clearTimeout(msgInput._typingTimeout);
   msgInput._typingTimeout = setTimeout(() => {
     typingIndicator.style.display = 'none';
-  }, 1000);
+    clearTimeout(msgInput._typingTimeout);
+  }, 3000);
 });
+
+// A proper implementation would also update a 'typing' status in Firestore
+// for the current chat, and listen for it in the other user's view.
+// Since that is a complex addition, the current client-side-only indicator is left as a placeholder.
 </script>
 
 </body>
