@@ -1,121 +1,302 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title> MEAWWW CHAT </title>
+<title>QuickChat — Enhanced Edition</title>
 <style>
-:root{--bg:#0b0f14;--elev:#111723;--border:#1b2435;--text:#e6eefc;--muted:#98a7c0;--brand:#4f8cff}
+:root {
+  --bg: #0b0f14;
+  --elev: #111723;
+  --border: #1b2435;
+  --text: #e6eefc;
+  --muted: #98a7c0;
+  --brand: #4f8cff;
+  --success: #4caf50;
+  --warning: #ff9800;
+  --danger: #f44336;
+  --transition: all 0.3s ease;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  transition: var(--transition);
+}
+
 body.theme-high { --bg:#05070b; --elev:#0a1120; --border:#172135; --text:#eaf2ff; --muted:#9fb1cc; --brand:#4f8cff }
 body.theme-dim { --bg:#0b0f14; --elev:#111723; --border:#1b2435; --text:#e6eefc; --muted:#98a7c0; --brand:#4f8cff }
 
-html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)} 
-.app{display:flex;flex-direction:column;height:100%} 
-header{display:flex;align-items:center;gap:.6rem;padding:.7rem;background:linear-gradient(180deg,var(--elev),#0e1420);border-bottom:1px solid var(--border)} 
-.title{font-weight:800} 
-main{flex:1;overflow:auto;padding:0.8rem} 
-.card{background:#0e1420;border:1px solid var(--border);border-radius:12px;padding:.75rem} 
-.hidden{display:none} 
-.input{width:100%;padding:.6rem;border-radius:10px;border:1px solid var(--border);background:#0b1220;color:var(--text);margin:.4rem 0} 
-.btn{background:var(--brand);border:none;color:#fff;padding:.6rem.8rem;border-radius:10px;cursor:pointer} 
-.btn.ghost{background:transparent;border:1px solid var(--border)} 
-.list{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem} 
-.item{display:flex;align-items:center;gap:.5rem;padding:.5rem;border-radius:10px;background:#0b1424;border:1px solid var(--border)} 
-.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover} 
-.admin-floating{position:fixed;left:12px;top:72px;z-index:9999} 
-pre{white-space:pre-wrap;word-break:break-word}
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
 
-/* Fullscreen chat mode */
-.fullscreen-chat#appUI > div { display:flex; flex-direction:column; } 
-.fullscreen-chat#appUI > div > div:first-child { display:none; /* Hide sidebar */ } 
-.fullscreen-chat#appUI > div > div:last-child { width:100% !important; /* Expand chat */ }
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
-/* NEW: Message reactions */ 
-.reaction-container{ display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+/* Enhanced Header */
+header {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .7rem 1rem;
+  background: linear-gradient(135deg, var(--elev) 0%, #0e1420 100%);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  position: relative;
+  z-index: 100;
+}
 
-.reaction { background: var(--elev); border: 1px solid var(--border); border-radius: 12px; padding: 2px 6px; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.title {
+  font-weight: 800;
+  font-size: 1.4rem;
+  background: linear-gradient(45deg, var(--brand), #6aa1ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
 
-.reaction:hover { background: var(--brand); }
+@keyframes titleGlow {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.2); }
+}
 
-.reaction-picker { position: absolute; background: var(--elev); border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+/* Enhanced Cards */
+.card {
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.5s ease-out;
+}
 
-.reaction-emoji { cursor: pointer; padding: 4px; border-radius: 4px; font-size: 1.2rem; }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-.reaction-emoji:hover { background: var(--brand); }
+.hidden {
+  display: none !important;
+}
 
-/* NEW: Message status indicators */ 
-.message-status{ font-size: 0.7rem; color: var(--muted); margin-left: 6px; }
+/* Enhanced Inputs */
+.input {
+  width: 100%;
+  padding: .8rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0b1220;
+  color: var(--text);
+  margin: .4rem 0;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
 
-/* NEW: Pinned messages */ 
-.pinned-message{ border-left: 3px solid var(--brand); background: #0c1a30 !important; }
+.input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px rgba(79, 140, 255, 0.2);
+  transform: translateY(-1px);
+}
 
-.pin-indicator { color: var(--brand); font-size: 0.8rem; margin-right: 6px; }
+/* Enhanced Buttons */
+.btn {
+  background: linear-gradient(135deg, var(--brand), #3a7cff);
+  border: none;
+  color: #fff;
+  padding: .7rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
 
-/* NEW: Online status indicator */ 
-.status-indicator{ width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
 
-.status-online { background: #4caf50; }
+.btn:hover::before {
+  left: 100%;
+}
 
-.status-offline { background: #f44336; }
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 140, 255, 0.4);
+}
 
-.status-away { background: #ff9800; }
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
 
-/* NEW: Theme selector */ 
-.theme-selector{ display: flex; gap: 8px; margin-top: 12px; }
+.btn.ghost:hover {
+  background: var(--border);
+  transform: translateY(-1px);
+}
 
-.theme-option { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+/* Enhanced Lists */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  margin-top: .5rem;
+}
 
-.theme-option.active { border-color: var(--text); }
+.item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .8rem;
+  border-radius: 10px;
+  background: #0b1424;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: slideInLeft 0.4s ease-out;
+}
 
-.theme-blue { background: #4f8cff; } 
-.theme-green{ background: #4caf50; } 
-.theme-purple{ background: #9c27b0; } 
-.theme-red{ background: #f44336; }
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
-/* NEW: Message context menu */ 
-.context-menu{ position: absolute; background: var(--elev); border: 1px solid var(--border); border-radius: 8px; padding: 8px 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.item:hover {
+  background: #0c1a30;
+  border-color: var(--brand);
+  transform: translateX(5px);
+}
 
-.context-menu-item { padding: 8px 16px; cursor: pointer; }
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+  transition: all 0.3s ease;
+}
 
-.context-menu-item:hover { background: var(--brand); }
+.avatar:hover {
+  border-color: var(--brand);
+  transform: scale(1.1);
+}
 
-/* NEW: File preview */ 
-.file-preview{ max-width: 200px; margin-top: 8px; border-radius: 8px; overflow: hidden; }
+/* Enhanced Messages */
+#messages {
+  margin-top: .6rem;
+  max-height: 360px;
+  overflow: auto;
+  background: #071022;
+  padding: .8rem;
+  border-radius: var(--radius);
+  scroll-behavior: smooth;
+}
 
-.file-preview img { width: 100%; height: auto; }
+#messages::-webkit-scrollbar {
+  width: 6px;
+}
 
-.file-info { background: rgba(0,0,0,0.7); padding: 4px 8px; font-size: 0.8rem; color: white; }
+#messages::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-/* NEW: Voice message player */ 
-.voice-message{ display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+#messages::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
 
-.voice-play-btn { background: var(--brand); border: none; width: 32px; height: 32px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+#messages::-webkit-scrollbar-thumb:hover {
+  background: var(--brand);
+}
 
-.voice-progress { flex: 1; height: 4px; background: var(--border); border-radius: 2px; position: relative; }
+/* Enhanced Message Items */
+.message-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .8rem;
+  padding: .8rem;
+  border-radius: var(--radius);
+  margin-bottom: .5rem;
+  animation: messageSlide 0.3s ease-out;
+  position: relative;
+}
 
-.voice-progress-bar { position: absolute; height: 100%; background: var(--brand); border-radius: 2px; width: 0%; }
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-.voice-duration { font-size: 0.8rem; color: var(--muted); }
+.message-item.own {
+  background: linear-gradient(135deg, #08263f, #0a2d4a);
+  margin-left: 2rem;
+}
 
-/* NEW: Message search */ 
-.search-container{ position: relative; margin-bottom: 12px; }
+.message-item.other {
+  background: #071328;
+  margin-right: 2rem;
+}
 
-.search-results { position: absolute; top: 100%; left: 0; right: 0; background: var(--elev); border: 1px solid var(--border); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 100; display: none; }
+.message-content {
+  flex: 1;
+}
 
-.search-result-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid var(--border); }
+.message-sender {
+  font-weight: 700;
+  margin-bottom: .3rem;
+  color: var(--brand);
+}
 
-.search-result-item:hover { background: var(--brand); }
+.message-text {
+  margin: .3rem 0;
+  line-height: 1.4;
+}
 
-/* NEW: User status selector */ 
-.status-selector{ display: flex; gap: 8px; margin-top: 8px; }
+.message-time {
+  color: var(--muted);
+  font-size: .75rem;
+  margin-top: .3rem;
+}
 
-.status-option { padding: 4px 8px; border-radius: 16px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border); }
-
-.status-option.active { background: var(--brand); border-color: var(--brand); }
-
-/* NEW: Bottom Navigation */
+/* Enhanced Bottom Navigation */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -125,6 +306,8 @@ pre{white-space:pre-wrap;word-break:break-word}
   background: var(--elev);
   border-top: 1px solid var(--border);
   z-index: 1000;
+  backdrop-filter: blur(10px);
+  padding: 0.5rem;
 }
 
 .nav-item {
@@ -137,104 +320,572 @@ pre{white-space:pre-wrap;word-break:break-word}
   cursor: pointer;
   color: var(--muted);
   font-size: 0.8rem;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  border-radius: var(--radius);
+  position: relative;
 }
 
 .nav-item.active {
   color: var(--brand);
+  transform: translateY(-5px);
+}
+
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  width: 4px;
+  height: 4px;
+  background: var(--brand);
+  border-radius: 50%;
 }
 
 .nav-icon {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin-bottom: 4px;
+  transition: all 0.3s ease;
 }
 
-/* NEW: Page containers */
+.nav-item.active .nav-icon {
+  transform: scale(1.2);
+}
+
+/* Enhanced Pages */
 .page {
   display: none;
-  padding-bottom: 60px; /* Space for bottom nav */
+  padding-bottom: 80px;
+  animation: pageFade 0.4s ease-out;
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .page.active {
   display: block;
 }
 
-/* NEW: Games section */
+/* Enhanced Games */
 .game-container {
   background: var(--elev);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
   border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.6s ease-out;
 }
 
 .game-title {
-  font-size: 1.2rem;
-  margin-bottom: 12px;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
   color: var(--brand);
+  font-weight: 700;
 }
 
-.game-btn {
-  background: var(--brand);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 12px;
-}
-
-/* Tic Tac Toe Game */
+/* Enhanced Tic Tac Toe */
 .tic-tac-toe {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  margin: 12px 0;
-  max-width: 200px;
+  gap: 6px;
+  margin: 1rem 0;
+  max-width: 240px;
+  background: var(--border);
+  padding: 6px;
+  border-radius: var(--radius);
 }
 
 .ttt-cell {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
 }
 
-/* NEW: Settings page */
+.ttt-cell:hover {
+  background: #0c1a30;
+  border-color: var(--brand);
+  transform: scale(1.05);
+}
+
+.ttt-cell.x {
+  color: var(--brand);
+}
+
+.ttt-cell.o {
+  color: var(--success);
+}
+
+/* Enhanced Settings */
 .settings-section {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.5s ease-out;
 }
 
 .settings-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
+  padding: 1rem;
   border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.settings-item:hover {
+  background: #0c1a30;
+  border-radius: var(--radius);
 }
 
 .settings-item:last-child {
   border-bottom: none;
 }
 
-/* NEW: Calls page */
+/* Switch Toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border);
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--brand);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Enhanced Toast */
+#toasts {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toast {
+  padding: 12px 20px;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  animation: toastSlide 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes toastSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced Status Indicators */
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.status-online {
+  background: var(--success);
+  box-shadow: 0 0 10px var(--success);
+}
+
+.status-offline {
+  background: var(--muted);
+}
+
+.status-away {
+  background: var(--warning);
+  box-shadow: 0 0 10px var(--warning);
+}
+
+.status-busy {
+  background: var(--danger);
+  box-shadow: 0 0 10px var(--danger);
+}
+
+/* Enhanced Theme Selector */
+.theme-selector {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.theme-option {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.theme-option.active {
+  border-color: var(--text);
+  transform: scale(1.1);
+}
+
+.theme-option::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.theme-option.active::after {
+  opacity: 1;
+}
+
+/* Enhanced Loading States */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--border);
+  border-radius: 50%;
+  border-top-color: var(--brand);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Enhanced Context Menu */
+.context-menu {
+  position: absolute;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 0;
+  z-index: 1000;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  animation: contextMenuSlide 0.2s ease-out;
+}
+
+@keyframes contextMenuSlide {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.context-menu-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.context-menu-item:hover {
+  background: var(--brand);
+  color: white;
+}
+
+/* Enhanced Search */
+.search-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+  box-shadow: var(--shadow);
+}
+
+.search-result-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.search-result-item:hover {
+  background: var(--brand);
+  color: white;
+}
+
+/* Enhanced File Preview */
+.file-preview {
+  max-width: 250px;
+  margin-top: 8px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.file-preview img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.file-preview img:hover {
+  transform: scale(1.05);
+}
+
+.file-info {
+  background: rgba(0,0,0,0.8);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  color: white;
+}
+
+/* Enhanced Voice Message */
+.voice-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(79, 140, 255, 0.1);
+  border-radius: var(--radius);
+}
+
+.voice-play-btn {
+  background: var(--brand);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.voice-play-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(79, 140, 255, 0.4);
+}
+
+.voice-progress {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-progress-bar {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand), #6aa1ff);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+.voice-duration {
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-width: 40px;
+}
+
+/* Enhanced Reaction System */
+.reaction-container {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.reaction {
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.reaction:hover {
+  background: var(--brand);
+  transform: scale(1.1);
+}
+
+.reaction-picker {
+  position: absolute;
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  z-index: 100;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.reaction-emoji {
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.reaction-emoji:hover {
+  background: var(--brand);
+  transform: scale(1.2);
+}
+
+/* Enhanced Pinned Messages */
+.pinned-message {
+  border-left: 4px solid var(--brand);
+  background: linear-gradient(135deg, #0c1a30, #0f2040) !important;
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 5px rgba(79, 140, 255, 0.3); }
+  50% { box-shadow: 0 0 15px rgba(79, 140, 255, 0.6); }
+  100% { box-shadow: 0 0 5px rgba(79, 140, 255, 0.3); }
+}
+
+.pin-indicator {
+  color: var(--brand);
+  font-size: 0.9rem;
+  margin-right: 6px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+  60% { transform: translateY(-3px); }
+}
+
+/* Enhanced Call Items */
 .call-item {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 1rem;
   border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+  animation: slideInRight 0.4s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.call-item:hover {
+  background: #0c1a30;
+  border-radius: var(--radius);
+  transform: translateX(5px);
 }
 
 .call-avatar {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  margin-right: 12px;
+  margin-right: 1rem;
+  border: 2px solid var(--border);
 }
 
 .call-details {
@@ -243,6 +894,7 @@ pre{white-space:pre-wrap;word-break:break-word}
 
 .call-name {
   font-weight: bold;
+  margin-bottom: 4px;
 }
 
 .call-info {
@@ -253,18 +905,137 @@ pre{white-space:pre-wrap;word-break:break-word}
 .call-status {
   margin-left: 8px;
   font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
 }
 
 .call-incoming {
-  color: #4caf50;
+  background: rgba(76, 175, 80, 0.2);
+  color: var(--success);
 }
 
 .call-missed {
-  color: #f44336;
+  background: rgba(244, 67, 54, 0.2);
+  color: var(--danger);
 }
 
 .call-outgoing {
+  background: rgba(33, 150, 243, 0.2);
   color: #2196f3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app {
+    font-size: 14px;
+  }
+  
+  header {
+    padding: 0.5rem;
+  }
+  
+  .title {
+    font-size: 1.2rem;
+  }
+  
+  .card {
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .bottom-nav {
+    padding: 0.3rem;
+  }
+  
+  .nav-icon {
+    font-size: 1.1rem;
+  }
+  
+  .page {
+    padding-bottom: 70px;
+  }
+}
+
+/* Dark mode toggle enhancement */
+#darkModeToggle {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animation for new messages */
+@keyframes newMessage {
+  0% {
+    background: rgba(79, 140, 255, 0.3);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+.new-message {
+  animation: newMessage 2s ease-out;
+}
+
+/* Enhanced Typing Indicator */
+.typing-dots {
+  display: inline-block;
+}
+
+.typing-dots span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+  margin: 0 2px;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Enhanced Scroll to Bottom Button */
+.scroll-to-bottom {
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+  z-index: 99;
+}
+
+.scroll-to-bottom:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 6px 20px rgba(79, 140, 255, 0.4);
+}
+
+.status-option {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-option.active {
+  background: var(--brand);
+  border-color: var(--brand);
 }
 </style>
 </head>
@@ -284,16 +1055,16 @@ pre{white-space:pre-wrap;word-break:break-word}
 
 <main>
 <!-- AUTH CARD -->
-<section id="auth" class="card" style="max-width:720px;margin:auto">
-<h3>Sign in / Register</h3>
+<section id="auth" class="card" style="max-width:720px;margin:2rem auto;animation:fadeInUp 0.6s ease-out">
+<h3 style="text-align:center;margin-bottom:1.5rem;color:var(--brand)">Sign in / Register</h3>
 <input id="loginEmail" class="input" placeholder="Email" type="email" />
 <input id="loginPass" class="input" placeholder="Password" type="password" />
-<div style="display:flex;gap:.5rem;margin-top:.5rem">
-<button id="loginBtn" class="btn">Log in</button>
-<button id="registerBtn" class="btn ghost">Register</button>
-<button id="googleBtn" class="btn ghost">Sign in with Google</button>
+<div style="display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap">
+<button id="loginBtn" class="btn" style="flex:1">Log in</button>
+<button id="registerBtn" class="btn ghost" style="flex:1">Register</button>
+<button id="googleBtn" class="btn ghost" style="flex:1">Sign in with Google</button>
 </div>
-<div id="authMsg" style="color:var(--muted);margin-top:.5rem"></div>
+<div id="authMsg" style="color:var(--muted);margin-top:.8rem;text-align:center;min-height:20px"></div>
 </section>
 
 <!-- APP PAGES -->
@@ -320,74 +1091,83 @@ pre{white-space:pre-wrap;word-break:break-word}
 
 <!-- Chats Page -->
 <div id="chats-page" class="page active">
-  <div style="display:flex;gap:1rem;align-items:flex-start">
-    <div style="flex:1">
+  <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+    <div style="flex:1;min-width:300px">
       <!-- Profile and Admin Panel Container -->
       <div id="profileAdminPanel" class="card" style="margin-bottom:.8rem; display:none;">
-        <strong>My Profile</strong>
+        <strong style="display:block;margin-bottom:1rem;color:var(--brand)">My Profile</strong>
         <input id="profName" class="input" placeholder="Display name" />
         <input id="profAvatarUrl" class="input" placeholder="Avatar URL (optional)" />
 
-        <!-- NEW: User status selector -->
-        <div class="status-selector">
-          <div class="status-option" data-status="online">🟢 Online</div>
-          <div class="status-option" data-status="away">🟡 Away</div>
-          <div class="status-option" data-status="busy">🔴 Busy</div>
-        </div>
-
-        <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-          <button id="saveProfileBtn" class="btn">Save</button>
-          <button id="resetAvatarBtn" class="btn ghost">Reset Avatar</button>
-        </div>
-
-        <!-- NEW: Theme selector -->
-        <div style="margin-bottom: 1rem;">
-          <strong>Chat Theme</strong>
-          <div class="theme-selector">
-            <div class="theme-option theme-blue active" data-theme="blue"></div>
-            <div class="theme-option theme-green" data-theme="green"></div>
-            <div class="theme-option theme-purple" data-theme="purple"></div>
-            <div class="theme-option theme-red" data-theme="red"></div>
+        <!-- Enhanced User status selector -->
+        <div class="status-selector" style="margin:1rem 0">
+          <strong style="display:block;margin-bottom:8px">Status</strong>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="status-option active" data-status="online">
+              <span class="status-indicator status-online"></span>Online
+            </div>
+            <div class="status-option" data-status="away">
+              <span class="status-indicator status-away"></span>Away
+            </div>
+            <div class="status-option" data-status="busy">
+              <span class="status-indicator status-busy"></span>Busy
+            </div>
           </div>
         </div>
 
-        <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:10px; margin-top: 8px;">
-          <div style="font-weight:700; margin-bottom:8px;">Admin Panel 👑</div>
+        <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+          <button id="saveProfileBtn" class="btn" style="flex:1">Save Profile</button>
+          <button id="resetAvatarBtn" class="btn ghost" style="flex:1">Reset Avatar</button>
+        </div>
 
-          <div style="display:flex;gap:6px;margin-bottom:8px">
-            <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="padding:.4rem" />
+        <!-- Enhanced Theme selector -->
+        <div style="margin-bottom: 1rem;">
+          <strong style="display:block;margin-bottom:8px">Chat Theme</strong>
+          <div class="theme-selector">
+            <div class="theme-option theme-blue active" data-theme="blue" style="background:#4f8cff"></div>
+            <div class="theme-option theme-green" data-theme="green" style="background:#4caf50"></div>
+            <div class="theme-option theme-purple" data-theme="purple" style="background:#9c27b0"></div>
+            <div class="theme-option theme-red" data-theme="red" style="background:#f44336"></div>
+          </div>
+        </div>
+
+        <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:15px; margin-top: 15px;">
+          <div style="font-weight:700; margin-bottom:12px;color:var(--brand)">Admin Panel 👑</div>
+
+          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+            <input id="adminTarget" class="input" placeholder="UID or 5-digit ID" style="flex:1;padding:.6rem" />
             <button id="adminLookupBtn" class="btn ghost">Lookup</button>
           </div>
 
-          <div style="display:flex;gap:6px;margin-bottom:8px">
-            <button id="adminVerifyBtn" class="btn">Verify</button>
-            <button id="adminUnverifyBtn" class="btn ghost">Unverify</button>
+          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+            <button id="adminVerifyBtn" class="btn" style="flex:1">Verify</button>
+            <button id="adminUnverifyBtn" class="btn ghost" style="flex:1">Unverify</button>
           </div>
 
-          <div style="display:flex;gap:6px;margin-bottom:8px">
-            <button id="adminBanBtn" class="btn ghost">Ban</button>
-            <button id="adminUnbanBtn" class="btn ghost">Unban</button>
+          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+            <button id="adminBanBtn" class="btn ghost" style="flex:1">Ban</button>
+            <button id="adminUnbanBtn" class="btn ghost" style="flex:1">Unban</button>
           </div>
 
-          <div style="margin-bottom:8px">
-            <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:6px;padding:.4rem" />
-            <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.4rem" />
-            <div style="display:flex;gap:6px;margin-top:6px">
-              <button id="adminDelMsgBtn" class="btn secondary">Delete Message</button>
+          <div style="margin-bottom:12px">
+            <input id="adminChatId" class="input" placeholder="Chat ID (room id)" style="margin-bottom:8px;padding:.6rem" />
+            <input id="adminMsgKey" class="input" placeholder="Message Key to delete" style="padding:.6rem" />
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button id="adminDelMsgBtn" class="btn" style="flex:1">Delete Message</button>
             </div>
           </div>
 
-          <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;margin-bottom:8px;">
-            <div style="font-weight:700;margin-bottom:6px">Global Announcement</div>
-            <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.4rem" />
-            <div style="display:flex;gap:6px;margin-top:6px">
-              <button id="adminAnnSet" class="btn">Set</button>
-              <button id="adminAnnClear" class="btn ghost">Clear</button>
+          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;margin-bottom:12px;">
+            <div style="font-weight:700;margin-bottom:8px">Global Announcement</div>
+            <input id="adminAnnText" class="input" placeholder="Announcement text" style="padding:.6rem" />
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button id="adminAnnSet" class="btn" style="flex:1">Set</button>
+              <button id="adminAnnClear" class="btn ghost" style="flex:1">Clear</button>
             </div>
           </div>
 
           <div>
-            <button id="adminRefreshUsers" class="btn ghost">Refresh Users</button>
+            <button id="adminRefreshUsers" class="btn ghost" style="width:100%;margin-bottom:8px">Refresh Users</button>
             <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
           </div>
         </div>
@@ -395,72 +1175,79 @@ pre{white-space:pre-wrap;word-break:break-word}
 
       <!-- ADD FRIENDS + REQUESTS PANELS -->
       <div class="card" style="margin-bottom:.8rem">
-        <strong>Add friends</strong>
-        <div style="display:flex;gap:.5rem;margin-top:.5rem">
-          <input id="addByShort" class="input" placeholder="Enter 5-digit ID" style="flex:1" />
+        <strong style="display:block;margin-bottom:.8rem">Add friends</strong>
+        <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
+          <input id="addByShort" class="input" placeholder="Enter 5-digit ID" style="flex:1;min-width:150px" />
           <button id="addFriendBtn" class="btn">Add</button>
         </div>
-        <div id="friendRequestMsg" style="color:var(--muted);margin-top:.4rem"></div>
+        <div id="friendRequestMsg" style="color:var(--muted);margin-top:.6rem;text-align:center"></div>
       </div>
 
       <div class="card" style="margin-bottom:.8rem">
-        <strong>Requests</strong>
-        <div style="display:flex;gap:1rem;margin-top:.5rem">
-          <div style="flex:1">
-            <div style="font-weight:700;margin-bottom:.4rem">Incoming</div>
+        <strong style="display:block;margin-bottom:.8rem">Friend Requests</strong>
+        <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <div style="font-weight:700;margin-bottom:.6rem;color:var(--brand)">Incoming</div>
             <div id="incomingReqs" class="list"></div>
           </div>
-          <div style="flex:1">
-            <div style="font-weight:700;margin-bottom:.4rem">Outgoing</div>
+          <div style="flex:1;min-width:200px">
+            <div style="font-weight:700;margin-bottom:.6rem;color:var(--brand)">Outgoing</div>
             <div id="outgoingReqs" class="list"></div>
           </div>
         </div>
       </div>
 
       <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
           <strong>Friends</strong>
-          <div id="myShort" style="color:var(--muted)"></div>
+          <div id="myShort" style="color:var(--muted);font-size:.9rem"></div>
         </div>
         <div id="friendsList" class="list" style="margin-top:.6rem;max-height:280px;overflow:auto"></div>
       </div>
 
       <div class="card" style="margin-top:.8rem">
-        <strong>Communities</strong>
+        <strong style="display:block;margin-bottom:.8rem">Communities</strong>
         <div id="communitiesList" class="list"></div>
       </div>
     </div>
 
-    <div style="width:420px">
+    <div style="width:420px;min-width:300px">
       <div class="card" id="chatCard">
-        <div style="display:flex;align-items:center;gap:.6rem;position:relative">
-          <button id="chatBackBtn" class="btn ghost" style="display:none;position:absolute;left:0;">Back</button>
+        <div style="display:flex;align-items:center;gap:.6rem;position:relative;margin-bottom:1rem">
+          <button id="chatBackBtn" class="btn ghost" style="display:none;position:absolute;left:0;">← Back</button>
           <img id="chatAvatar" class="avatar" src="" alt="" style="margin-left:30px">
           <div style="flex:1">
-            <div id="chatTitle" style="font-weight:800">No chat</div>
+            <div id="chatTitle" style="font-weight:800;font-size:1.1rem">No chat selected</div>
             <div id="chatPresence" style="color:var(--muted);font-size:.85rem">—</div>
           </div>
-          <div>
-            <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">Audio</button>
-            <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">Video</button>
+          <div style="display:flex;gap:4px">
+            <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">🎤</button>
+            <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">📹</button>
           </div>
         </div>
 
-        <!-- NEW: Search container -->
+        <!-- Enhanced Search container -->
         <div class="search-container">
-          <input id="messageSearch" class="input" placeholder="Search messages..." style="margin-bottom:0" />
+          <input id="messageSearch" class="input" placeholder="🔍 Search messages..." style="margin-bottom:0" />
           <div id="searchResults" class="search-results"></div>
         </div>
 
-        <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.6rem;border-radius:8px"></div>
+        <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.8rem;border-radius:var(--radius);position:relative">
+          <!-- Messages will be inserted here -->
+        </div>
 
-        <div style="display:flex;gap:.5rem;margin-top:.6rem">
-          <input id="msgInput" class="input" placeholder="Message..." style="flex:1" autocomplete="off" />
+        <div style="display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap">
+          <input id="msgInput" class="input" placeholder="Type a message..." style="flex:1;min-width:200px" autocomplete="off" />
           <input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt" style="display:none" />
-          <button id="attachBtn" class="btn ghost" title="Attach file">Attach</button>
+          <button id="attachBtn" class="btn ghost" title="Attach file">📎</button>
           <button id="sendBtn" class="btn">Send</button>
         </div>
-        <div id="typingIndicator" style="color:var(--muted);margin-top:.4rem;display:none">Someone is typing…</div>
+        <div id="typingIndicator" style="color:var(--muted);margin-top:.6rem;display:none;font-style:italic">
+          <span class="typing-dots">
+            <span></span><span></span><span></span>
+          </span>
+          Someone is typing...
+        </div>
       </div>
     </div>
   </div>
@@ -469,11 +1256,11 @@ pre{white-space:pre-wrap;word-break:break-word}
 <!-- Calls Page -->
 <div id="calls-page" class="page">
   <div class="card">
-    <strong>Recent Calls</strong>
+    <strong style="display:block;margin-bottom:1rem">Recent Calls</strong>
     <div id="callHistory" class="list"></div>
   </div>
   
-  <!-- NEW: Call history items will be populated here -->
+  <!-- Enhanced Call history items -->
   <div id="callsList">
     <!-- Sample call items -->
     <div class="call-item">
@@ -485,7 +1272,7 @@ pre{white-space:pre-wrap;word-break:break-word}
           <span class="call-status call-outgoing">Outgoing</span>
         </div>
       </div>
-      <div>📞</div>
+      <div style="font-size:1.2rem">📞</div>
     </div>
     
     <div class="call-item">
@@ -497,7 +1284,7 @@ pre{white-space:pre-wrap;word-break:break-word}
           <span class="call-status call-incoming">Incoming</span>
         </div>
       </div>
-      <div>📞</div>
+      <div style="font-size:1.2rem">📞</div>
     </div>
     
     <div class="call-item">
@@ -509,7 +1296,7 @@ pre{white-space:pre-wrap;word-break:break-word}
           <span class="call-status call-missed">Missed</span>
         </div>
       </div>
-      <div>📞</div>
+      <div style="font-size:1.2rem">📞</div>
     </div>
   </div>
 </div>
@@ -517,14 +1304,14 @@ pre{white-space:pre-wrap;word-break:break-word}
 <!-- Games Page -->
 <div id="games-page" class="page">
   <div class="card">
-    <strong>In-Chat Games</strong>
-    <p>Play games with your friends directly in the chat!</p>
+    <strong style="display:block;margin-bottom:.8rem">In-Chat Games</strong>
+    <p style="color:var(--muted);margin:0">Play games with your friends directly in the chat!</p>
   </div>
   
-  <!-- Tic Tac Toe Game -->
+  <!-- Enhanced Tic Tac Toe Game -->
   <div class="game-container">
     <div class="game-title">Tic Tac Toe</div>
-    <p>Challenge a friend to a game of Tic Tac Toe</p>
+    <p style="color:var(--muted);margin-bottom:1rem">Challenge a friend to a game of Tic Tac Toe</p>
     
     <div class="tic-tac-toe">
       <div class="ttt-cell" data-index="0"></div>
@@ -538,45 +1325,47 @@ pre{white-space:pre-wrap;word-break:break-word}
       <div class="ttt-cell" data-index="8"></div>
     </div>
     
-    <div id="gameStatus">Your turn (X)</div>
-    <button class="game-btn" id="startTicTacToe">Start Game with Friend</button>
-    <button class="game-btn ghost" id="resetTicTacToe">Reset Game</button>
+    <div id="gameStatus" style="margin:1rem 0;font-weight:600;color:var(--brand)">Your turn (X)</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="startTicTacToe" style="flex:1">Start Game with Friend</button>
+      <button class="btn ghost" id="resetTicTacToe" style="flex:1">Reset Game</button>
+    </div>
   </div>
   
   <!-- Word Game -->
   <div class="game-container">
     <div class="game-title">Word Challenge</div>
-    <p>Test your vocabulary with friends</p>
+    <p style="color:var(--muted);margin-bottom:1rem">Test your vocabulary with friends</p>
     <div id="wordGame">
-      <p>Current word: <span id="currentWord">_____</span></p>
+      <p style="margin:.5rem 0">Current word: <span id="currentWord" style="font-weight:600;color:var(--brand)">_____</span></p>
       <input type="text" class="input" id="wordInput" placeholder="Enter a word">
-      <button class="game-btn" id="submitWord">Submit Word</button>
-      <p id="wordScore">Score: 0</p>
+      <button class="btn" id="submitWord" style="width:100%;margin-top:8px">Submit Word</button>
+      <p id="wordScore" style="margin-top:8px;font-weight:600">Score: 0</p>
     </div>
   </div>
   
   <!-- Trivia Game -->
   <div class="game-container">
     <div class="game-title">Quick Trivia</div>
-    <p>Answer trivia questions with friends</p>
+    <p style="color:var(--muted);margin-bottom:1rem">Answer trivia questions with friends</p>
     <div id="triviaGame">
-      <p id="triviaQuestion">Question will appear here</p>
-      <div id="triviaOptions">
+      <p id="triviaQuestion" style="margin-bottom:1rem;font-style:italic">Question will appear here</p>
+      <div id="triviaOptions" style="display:grid;gap:8px;grid-template-columns:1fr 1fr">
         <button class="btn ghost">Option 1</button>
         <button class="btn ghost">Option 2</button>
         <button class="btn ghost">Option 3</button>
         <button class="btn ghost">Option 4</button>
       </div>
-      <p id="triviaScore">Score: 0/0</p>
+      <p id="triviaScore" style="margin-top:1rem;font-weight:600">Score: 0/0</p>
     </div>
-    <button class="game-btn" id="startTrivia">Start Trivia</button>
+    <button class="btn" id="startTrivia" style="width:100%;margin-top:8px">Start Trivia</button>
   </div>
 </div>
 
 <!-- Settings Page -->
 <div id="settings-page" class="page">
   <div class="card">
-    <strong>Account Settings</strong>
+    <strong style="display:block;margin-bottom:1rem">Account Settings</strong>
     
     <div class="settings-item">
       <div>Notifications</div>
@@ -604,11 +1393,11 @@ pre{white-space:pre-wrap;word-break:break-word}
   </div>
   
   <div class="card">
-    <strong>Privacy & Security</strong>
+    <strong style="display:block;margin-bottom:1rem">Privacy & Security</strong>
     
     <div class="settings-item">
       <div>Last Seen</div>
-      <select class="input">
+      <select class="input" style="width:auto;padding:.5rem .8rem">
         <option>Everyone</option>
         <option>My Contacts</option>
         <option>Nobody</option>
@@ -617,7 +1406,7 @@ pre{white-space:pre-wrap;word-break:break-word}
     
     <div class="settings-item">
       <div>Profile Photo</div>
-      <select class="input">
+      <select class="input" style="width:auto;padding:.5rem .8rem">
         <option>Everyone</option>
         <option>My Contacts</option>
         <option>Nobody</option>
@@ -631,7 +1420,7 @@ pre{white-space:pre-wrap;word-break:break-word}
   </div>
   
   <div class="card">
-    <strong>Chat Settings</strong>
+    <strong style="display:block;margin-bottom:1rem">Chat Settings</strong>
     
     <div class="settings-item">
       <div>Chat Background</div>
@@ -640,7 +1429,7 @@ pre{white-space:pre-wrap;word-break:break-word}
     
     <div class="settings-item">
       <div>Font Size</div>
-      <select class="input">
+      <select class="input" style="width:auto;padding:.5rem .8rem">
         <option>Small</option>
         <option selected>Medium</option>
         <option>Large</option>
@@ -657,7 +1446,7 @@ pre{white-space:pre-wrap;word-break:break-word}
   </div>
   
   <div class="card">
-    <strong>Storage & Data</strong>
+    <strong style="display:block;margin-bottom:1rem">Storage & Data</strong>
     
     <div class="settings-item">
       <div>Network Usage</div>
@@ -676,7 +1465,7 @@ pre{white-space:pre-wrap;word-break:break-word}
   </div>
   
   <div class="card">
-    <strong>About</strong>
+    <strong style="display:block;margin-bottom:1rem">About</strong>
     
     <div class="settings-item">
       <div>Version</div>
@@ -698,13 +1487,16 @@ pre{white-space:pre-wrap;word-break:break-word}
 </main>
 </div>
 
-<!-- Toast area -->
-<div id="toasts" style="position:fixed;left:50%;transform:translateX(-50%);bottom:20px;z-index:9999"></div>
+<!-- Enhanced Toast area -->
+<div id="toasts" style="position:fixed;left:50%;transform:translateX(-50%);bottom:100px;z-index:9999"></div>
 
-<!-- NEW: Context menu -->
+<!-- Enhanced Context menu -->
 <div id="contextMenu" class="context-menu hidden"></div>
 
-<!-- Firebase + logic -->
+<!-- Scroll to bottom button -->
+<button id="scrollToBottom" class="scroll-to-bottom hidden" title="Scroll to bottom">↓</button>
+
+<!-- COMPLETE FIREBASE + ENHANCED LOGIC -->
 <script type="module">
 /* ========================== CONFIG ========================== */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
@@ -734,21 +1526,25 @@ const storage = getStorage(app);
 /* ========================== HELPERS ========================== */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
-function toast(msg, t = 2500){
+
+// Enhanced toast function
+function toast(msg, t = 3000, type = 'info') {
   const d = document.createElement('div');
-  d.style.padding='8px 12px';
-  d.style.background='#0e2238';
-  d.style.border='1px solid #12233b';
-  d.style.borderRadius='10px';
-  d.style.color='#dfefff';
-  d.style.marginTop='6px';
-  d.textContent=msg;
+  d.className = 'toast';
+  d.style.background = type === 'error' ? 'var(--danger)' : 
+                      type === 'success' ? 'var(--success)' : 'var(--elev)';
+  d.textContent = msg;
   $('#toasts').appendChild(d);
-  setTimeout(() => d.remove(), t);
+  setTimeout(() => {
+    d.style.animation = 'toastSlide 0.3s ease-out reverse';
+    setTimeout(() => d.remove(), 300);
+  }, t);
 }
+
 function defaultAvatar(seed){
   return `https://api.dicebear.com/8.x/thumbs/svg?seed=${(seed||'quick').slice(0,8)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
 }
+
 function timeAgo(ts){
   if(!ts) return '—';
   const d = Math.floor((Date.now()-ts)/1000);
@@ -757,9 +1553,11 @@ function timeAgo(ts){
   if(d<86400) return Math.floor(d/3600)+'h';
   return Math.floor(d/86400)+'d';
 }
+
 function typingRef(chatId, uid){
   return ref(db, `typing/${chatId}/${uid}`);
 }
+
 function pairKey(a,b){ return [a,b].sort().join('_'); }
 
 /* ========================== VARIABLES ========================== */
@@ -788,32 +1586,49 @@ $('#loginBtn').onclick = async () => {
   try {
     await signInWithEmailAndPassword(auth, $('#loginEmail').value, $('#loginPass').value);
     $('#authMsg').textContent = '';
-  } catch (e) { $('#authMsg').textContent = e.message; }
+    toast('Welcome back!', 2000, 'success');
+  } catch (e) { 
+    $('#authMsg').textContent = e.message;
+    toast('Login failed: ' + e.message, 3000, 'error');
+  }
 };
+
 $('#registerBtn').onclick = async () => {
   try {
     const email = $('#loginEmail').value.trim();
     const pass = $('#loginPass').value;
-    if(!email||!pass){ $('#authMsg').textContent='Enter email & password'; return; }
-    if(pass.length < 6){ $('#authMsg').textContent='Password must be at least 6 characters'; return; }
+    if(!email||!pass){ 
+      $('#authMsg').textContent='Enter email & password'; 
+      toast('Please enter email and password', 3000, 'error');
+      return; 
+    }
+    if(pass.length < 6){ 
+      $('#authMsg').textContent='Password must be at least 6 characters'; 
+      toast('Password must be at least 6 characters', 3000, 'error');
+      return; 
+    }
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     const uid = cred.user.uid;
     const short = String(10000 + Math.floor(Math.random()*90000));
     await set(ref(db, 'users/' + uid), {
       uid,
       email,
-      name: cred.user.displayName || email.split('@'),
+      name: cred.user.displayName || email.split('@')[0],
       avatar: defaultAvatar(uid),
       shortId: short,
       createdAt: Date.now(),
       online: true,
       lastSeen: Date.now(),
-      status: 'online' // NEW: Default status
+      status: 'online'
     });
     await set(ref(db, 'shortIds/' + short), { uid });
-    toast('Registered — check profile to edit');
-  } catch ( e){ $('#authMsg').textContent = e.message; }
+    toast('Registration successful! Check profile to edit', 3000, 'success');
+  } catch (e){ 
+    $('#authMsg').textContent = e.message;
+    toast('Registration failed: ' + e.message, 3000, 'error');
+  }
 };
+
 $('#googleBtn').onclick = async () => {
   try {
     const prov = new GoogleAuthProvider();
@@ -832,75 +1647,93 @@ $('#googleBtn').onclick = async () => {
         createdAt: Date.now(),
         online: true,
         lastSeen: Date.now(),
-        status: 'online' // NEW: Default status
+        status: 'online'
       });
       await set(ref(db, 'shortIds/' + short), { uid });
     }
-  } catch (e){ $('#authMsg').textContent = e.message; }
+    toast('Signed in with Google!', 2000, 'success');
+  } catch (e){ 
+    $('#authMsg').textContent = e.message;
+    toast('Google sign-in failed: ' + e.message, 3000, 'error');
+  }
 };
 
 /* ========================== ADMIN UI + ACTIONS ========================== */
 async function injectAdminPanel(){
   if(!isAdminUser) return;
-  // Attach buttons inside #adminControls
+  
   $('#adminLookupBtn').onclick = async () => {
     const v = $('#adminTarget').value.trim();
-    if(!v){ toast('Enter UID or 5-digit ID'); return; }
+    if(!v){ toast('Enter UID or 5-digit ID', 3000, 'error'); return; }
     let uid = v;
     if(v.length === 5){
       const s = await get(ref(db, 'shortIds/' + v));
-      if(!s.exists()){ toast('No such shortId'); return; }
+      if(!s.exists()){ toast('No such shortId', 3000, 'error'); return; }
       uid = s.val().uid;
     }
     const u = await get(ref(db, 'users/' + uid));
-    if(!u.exists()){ toast('User not found'); return; }
+    if(!u.exists()){ toast('User not found', 3000, 'error'); return; }
     const data = u.val();
-    toast('Found: ' + (data.name || data.email || uid));
+    toast('Found: ' + (data.name || data.email || uid), 3000, 'success');
   };
 
   $('#adminVerifyBtn').onclick = async () => {
-    const v = $('#adminTarget').value.trim(); if(!v){ toast('Enter UID or 5-digit ID'); return; }
+    const v = $('#adminTarget').value.trim(); if(!v){ toast('Enter UID or 5-digit ID', 3000, 'error'); return; }
     let uid = v;
     if(v.length===5){
       const s = await get(ref(db,'shortIds/'+v));
-      if(!s.exists()){ toast('No such shortId'); return; }
+      if(!s.exists()){ toast('No such shortId', 3000, 'error'); return; }
       uid = s.val().uid;
     }
     await update(ref(db, 'users/' + uid), { verified: true });
-    toast('User verified');
+    toast('User verified', 2000, 'success');
     await refreshAdminUsers();
   };
+  
   $('#adminUnverifyBtn').onclick = async ()=> {
-    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID');
-    let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
+    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID', 3000, 'error');
+    let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId', 3000, 'error'); return; } uid=s.val().uid; }
     await update(ref(db,'users/'+uid), { verified: false });
-    toast('User unverified'); await refreshAdminUsers();
+    toast('User unverified', 2000, 'success'); 
+    await refreshAdminUsers();
   };
+  
   $('#adminBanBtn').onclick = async () => {
-    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID'); let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
-    await set(ref(db,'banned/'+uid), true); toast('User banned'); await refreshAdminUsers();
+    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID', 3000, 'error'); 
+    let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId', 3000, 'error'); return; } uid=s.val().uid; }
+    await set(ref(db,'banned/'+uid), true); 
+    toast('User banned', 2000, 'success'); 
+    await refreshAdminUsers();
   };
+  
   $('#adminUnbanBtn').onclick = async () => {
-    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID'); let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId'); return; } uid=s.val().uid; }
-    await remove(ref(db,'banned/'+uid)); toast('User unbanned'); await refreshAdminUsers();
+    const v = $('#adminTarget').value.trim(); if(!v) return toast('Enter UID or 5-digit ID', 3000, 'error'); 
+    let uid=v; if(v.length===5){ const s=await get(ref(db,'shortIds/'+v)); if(!s.exists()){ toast('No shortId', 3000, 'error'); return; } uid=s.val().uid; }
+    await remove(ref(db,'banned/'+uid)); 
+    toast('User unbanned', 2000, 'success'); 
+    await refreshAdminUsers();
   };
+  
   $('#adminDelMsgBtn').onclick = async () => {
-    const chatId = $('#adminChatId').value.trim(); const msgKey = $('#adminMsgKey').value.trim();
-    if(!chatId || !msgKey){ toast('Enter chat id and message key'); return; }
+    const chatId = $('#adminChatId').value.trim(); 
+    const msgKey = $('#adminMsgKey').value.trim();
+    if(!chatId || !msgKey){ toast('Enter chat id and message key', 3000, 'error'); return; }
     await remove(ref(db, `chats/${chatId}/messages/${msgKey}`));
     await remove(ref(db, `communityMessages/${chatId}/${msgKey}`));
-    toast('Message removed (if existed)');
+    toast('Message removed (if existed)', 2000, 'success');
   };
+  
   $('#adminRefreshUsers').onclick = refreshAdminUsers;
 
   $('#adminAnnSet').onclick = async ()=>{
     const t = $('#adminAnnText').value.trim();
     await set(ref(db, 'announcements/global'), { text: t, ts: Date.now(), by: me.uid });
-    toast('Announcement set');
+    toast('Announcement set', 2000, 'success');
   };
+  
   $('#adminAnnClear').onclick = async ()=>{
     await remove(ref(db, 'announcements/global'));
-    toast('Announcement cleared');
+    toast('Announcement cleared', 2000, 'success');
   };
 
   await refreshAdminUsers();
@@ -930,8 +1763,8 @@ async function refreshAdminUsers(){
   wrap.querySelectorAll('button[data-action]').forEach(b=>{
     b.onclick = async ()=>{
       const uid = b.dataset.uid; const action = b.dataset.action;
-      if(action==='verify'){ await update(ref(db,'users/'+uid), { verified: true }); toast('Verified'); }
-      if(action==='ban'){ await set(ref(db,'banned/'+uid), true); toast('Banned'); }
+      if(action==='verify'){ await update(ref(db,'users/'+uid), { verified: true }); toast('Verified', 2000, 'success'); }
+      if(action==='ban'){ await set(ref(db,'banned/'+uid), true); toast('Banned', 2000, 'success'); }
       await refreshAdminUsers();
     };
   });
@@ -1154,7 +1987,7 @@ function subscribeMessages(path, chatId, kind, peer){
   onValue(r, async snap => {
     const data = snap.val() || {};
     $('#messages').innerHTML = '';
-    const entries = Object.entries(data).sort((a,b)=>a.ts - b.ts);
+    const entries = Object.entries(data).sort((a,b)=>a[1].ts - b[1].ts);
 
     // NEW: Check for pinned messages
     let pinnedMessages = [];
@@ -1207,29 +2040,34 @@ function subscribeMessages(path, chatId, kind, peer){
   };
 }
 
-// NEW: Render message function
+// Enhanced render message function
 async function renderMessage(key, m, chatId) {
   const div = document.createElement('div'); 
-  div.className = 'item';
-  div.style.background = m.from===me.uid? '#08263f':'#071328';
+  div.className = `message-item ${m.from === me.uid ? 'own' : 'other'}`;
+  div.setAttribute('data-message-id', key);
   
+  // Add new message animation
+  setTimeout(() => {
+    div.classList.add('new-message');
+  }, 100);
+
   // Add pinned class if message is pinned
   if (m.pinned) {
     div.classList.add('pinned-message');
   }
   
   div.innerHTML = `
-    <div style="flex:1">
-      <div style="font-weight:700">
+    <img class="avatar" src="${m.fromAvatar || defaultAvatar(m.from)}" />
+    <div class="message-content">
+      <div class="message-sender">
         ${m.pinned ? '<span class="pin-indicator">📌</span>' : ''}
         ${m.fromName||''}
         ${m.editedAt?'<span style="color:var(--muted);font-size:.75rem"> - edited</span>':''}
       </div>
-      <div>${m.text||''}</div>
+      <div class="message-text">${m.text||''}</div>
       ${m.replyTo ? '<div style="color:var(--muted);font-size:.85rem;border-left:2px solid var(--brand);padding-left:8px;margin:4px 0">↪️ ' + (m.replyToText || 'Replied to a message') + '</div>' : ''}
-      <div style="color:var(--muted);font-size:.75rem">${new Date(m.ts).toLocaleTimeString()}</div>
-    </div>
-    <div style="color:var(--muted);font-size:.7rem">${key.slice(0,6)}</div>`;
+      <div class="message-time">${new Date(m.ts).toLocaleTimeString()}</div>
+    </div>`;
   
   // Add image if exists
   if(m.imageURL){
@@ -1247,7 +2085,7 @@ async function renderMessage(key, m, chatId) {
     
     imgContainer.appendChild(img);
     imgContainer.appendChild(fileInfo);
-    div.querySelector('div[style*="flex:1"]').appendChild(imgContainer);
+    div.querySelector('.message-content').appendChild(imgContainer);
   }
   
   // Add audio player if audio exists
@@ -1303,7 +2141,7 @@ async function renderMessage(key, m, chatId) {
       }
     };
     
-    div.querySelector('div[style*="flex:1"]').appendChild(audioContainer);
+    div.querySelector('.message-content').appendChild(audioContainer);
   }
   
   // NEW: Add message reactions if they exist
@@ -1323,7 +2161,7 @@ async function renderMessage(key, m, chatId) {
     }
     
     if (reactionContainer.children.length > 0) {
-      div.appendChild(reactionContainer);
+      div.querySelector('.message-content').appendChild(reactionContainer);
     }
   }
   
@@ -1337,7 +2175,7 @@ async function renderMessage(key, m, chatId) {
     delBtn.onclick = async ()=>{
       const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
       await remove(ref(db, basePath));
-      toast('Deleted');
+      toast('Message deleted', 2000, 'success');
     };
     row.appendChild(delBtn);
     
@@ -1350,7 +2188,7 @@ async function renderMessage(key, m, chatId) {
         if(newText===null) return;
         const basePath = currentChat.uid ? `chats/${chatId}/messages/${key}` : `communityMessages/${chatId}/${key}`;
         await update(ref(db, basePath), { text: newText, editedAt: Date.now() });
-        toast('Edited');
+        toast('Message edited', 2000, 'success');
       };
       row.appendChild(editBtn);
       
@@ -1360,7 +2198,7 @@ async function renderMessage(key, m, chatId) {
       row.appendChild(reactBtn);
     }
     
-    div.appendChild(row);
+    div.querySelector('.message-content').appendChild(row);
   }
   
   // Add context menu on right-click
@@ -1376,7 +2214,7 @@ async function renderMessage(key, m, chatId) {
       const readBadge = document.createElement('div');
       readBadge.style.color='var(--muted)'; readBadge.style.fontSize='.7rem'; readBadge.style.marginTop='4px';
       readBadge.textContent = `Read by ${readers.length}`;
-      div.appendChild(readBadge);
+      div.querySelector('.message-content').appendChild(readBadge);
     }
   }
   
@@ -1409,13 +2247,13 @@ $('#msgInput').addEventListener('input', async ()=>{
 
 $('#attachBtn').onclick = ()=> $('#fileInput').click();
 $('#fileInput').onchange = (e)=> {
-  pendingFile = e.target.files && e.target.files ? e.target.files : null;
-  if(pendingFile) toast('File selected: '+pendingFile.name);
+  pendingFile = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+  if(pendingFile) toast('File selected: '+pendingFile.name, 2000, 'success');
 };
 
 $('#sendBtn').onclick = async () => {
   const now = Date.now();
-  if(now - lastSendAt < SEND_COOLDOWN_MS){ toast('Slow down a bit…'); return; }
+  if(now - lastSendAt < SEND_COOLDOWN_MS){ toast('Slow down a bit…', 2000, 'warning'); return; }
   lastSendAt = now;
 
   const text = $('#msgInput').value.trim();
@@ -1429,15 +2267,15 @@ $('#sendBtn').onclick = async () => {
   if(pendingFile){
     try {
       // Check if it's an audio file
-      if (pendingFile[0].type.startsWith('audio/')) {
-        const filePath = `uploads/${me.uid}/${chatId}/audio/${Date.now()}_${pendingFile[0].name}`;
+      if (pendingFile.type.startsWith('audio/')) {
+        const filePath = `uploads/${me.uid}/${chatId}/audio/${Date.now()}_${pendingFile.name}`;
         const sr = sref(storage, filePath);
-        await uploadBytes(sr, pendingFile[0]);
+        await uploadBytes(sr, pendingFile);
         audioURL = await getDownloadURL(sr);
         
         // Get audio duration
         const audio = new Audio();
-        audio.src = URL.createObjectURL(pendingFile[0]);
+        audio.src = URL.createObjectURL(pendingFile);
         await new Promise(resolve => {
           audio.addEventListener('loadedmetadata', () => {
             audioDuration = audio.duration;
@@ -1446,13 +2284,13 @@ $('#sendBtn').onclick = async () => {
         });
       } else {
         // Handle image or other files
-        const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile[0].name}`;
+        const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile.name}`;
         const sr = sref(storage, filePath);
-        await uploadBytes(sr, pendingFile[0]);
+        await uploadBytes(sr, pendingFile);
         imageURL = await getDownloadURL(sr);
       }
     } catch(e) {
-      toast('Upload failed');
+      toast('Upload failed: ' + e.message, 3000, 'error');
       console.error(e);
     }
   }
@@ -1460,6 +2298,7 @@ $('#sendBtn').onclick = async () => {
   const payload = { 
     from: me.uid, 
     fromName: me.name, 
+    fromAvatar: me.avatar,
     text: text || '', 
     ts: Date.now(), 
     imageURL: imageURL || null,
@@ -1479,7 +2318,7 @@ $('#sendBtn').onclick = async () => {
   }
 
   $('#msgInput').value = '';
-  if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Sent'); }
+  if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Message sent!', 2000, 'success'); }
 };
 
 // NEW: Message search functionality
@@ -1551,33 +2390,27 @@ document.addEventListener('click', (e) => {
 });
 
 /* ========================== FRIEND REQUESTS ========================== */
-// Data structure:
-// friendRequests/{uid}/incoming/{reqId} = { fromUid, fromName, fromAvatar, ts }
-// friendRequests/{uid}/outgoing/{reqId} = { toUid, toName, toAvatar, ts }
-// requestPairs/{pairKey} = true // guard against duplicate pending requests
-// friends/{uid}/{friendUid} = true
-
 async function sendFriendRequestByShortId(shortId){
   $('#friendRequestMsg').textContent = '';
-  if(!me) return toast('Sign in first');
+  if(!me) return toast('Sign in first', 3000, 'error');
   const v = (shortId||'').trim();
-  if(v.length !== 5) { $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; return; }
+  if(v.length !== 5) { $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; toast('Enter a valid 5-digit ID', 3000, 'error'); return; }
 
   // Lookup target UID
   const shortSnap = await get(ref(db, 'shortIds/' + v));
-  if(!shortSnap.exists()){ $('#friendRequestMsg').textContent = 'No user with that ID'; return; }
+  if(!shortSnap.exists()){ $('#friendRequestMsg').textContent = 'No user with that ID'; toast('No user with that ID', 3000, 'error'); return; }
   const targetUid = shortSnap.val().uid;
 
-  if(targetUid === me.uid){ $('#friendRequestMsg').textContent = 'Cannot add yourself'; return; }
+  if(targetUid === me.uid){ $('#friendRequestMsg').textContent = 'Cannot add yourself'; toast('Cannot add yourself', 3000, 'error'); return; }
 
   // Already friends?
   const already = await get(ref(db, `friends/${me.uid}/${targetUid}`));
-  if(already.exists()){ $('#friendRequestMsg').textContent = 'Already friends'; return; }
+  if(already.exists()){ $('#friendRequestMsg').textContent = 'Already friends'; toast('Already friends', 3000, 'info'); return; }
 
   // Pair guard
   const pk = pairKey(me.uid, targetUid);
   const pairSnap = await get(ref(db, `requestPairs/${pk}`));
-  if(pairSnap.exists()){ $('#friendRequestMsg').textContent = 'Request already pending'; return; }
+  if(pairSnap.exists()){ $('#friendRequestMsg').textContent = 'Request already pending'; toast('Request already pending', 3000, 'info'); return; }
 
   // Compose target user display
   const targetUserSnap = await get(ref(db, 'users/' + targetUid));
@@ -1605,8 +2438,8 @@ async function sendFriendRequestByShortId(shortId){
   await set(ref(db, `requestPairs/${pk}`), true);
 
   $('#friendRequestMsg').textContent = 'Request sent';
-  toast('Friend request sent');
-  await loadFriendRequests(); // refresh UI
+  toast('Friend request sent!', 3000, 'success');
+  await loadFriendRequests();
 }
 
 async function acceptFriendRequest(reqId, fromUid){
@@ -1622,7 +2455,7 @@ async function acceptFriendRequest(reqId, fromUid){
   await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
   await remove(ref(db, `requestPairs/${pk}`));
 
-  toast('Friend added');
+  toast('Friend added!', 2000, 'success');
   await refreshFriends();
   await loadFriendRequests();
 }
@@ -1635,7 +2468,7 @@ async function declineFriendRequest(reqId, fromUid){
   await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
   await remove(ref(db, `requestPairs/${pk}`));
 
-  toast('Request declined');
+  toast('Request declined', 2000, 'info');
   await loadFriendRequests();
 }
 
@@ -1647,7 +2480,7 @@ async function cancelFriendRequest(reqId, toUid){
   await remove(ref(db, `friendRequests/${toUid}/incoming/${reqId}`));
   await remove(ref(db, `requestPairs/${pk}`));
 
-  toast('Request canceled');
+  toast('Request canceled', 2000, 'info');
   await loadFriendRequests();
 }
 
@@ -1717,6 +2550,7 @@ window.addEventListener('beforeunload', () => {
     );
   }
 });
+
 document.addEventListener('visibilitychange', async () => {
   if(!me) return;
   if(document.hidden) {
@@ -1731,6 +2565,7 @@ function initializeTicTacToe() {
   const cells = $$('.ttt-cell');
   cells.forEach(cell => {
     cell.textContent = '';
+    cell.classList.remove('x', 'o');
     cell.addEventListener('click', handleTicTacToeClick);
   });
   
@@ -1742,6 +2577,7 @@ function initializeTicTacToe() {
   };
   
   $('#gameStatus').textContent = 'Your turn (X)';
+  toast('Tic Tac Toe game started!', 2000, 'success');
 }
 
 function handleTicTacToeClick(e) {
@@ -1755,17 +2591,20 @@ function handleTicTacToeClick(e) {
   // Make move
   ticTacToeGame.board[index] = ticTacToeGame.currentPlayer;
   cell.textContent = ticTacToeGame.currentPlayer;
+  cell.classList.add(ticTacToeGame.currentPlayer.toLowerCase());
   
   // Check for win or draw
   if (checkWin()) {
     $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer} wins!`;
     ticTacToeGame.gameActive = false;
+    toast(`Player ${ticTacToeGame.currentPlayer} wins!`, 3000, 'success');
     return;
   }
   
   if (checkDraw()) {
     $('#gameStatus').textContent = 'Game ended in a draw!';
     ticTacToeGame.gameActive = false;
+    toast('Game ended in a draw!', 3000, 'info');
     return;
   }
   
@@ -1802,20 +2641,58 @@ function setupNavigation() {
     item.addEventListener('click', () => {
       const targetPage = item.dataset.page;
       
-      // Update active nav item
-      navItems.forEach(nav => nav.classList.remove('active'));
+      // Update active nav item with animation
+      navItems.forEach(nav => {
+        nav.classList.remove('active');
+        nav.style.transform = 'translateY(0)';
+      });
       item.classList.add('active');
       
-      // Show target page, hide others
+      // Show target page with fade animation, hide others
       pages.forEach(page => {
-        page.classList.remove('active');
         if (page.id === targetPage) {
-          page.classList.add('active');
+          page.style.display = 'block';
+          setTimeout(() => page.classList.add('active'), 10);
+        } else {
+          page.classList.remove('active');
+          setTimeout(() => page.style.display = 'none', 300);
         }
       });
     });
   });
 }
+
+// Scroll to bottom functionality
+function setupScrollToBottom() {
+  const messagesContainer = $('#messages');
+  const scrollButton = $('#scrollToBottom');
+  
+  if (messagesContainer && scrollButton) {
+    messagesContainer.addEventListener('scroll', () => {
+      const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop <= messagesContainer.clientHeight + 100;
+      scrollButton.classList.toggle('hidden', isAtBottom);
+    });
+    
+    scrollButton.addEventListener('click', () => {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: 'smooth'
+      });
+    });
+  }
+}
+
+// Initialize enhanced features when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  setupScrollToBottom();
+  
+  // Add enter key to send message
+  $('#msgInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      $('#sendBtn').click();
+    }
+  });
+});
 
 /* ========================== ON AUTH CHANGE ========================== */
 onAuthStateChanged(auth, async (user) => {
@@ -1830,7 +2707,7 @@ onAuthStateChanged(auth, async (user) => {
 
   const bannedSnap = await get(ref(db, 'banned/' + user.uid));
   if(bannedSnap.exists()){
-    toast('Your account is banned. Signing out.');
+    toast('Your account is banned. Signing out.', 4000, 'error');
     await signOut(auth);
     return;
   }
@@ -1842,20 +2719,20 @@ onAuthStateChanged(auth, async (user) => {
     await set(uref, {
       uid: user.uid,
       email: user.email,
-      name: user.displayName || user.email.split('@'),
+      name: user.displayName || user.email.split('@')[0],
       avatar: user.photoURL || defaultAvatar(user.uid),
       shortId: short,
       createdAt: Date.now(),
       online: true,
       lastSeen: Date.now(),
-      status: 'online' // NEW: Default status
+      status: 'online'
     });
     await set(ref(db, 'shortIds/' + short), { uid: user.uid });
   } else {
     const data = s.val();
     const upd = { online: true, lastSeen: Date.now() };
     if(!data.avatar) upd.avatar = defaultAvatar(user.uid);
-    if(!data.status) upd.status = 'online'; // NEW: Ensure status exists
+    if(!data.status) upd.status = 'online';
     await update(uref, upd);
   }
 
@@ -1886,7 +2763,7 @@ onAuthStateChanged(auth, async (user) => {
       option.classList.add('active');
       
       await update(ref(db, 'users/' + me.uid), { status: option.dataset.status });
-      toast(`Status set to ${option.dataset.status}`);
+      toast(`Status set to ${option.dataset.status}`, 2000, 'success');
     };
   });
 
@@ -1897,9 +2774,17 @@ onAuthStateChanged(auth, async (user) => {
       option.classList.add('active');
       
       // Update CSS variables based on theme
-      document.documentElement.style.setProperty('--brand', getComputedStyle(option).backgroundColor);
+      if (option.dataset.theme === 'green') {
+        document.documentElement.style.setProperty('--brand', '#4caf50');
+      } else if (option.dataset.theme === 'purple') {
+        document.documentElement.style.setProperty('--brand', '#9c27b0');
+      } else if (option.dataset.theme === 'red') {
+        document.documentElement.style.setProperty('--brand', '#f44336');
+      } else {
+        document.documentElement.style.setProperty('--brand', '#4f8cff');
+      }
       localStorage.setItem('chatTheme', option.dataset.theme);
-      toast(`Theme changed to ${option.dataset.theme}`);
+      toast(`Theme changed to ${option.dataset.theme}`, 2000, 'success');
     };
   });
 
@@ -1926,12 +2811,12 @@ onAuthStateChanged(auth, async (user) => {
 
   // profile buttons wired as before...
   $('#saveProfileBtn').onclick = async ()=>{
-    const name = $('#profName').value.trim() || me.email?.split('@') || 'user';
+    const name = $('#profName').value.trim() || me.email?.split('@')[0] || 'user';
     const avatar = $('#profAvatarUrl').value.trim() || me.avatar || defaultAvatar(me.uid);
     await update(ref(db, 'users/'+me.uid), { name, avatar });
     try { await updateProfile(auth.currentUser, { displayName: name, photoURL: avatar }); } catch(_) {}
     $('#navAvatar').src = avatar;
-    toast('Profile updated');
+    toast('Profile updated successfully!', 2000, 'success');
     await refreshFriends();
   };
 
@@ -1941,7 +2826,7 @@ onAuthStateChanged(auth, async (user) => {
     await update(ref(db, 'users/'+me.uid), { avatar });
     try { await updateProfile(auth.currentUser, { photoURL: avatar }); } catch(_) {}
     $('#navAvatar').src = avatar;
-    toast('Avatar reset');
+    toast('Avatar reset to default', 2000, 'success');
   };
 
   // Manage admin controls visibility
@@ -1949,7 +2834,7 @@ onAuthStateChanged(auth, async (user) => {
     isAdminUser = true;
     $('#adminControls').style.display = 'block';
     await injectAdminPanel();
-    toast('Admin access granted');
+    toast('Admin access granted!', 3000, 'success');
   } else {
     isAdminUser = false;
     $('#adminControls').style.display = 'none';
@@ -1998,9 +2883,13 @@ $('#navAvatar').onclick = () => {
 };
 
 $('#logoutBtn').onclick = async () => {
-  const ok = confirm('Sign out?');
-  if(ok) await signOut(auth);
+  const ok = confirm('Are you sure you want to sign out?');
+  if(ok) {
+    await signOut(auth);
+    toast('Signed out successfully', 2000, 'success');
+  }
 };
+
 const darkModeToggle = document.getElementById('darkModeToggle');
 
 function updateToggleButtonText() {
@@ -2011,8 +2900,10 @@ darkModeToggle.onclick = () => {
   document.body.classList.toggle('theme-dim');
   if (document.body.classList.contains('theme-dim')) {
     localStorage.setItem('darkMode', 'enabled');
+    toast('Dark mode enabled', 2000, 'success');
   } else {
     localStorage.removeItem('darkMode');
+    toast('Light mode enabled', 2000, 'success');
   }
   updateToggleButtonText();
 };
@@ -2022,6 +2913,7 @@ if (localStorage.getItem('darkMode') === 'enabled') {
 }
 
 updateToggleButtonText();
+
 const msgInput = document.getElementById('msgInput');
 const typingIndicator = document.getElementById('typingIndicator');
 
