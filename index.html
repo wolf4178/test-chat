@@ -34,16 +34,16 @@ html, body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  overflow: hidden;
+  overflow: auto;
 }
 
 .app {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 100vh;
 }
 
-/* Enhanced Header */
 header {
   display: flex;
   align-items: center;
@@ -71,7 +71,6 @@ header {
   to { filter: brightness(1.2); }
 }
 
-/* Enhanced Cards */
 .card {
   background: var(--elev);
   border: 1px solid var(--border);
@@ -96,7 +95,6 @@ header {
   display: none !important;
 }
 
-/* Enhanced Inputs */
 .input {
   width: 100%;
   padding: .8rem;
@@ -116,7 +114,6 @@ header {
   transform: translateY(-1px);
 }
 
-/* Enhanced Buttons */
 .btn {
   background: linear-gradient(135deg, var(--brand), #3a7cff);
   border: none;
@@ -162,7 +159,6 @@ header {
   transform: translateY(-1px);
 }
 
-/* Enhanced Lists */
 .list {
   display: flex;
   flex-direction: column;
@@ -214,7 +210,6 @@ header {
   transform: scale(1.1);
 }
 
-/* Enhanced Messages */
 #messages {
   margin-top: .6rem;
   max-height: 360px;
@@ -223,6 +218,8 @@ header {
   padding: .8rem;
   border-radius: var(--radius);
   scroll-behavior: smooth;
+  flex: 1;
+  min-height: 200px;
 }
 
 #messages::-webkit-scrollbar {
@@ -242,7 +239,6 @@ header {
   background: var(--brand);
 }
 
-/* Enhanced Message Items */
 .message-item {
   display: flex;
   align-items: flex-start;
@@ -296,7 +292,6 @@ header {
   margin-top: .3rem;
 }
 
-/* Enhanced Bottom Navigation */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -350,11 +345,12 @@ header {
   transform: scale(1.2);
 }
 
-/* Enhanced Pages */
 .page {
   display: none;
   padding-bottom: 80px;
   animation: pageFade 0.4s ease-out;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
 }
 
 @keyframes pageFade {
@@ -372,7 +368,13 @@ header {
   display: block;
 }
 
-/* Enhanced Games */
+main {
+  flex: 1;
+  overflow: auto;
+  padding: 0.8rem;
+  min-height: calc(100vh - 120px);
+}
+
 .game-container {
   background: var(--elev);
   border-radius: var(--radius);
@@ -390,7 +392,6 @@ header {
   font-weight: 700;
 }
 
-/* Enhanced Tic Tac Toe */
 .tic-tac-toe {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -430,7 +431,6 @@ header {
   color: var(--success);
 }
 
-/* Enhanced Settings */
 .settings-section {
   margin-bottom: 1.5rem;
   animation: fadeInUp 0.5s ease-out;
@@ -454,7 +454,6 @@ header {
   border-bottom: none;
 }
 
-/* Switch Toggle */
 .switch {
   position: relative;
   display: inline-block;
@@ -500,7 +499,6 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* Enhanced Toast */
 #toasts {
   position: fixed;
   left: 50%;
@@ -535,7 +533,6 @@ input:checked + .slider:before {
   }
 }
 
-/* Enhanced Status Indicators */
 .status-indicator {
   width: 10px;
   height: 10px;
@@ -570,7 +567,6 @@ input:checked + .slider:before {
   box-shadow: 0 0 10px var(--danger);
 }
 
-/* Enhanced Theme Selector */
 .theme-selector {
   display: flex;
   gap: 12px;
@@ -608,7 +604,6 @@ input:checked + .slider:before {
   opacity: 1;
 }
 
-/* Enhanced Loading States */
 .loading {
   display: inline-block;
   width: 20px;
@@ -623,7 +618,6 @@ input:checked + .slider:before {
   to { transform: rotate(360deg); }
 }
 
-/* Enhanced Context Menu */
 .context-menu {
   position: absolute;
   background: var(--elev);
@@ -658,7 +652,6 @@ input:checked + .slider:before {
   color: white;
 }
 
-/* Enhanced Search */
 .search-container {
   position: relative;
   margin-bottom: 1rem;
@@ -691,7 +684,6 @@ input:checked + .slider:before {
   color: white;
 }
 
-/* Enhanced File Preview */
 .file-preview {
   max-width: 250px;
   margin-top: 8px;
@@ -718,7 +710,6 @@ input:checked + .slider:before {
   color: white;
 }
 
-/* Enhanced Voice Message */
 .voice-message {
   display: flex;
   align-items: center;
@@ -772,7 +763,6 @@ input:checked + .slider:before {
   min-width: 40px;
 }
 
-/* Enhanced Reaction System */
 .reaction-container {
   display: flex;
   gap: 6px;
@@ -827,7 +817,6 @@ input:checked + .slider:before {
   transform: scale(1.2);
 }
 
-/* Enhanced Pinned Messages */
 .pinned-message {
   border-left: 4px solid var(--brand);
   background: linear-gradient(135deg, #0c1a30, #0f2040) !important;
@@ -853,7 +842,6 @@ input:checked + .slider:before {
   60% { transform: translateY(-3px); }
 }
 
-/* Enhanced Call Items */
 .call-item {
   display: flex;
   align-items: center;
@@ -925,7 +913,6 @@ input:checked + .slider:before {
   color: #2196f3;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .app {
     font-size: 14px;
@@ -957,13 +944,11 @@ input:checked + .slider:before {
   }
 }
 
-/* Dark mode toggle enhancement */
 #darkModeToggle {
   position: relative;
   overflow: hidden;
 }
 
-/* Animation for new messages */
 @keyframes newMessage {
   0% {
     background: rgba(79, 140, 255, 0.3);
@@ -977,7 +962,6 @@ input:checked + .slider:before {
   animation: newMessage 2s ease-out;
 }
 
-/* Enhanced Typing Indicator */
 .typing-dots {
   display: inline-block;
 }
@@ -1000,7 +984,6 @@ input:checked + .slider:before {
   40% { transform: scale(1); }
 }
 
-/* Enhanced Scroll to Bottom Button */
 .scroll-to-bottom {
   position: absolute;
   bottom: 80px;
@@ -1037,6 +1020,37 @@ input:checked + .slider:before {
   background: var(--brand);
   border-color: var(--brand);
 }
+
+#chats-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: calc(100vh - 120px);
+}
+
+#chats-page > div {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  flex: 1;
+  min-height: 0;
+}
+
+#friendsList, #communitiesList, #adminUsersList {
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#incomingReqs, #outgoingReqs {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.fullscreen-chat#appUI > div { display:flex; flex-direction:column; } 
+.fullscreen-chat#appUI > div > div:first-child { display:none; }
+.fullscreen-chat#appUI > div > div:last-child { width:100% !important; }
 </style>
 </head>
 <body>
@@ -1054,7 +1068,6 @@ input:checked + .slider:before {
 <div id="globalBanner" class="hidden" style="background:#0c2140;border-bottom:1px solid var(--border);padding:.5rem;text-align:center;color:#dfefff"></div>
 
 <main>
-<!-- AUTH CARD -->
 <section id="auth" class="card" style="max-width:720px;margin:2rem auto;animation:fadeInUp 0.6s ease-out">
 <h3 style="text-align:center;margin-bottom:1.5rem;color:var(--brand)">Sign in / Register</h3>
 <input id="loginEmail" class="input" placeholder="Email" type="email" />
@@ -1067,9 +1080,7 @@ input:checked + .slider:before {
 <div id="authMsg" style="color:var(--muted);margin-top:.8rem;text-align:center;min-height:20px"></div>
 </section>
 
-<!-- APP PAGES -->
 <section id="appUI" class="hidden" style="max-width:1100px;margin:16px auto 80px">
-<!-- Navigation Tabs -->
 <div class="bottom-nav">
   <div class="nav-item active" data-page="chats-page">
     <div class="nav-icon">💬</div>
@@ -1089,17 +1100,14 @@ input:checked + .slider:before {
   </div>
 </div>
 
-<!-- Chats Page -->
 <div id="chats-page" class="page active">
   <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
     <div style="flex:1;min-width:300px">
-      <!-- Profile and Admin Panel Container -->
       <div id="profileAdminPanel" class="card" style="margin-bottom:.8rem; display:none;">
         <strong style="display:block;margin-bottom:1rem;color:var(--brand)">My Profile</strong>
         <input id="profName" class="input" placeholder="Display name" />
         <input id="profAvatarUrl" class="input" placeholder="Avatar URL (optional)" />
 
-        <!-- Enhanced User status selector -->
         <div class="status-selector" style="margin:1rem 0">
           <strong style="display:block;margin-bottom:8px">Status</strong>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1120,7 +1128,6 @@ input:checked + .slider:before {
           <button id="resetAvatarBtn" class="btn ghost" style="flex:1">Reset Avatar</button>
         </div>
 
-        <!-- Enhanced Theme selector -->
         <div style="margin-bottom: 1rem;">
           <strong style="display:block;margin-bottom:8px">Chat Theme</strong>
           <div class="theme-selector">
@@ -1173,7 +1180,6 @@ input:checked + .slider:before {
         </div>
       </div>
 
-      <!-- ADD FRIENDS + REQUESTS PANELS -->
       <div class="card" style="margin-bottom:.8rem">
         <strong style="display:block;margin-bottom:.8rem">Add friends</strong>
         <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
@@ -1226,14 +1232,12 @@ input:checked + .slider:before {
           </div>
         </div>
 
-        <!-- Enhanced Search container -->
         <div class="search-container">
           <input id="messageSearch" class="input" placeholder="🔍 Search messages..." style="margin-bottom:0" />
           <div id="searchResults" class="search-results"></div>
         </div>
 
         <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.8rem;border-radius:var(--radius);position:relative">
-          <!-- Messages will be inserted here -->
         </div>
 
         <div style="display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap">
@@ -1253,16 +1257,13 @@ input:checked + .slider:before {
   </div>
 </div>
 
-<!-- Calls Page -->
 <div id="calls-page" class="page">
   <div class="card">
     <strong style="display:block;margin-bottom:1rem">Recent Calls</strong>
     <div id="callHistory" class="list"></div>
   </div>
   
-  <!-- Enhanced Call history items -->
   <div id="callsList">
-    <!-- Sample call items -->
     <div class="call-item">
       <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user1" class="call-avatar" alt="User 1">
       <div class="call-details">
@@ -1301,14 +1302,12 @@ input:checked + .slider:before {
   </div>
 </div>
 
-<!-- Games Page -->
 <div id="games-page" class="page">
   <div class="card">
     <strong style="display:block;margin-bottom:.8rem">In-Chat Games</strong>
     <p style="color:var(--muted);margin:0">Play games with your friends directly in the chat!</p>
   </div>
   
-  <!-- Enhanced Tic Tac Toe Game -->
   <div class="game-container">
     <div class="game-title">Tic Tac Toe</div>
     <p style="color:var(--muted);margin-bottom:1rem">Challenge a friend to a game of Tic Tac Toe</p>
@@ -1332,7 +1331,6 @@ input:checked + .slider:before {
     </div>
   </div>
   
-  <!-- Word Game -->
   <div class="game-container">
     <div class="game-title">Word Challenge</div>
     <p style="color:var(--muted);margin-bottom:1rem">Test your vocabulary with friends</p>
@@ -1344,7 +1342,6 @@ input:checked + .slider:before {
     </div>
   </div>
   
-  <!-- Trivia Game -->
   <div class="game-container">
     <div class="game-title">Quick Trivia</div>
     <p style="color:var(--muted);margin-bottom:1rem">Answer trivia questions with friends</p>
@@ -1362,7 +1359,6 @@ input:checked + .slider:before {
   </div>
 </div>
 
-<!-- Settings Page -->
 <div id="settings-page" class="page">
   <div class="card">
     <strong style="display:block;margin-bottom:1rem">Account Settings</strong>
@@ -1487,18 +1483,13 @@ input:checked + .slider:before {
 </main>
 </div>
 
-<!-- Enhanced Toast area -->
 <div id="toasts" style="position:fixed;left:50%;transform:translateX(-50%);bottom:100px;z-index:9999"></div>
 
-<!-- Enhanced Context menu -->
 <div id="contextMenu" class="context-menu hidden"></div>
 
-<!-- Scroll to bottom button -->
 <button id="scrollToBottom" class="scroll-to-bottom hidden" title="Scroll to bottom">↓</button>
 
-<!-- COMPLETE FIREBASE + ENHANCED LOGIC -->
 <script type="module">
-/* ========================== CONFIG ========================== */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
 import { getDatabase, ref, set, push, onValue, get, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
@@ -1517,17 +1508,14 @@ const firebaseConfig = {
 
 const adminEmail = "flashdc4178@gmail.com";
 
-/* ========================== INIT ========================== */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-/* ========================== HELPERS ========================== */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 
-// Enhanced toast function
 function toast(msg, t = 3000, type = 'info') {
   const d = document.createElement('div');
   d.className = 'toast';
@@ -1560,7 +1548,6 @@ function typingRef(chatId, uid){
 
 function pairKey(a,b){ return [a,b].sort().join('_'); }
 
-/* ========================== VARIABLES ========================== */
 let isAdminUser = false;
 let me = null;
 let currentChat = null;
@@ -1570,10 +1557,8 @@ let pendingFile = null;
 let lastSendAt = 0;
 const SEND_COOLDOWN_MS = 1200;
 
-// NEW: Available emojis for reactions
 const EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🔥'];
 
-// NEW: Game state
 let ticTacToeGame = {
   board: ['', '', '', '', '', '', '', '', ''],
   currentPlayer: 'X',
@@ -1581,7 +1566,6 @@ let ticTacToeGame = {
   playerSymbol: 'X'
 };
 
-/* ========================== AUTH UI HANDLERS ========================== */
 $('#loginBtn').onclick = async () => {
   try {
     await signInWithEmailAndPassword(auth, $('#loginEmail').value, $('#loginPass').value);
@@ -1658,7 +1642,6 @@ $('#googleBtn').onclick = async () => {
   }
 };
 
-/* ========================== ADMIN UI + ACTIONS ========================== */
 async function injectAdminPanel(){
   if(!isAdminUser) return;
   
@@ -1770,13 +1753,11 @@ async function refreshAdminUsers(){
   });
 }
 
-/* ========================== BAN CHECK ========================== */
 async function isBanned(uid){
   const s = await get(ref(db, 'banned/' + uid));
   return s.exists();
 }
 
-/* ========================== APP CORE ========================== */
 function roomIdFor(a,b){ return [a,b].sort().join('_'); }
 
 async function getUnreadCount(chatId){
@@ -1870,7 +1851,6 @@ async function openGroup(c){
   subscribeMessages('communityMessages/' + c.id, c.id, 'group', c);
 }
 
-// NEW: Show reaction picker
 function showReactionPicker(messageKey, chatId, buttonElement) {
   const picker = document.createElement('div');
   picker.className = 'reaction-picker';
@@ -1892,7 +1872,6 @@ function showReactionPicker(messageKey, chatId, buttonElement) {
   
   document.body.appendChild(picker);
   
-  // Close picker when clicking outside
   setTimeout(() => {
     const closePicker = (e) => {
       if (!picker.contains(e.target) && e.target !== buttonElement) {
@@ -1904,13 +1883,11 @@ function showReactionPicker(messageKey, chatId, buttonElement) {
   }, 100);
 }
 
-// NEW: Add reaction to message
 async function addReactionToMessage(messageKey, chatId, reaction) {
   const basePath = currentChat.uid 
     ? `chats/${chatId}/messages/${messageKey}/reactions/${reaction}/${me.uid}`
     : `communityMessages/${chatId}/messages/${messageKey}/reactions/${reaction}/${me.uid}`;
   
-  // Toggle reaction
   const reactionRef = ref(db, basePath);
   const snap = await get(reactionRef);
   
@@ -1921,7 +1898,6 @@ async function addReactionToMessage(messageKey, chatId, reaction) {
   }
 }
 
-// NEW: Show context menu for messages
 function showMessageContextMenu(e, message, messageKey, chatId) {
   e.preventDefault();
   
@@ -1932,7 +1908,6 @@ function showMessageContextMenu(e, message, messageKey, chatId) {
   contextMenu.style.left = e.pageX + 'px';
   contextMenu.style.top = e.pageY + 'px';
   
-  // Add reaction option
   const reactOption = document.createElement('div');
   reactOption.className = 'context-menu-item';
   reactOption.textContent = 'Add Reaction';
@@ -1942,7 +1917,6 @@ function showMessageContextMenu(e, message, messageKey, chatId) {
   };
   contextMenu.appendChild(reactOption);
   
-  // Add reply option
   const replyOption = document.createElement('div');
   replyOption.className = 'context-menu-item';
   replyOption.textContent = 'Reply';
@@ -1953,7 +1927,6 @@ function showMessageContextMenu(e, message, messageKey, chatId) {
   };
   contextMenu.appendChild(replyOption);
   
-  // Add pin option for admins
   if (isAdminUser) {
     const pinOption = document.createElement('div');
     pinOption.className = 'context-menu-item';
@@ -1969,7 +1942,6 @@ function showMessageContextMenu(e, message, messageKey, chatId) {
     contextMenu.appendChild(pinOption);
   }
   
-  // Close menu when clicking outside
   setTimeout(() => {
     const closeMenu = (e) => {
       if (!contextMenu.contains(e.target)) {
@@ -1989,7 +1961,6 @@ function subscribeMessages(path, chatId, kind, peer){
     $('#messages').innerHTML = '';
     const entries = Object.entries(data).sort((a,b)=>a[1].ts - b[1].ts);
 
-    // NEW: Check for pinned messages
     let pinnedMessages = [];
     let regularMessages = [];
 
@@ -2001,7 +1972,6 @@ function subscribeMessages(path, chatId, kind, peer){
       }
     }
 
-    // Display pinned messages first
     if (pinnedMessages.length > 0) {
       const pinnedHeader = document.createElement('div');
       pinnedHeader.textContent = '📌 Pinned Messages';
@@ -2019,7 +1989,6 @@ function subscribeMessages(path, chatId, kind, peer){
       $('#messages').appendChild(divider);
     }
 
-    // Display regular messages
     for(const [key,m] of regularMessages){
       renderMessage(key, m, chatId);
     }
@@ -2027,7 +1996,6 @@ function subscribeMessages(path, chatId, kind, peer){
     $('#messages').scrollTop = $('#messages').scrollHeight;
   });
 
-  // NEW: Typing observer
   const tRef = ref(db, `typing/${chatId}`);
   const offTyping = onValue(tRef, snap=>{
     const obj = snap.val() || {};
@@ -2040,18 +2008,15 @@ function subscribeMessages(path, chatId, kind, peer){
   };
 }
 
-// Enhanced render message function
 async function renderMessage(key, m, chatId) {
   const div = document.createElement('div'); 
   div.className = `message-item ${m.from === me.uid ? 'own' : 'other'}`;
   div.setAttribute('data-message-id', key);
   
-  // Add new message animation
   setTimeout(() => {
     div.classList.add('new-message');
   }, 100);
 
-  // Add pinned class if message is pinned
   if (m.pinned) {
     div.classList.add('pinned-message');
   }
@@ -2069,7 +2034,6 @@ async function renderMessage(key, m, chatId) {
       <div class="message-time">${new Date(m.ts).toLocaleTimeString()}</div>
     </div>`;
   
-  // Add image if exists
   if(m.imageURL){
     const imgContainer = document.createElement('div');
     imgContainer.className = 'file-preview';
@@ -2088,7 +2052,6 @@ async function renderMessage(key, m, chatId) {
     div.querySelector('.message-content').appendChild(imgContainer);
   }
   
-  // Add audio player if audio exists
   if(m.audioURL){
     const audioContainer = document.createElement('div');
     audioContainer.className = 'voice-message';
@@ -2112,7 +2075,6 @@ async function renderMessage(key, m, chatId) {
     audioContainer.appendChild(progress);
     audioContainer.appendChild(duration);
     
-    // Audio player functionality
     let audio = new Audio(m.audioURL);
     audio.addEventListener('loadedmetadata', () => {
       if (!m.audioDuration) {
@@ -2144,7 +2106,6 @@ async function renderMessage(key, m, chatId) {
     div.querySelector('.message-content').appendChild(audioContainer);
   }
   
-  // NEW: Add message reactions if they exist
   if (m.reactions) {
     const reactionContainer = document.createElement('div');
     reactionContainer.className = 'reaction-container';
@@ -2165,7 +2126,6 @@ async function renderMessage(key, m, chatId) {
     }
   }
   
-  // Add action buttons for user's own messages
   if(m.from === me.uid){
     const row = document.createElement('div');
     row.style.display='flex'; row.style.gap='6px'; row.style.marginTop='6px';
@@ -2201,12 +2161,10 @@ async function renderMessage(key, m, chatId) {
     div.querySelector('.message-content').appendChild(row);
   }
   
-  // Add context menu on right-click
   div.addEventListener('contextmenu', (e) => {
     showMessageContextMenu(e, m, key, chatId);
   });
   
-  // read-by badge
   const readsSnap = await get(ref(db, `reads/${chatId}/${key}`));
   if(readsSnap.exists()){
     const readers = Object.keys(readsSnap.val() || {});
@@ -2220,13 +2178,11 @@ async function renderMessage(key, m, chatId) {
   
   $('#messages').appendChild(div);
   
-  // Mark as read if not sender
   if(m.from !== me.uid){
     await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
   }
 }
 
-// NEW: Format duration for audio messages
 function formatDuration(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
@@ -2266,14 +2222,12 @@ $('#sendBtn').onclick = async () => {
 
   if(pendingFile){
     try {
-      // Check if it's an audio file
       if (pendingFile.type.startsWith('audio/')) {
         const filePath = `uploads/${me.uid}/${chatId}/audio/${Date.now()}_${pendingFile.name}`;
         const sr = sref(storage, filePath);
         await uploadBytes(sr, pendingFile);
         audioURL = await getDownloadURL(sr);
         
-        // Get audio duration
         const audio = new Audio();
         audio.src = URL.createObjectURL(pendingFile);
         await new Promise(resolve => {
@@ -2283,7 +2237,6 @@ $('#sendBtn').onclick = async () => {
           });
         });
       } else {
-        // Handle image or other files
         const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile.name}`;
         const sr = sref(storage, filePath);
         await uploadBytes(sr, pendingFile);
@@ -2321,7 +2274,6 @@ $('#sendBtn').onclick = async () => {
   if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Message sent!', 2000, 'success'); }
 };
 
-// NEW: Message search functionality
 $('#messageSearch').addEventListener('input', async (e) => {
   const query = e.target.value.trim().toLowerCase();
   const resultsContainer = $('#searchResults');
@@ -2360,7 +2312,6 @@ $('#messageSearch').addEventListener('input', async (e) => {
       `;
       
       resultItem.onclick = () => {
-        // Scroll to message
         const messageElement = $(`[data-message-id="${key}"]`);
         if (messageElement) {
           messageElement.scrollIntoView({ behavior: 'smooth' });
@@ -2382,43 +2333,36 @@ $('#messageSearch').addEventListener('input', async (e) => {
   }
 });
 
-// Close search results when clicking outside
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.search-container')) {
     $('#searchResults').style.display = 'none';
   }
 });
 
-/* ========================== FRIEND REQUESTS ========================== */
 async function sendFriendRequestByShortId(shortId){
   $('#friendRequestMsg').textContent = '';
   if(!me) return toast('Sign in first', 3000, 'error');
   const v = (shortId||'').trim();
   if(v.length !== 5) { $('#friendRequestMsg').textContent = 'Enter a valid 5-digit ID'; toast('Enter a valid 5-digit ID', 3000, 'error'); return; }
 
-  // Lookup target UID
   const shortSnap = await get(ref(db, 'shortIds/' + v));
   if(!shortSnap.exists()){ $('#friendRequestMsg').textContent = 'No user with that ID'; toast('No user with that ID', 3000, 'error'); return; }
   const targetUid = shortSnap.val().uid;
 
   if(targetUid === me.uid){ $('#friendRequestMsg').textContent = 'Cannot add yourself'; toast('Cannot add yourself', 3000, 'error'); return; }
 
-  // Already friends?
   const already = await get(ref(db, `friends/${me.uid}/${targetUid}`));
   if(already.exists()){ $('#friendRequestMsg').textContent = 'Already friends'; toast('Already friends', 3000, 'info'); return; }
 
-  // Pair guard
   const pk = pairKey(me.uid, targetUid);
   const pairSnap = await get(ref(db, `requestPairs/${pk}`));
   if(pairSnap.exists()){ $('#friendRequestMsg').textContent = 'Request already pending'; toast('Request already pending', 3000, 'info'); return; }
 
-  // Compose target user display
   const targetUserSnap = await get(ref(db, 'users/' + targetUid));
   const targetUser = targetUserSnap.val() || {};
   const reqId = push(ref(db, 'friendRequests/_tmp')).key;
   const now = Date.now();
 
-  // Write outgoing for me
   await set(ref(db, `friendRequests/${me.uid}/outgoing/${reqId}`), {
     toUid: targetUid,
     toName: targetUser.name || targetUser.email || targetUid,
@@ -2426,7 +2370,6 @@ async function sendFriendRequestByShortId(shortId){
     ts: now
   });
 
-  // Write incoming for target
   await set(ref(db, `friendRequests/${targetUid}/incoming/${reqId}`), {
     fromUid: me.uid,
     fromName: me.name || me.email || me.uid,
@@ -2434,7 +2377,6 @@ async function sendFriendRequestByShortId(shortId){
     ts: now
   });
 
-  // Mark pair as pending
   await set(ref(db, `requestPairs/${pk}`), true);
 
   $('#friendRequestMsg').textContent = 'Request sent';
@@ -2446,11 +2388,9 @@ async function acceptFriendRequest(reqId, fromUid){
   if(!me) return;
   const pk = pairKey(me.uid, fromUid);
 
-  // Add both sides as friends
   await set(ref(db, `friends/${me.uid}/${fromUid}`), true);
   await set(ref(db, `friends/${fromUid}/${me.uid}`), true);
 
-  // Remove request entries
   await remove(ref(db, `friendRequests/${me.uid}/incoming/${reqId}`));
   await remove(ref(db, `friendRequests/${fromUid}/outgoing/${reqId}`));
   await remove(ref(db, `requestPairs/${pk}`));
@@ -2496,7 +2436,6 @@ async function loadFriendRequests(){
   const incoming = inSnap.val() || {};
   const outgoing = outSnap.val() || {};
 
-  // Incoming
   for(const reqId in incoming){
     const r = incoming[reqId];
     const it = document.createElement('div'); it.className = 'item';
@@ -2517,7 +2456,6 @@ async function loadFriendRequests(){
     incomingWrap.appendChild(it);
   }
 
-  // Outgoing
   for(const reqId in outgoing){
     const r = outgoing[reqId];
     const it = document.createElement('div'); it.className = 'item';
@@ -2537,7 +2475,6 @@ async function loadFriendRequests(){
   }
 }
 
-/* ========================== PRESENCE ========================== */
 async function setPresence(uid){
   await update(ref(db, 'users/' + uid), { online: true, lastSeen: Date.now() });
 }
@@ -2560,7 +2497,6 @@ document.addEventListener('visibilitychange', async () => {
   }
 });
 
-/* ========================== NEW: GAME FUNCTIONS ========================== */
 function initializeTicTacToe() {
   const cells = $$('.ttt-cell');
   cells.forEach(cell => {
@@ -2588,12 +2524,10 @@ function handleTicTacToeClick(e) {
     return;
   }
   
-  // Make move
   ticTacToeGame.board[index] = ticTacToeGame.currentPlayer;
   cell.textContent = ticTacToeGame.currentPlayer;
   cell.classList.add(ticTacToeGame.currentPlayer.toLowerCase());
   
-  // Check for win or draw
   if (checkWin()) {
     $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer} wins!`;
     ticTacToeGame.gameActive = false;
@@ -2608,16 +2542,15 @@ function handleTicTacToeClick(e) {
     return;
   }
   
-  // Switch player
   ticTacToeGame.currentPlayer = ticTacToeGame.currentPlayer === 'X' ? 'O' : 'X';
   $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer}'s turn`;
 }
 
 function checkWin() {
   const winPatterns = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-    [0, 4, 8], [2, 4, 6]             // diagonals
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
   ];
   
   return winPatterns.some(pattern => {
@@ -2632,7 +2565,6 @@ function checkDraw() {
   return ticTacToeGame.board.every(cell => cell !== '');
 }
 
-/* ========================== NEW: NAVIGATION ========================== */
 function setupNavigation() {
   const navItems = $$('.nav-item');
   const pages = $$('.page');
@@ -2641,14 +2573,12 @@ function setupNavigation() {
     item.addEventListener('click', () => {
       const targetPage = item.dataset.page;
       
-      // Update active nav item with animation
       navItems.forEach(nav => {
         nav.classList.remove('active');
         nav.style.transform = 'translateY(0)';
       });
       item.classList.add('active');
       
-      // Show target page with fade animation, hide others
       pages.forEach(page => {
         if (page.id === targetPage) {
           page.style.display = 'block';
@@ -2662,7 +2592,6 @@ function setupNavigation() {
   });
 }
 
-// Scroll to bottom functionality
 function setupScrollToBottom() {
   const messagesContainer = $('#messages');
   const scrollButton = $('#scrollToBottom');
@@ -2682,11 +2611,9 @@ function setupScrollToBottom() {
   }
 }
 
-// Initialize enhanced features when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   setupScrollToBottom();
   
-  // Add enter key to send message
   $('#msgInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       $('#sendBtn').click();
@@ -2694,7 +2621,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ========================== ON AUTH CHANGE ========================== */
 onAuthStateChanged(auth, async (user) => {
   if(!user){
     $('#auth').classList.remove('hidden');
@@ -2743,11 +2669,9 @@ onAuthStateChanged(auth, async (user) => {
   $('#auth').classList.add('hidden');
   $('#appUI').classList.remove('hidden');
 
-  // fill profile editor
   $('#profName').value = me.name || '';
   $('#profAvatarUrl').value = me.avatar || '';
 
-  // NEW: Set status selector
   $$('.status-option').forEach(option => {
     if (option.dataset.status === me.status) {
       option.classList.add('active');
@@ -2756,7 +2680,6 @@ onAuthStateChanged(auth, async (user) => {
     }
   });
 
-  // NEW: Status selector event listeners
   $$('.status-option').forEach(option => {
     option.onclick = async () => {
       $$('.status-option').forEach(opt => opt.classList.remove('active'));
@@ -2767,13 +2690,11 @@ onAuthStateChanged(auth, async (user) => {
     };
   });
 
-  // NEW: Theme selector event listeners
   $$('.theme-option').forEach(option => {
     option.onclick = () => {
       $$('.theme-option').forEach(opt => opt.classList.remove('active'));
       option.classList.add('active');
       
-      // Update CSS variables based on theme
       if (option.dataset.theme === 'green') {
         document.documentElement.style.setProperty('--brand', '#4caf50');
       } else if (option.dataset.theme === 'purple') {
@@ -2788,7 +2709,6 @@ onAuthStateChanged(auth, async (user) => {
     };
   });
 
-  // Load saved theme
   const savedTheme = localStorage.getItem('chatTheme');
   if (savedTheme) {
     const themeOption = $(`.theme-option[data-theme="${savedTheme}"]`);
@@ -2796,7 +2716,6 @@ onAuthStateChanged(auth, async (user) => {
       $$('.theme-option').forEach(opt => opt.classList.remove('active'));
       themeOption.classList.add('active');
       
-      // Update CSS variables
       if (savedTheme === 'green') {
         document.documentElement.style.setProperty('--brand', '#4caf50');
       } else if (savedTheme === 'purple') {
@@ -2809,7 +2728,6 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 
-  // profile buttons wired as before...
   $('#saveProfileBtn').onclick = async ()=>{
     const name = $('#profName').value.trim() || me.email?.split('@')[0] || 'user';
     const avatar = $('#profAvatarUrl').value.trim() || me.avatar || defaultAvatar(me.uid);
@@ -2829,7 +2747,6 @@ onAuthStateChanged(auth, async (user) => {
     toast('Avatar reset to default', 2000, 'success');
   };
 
-  // Manage admin controls visibility
   if(user.email && user.email.toLowerCase() === adminEmail.toLowerCase()){
     isAdminUser = true;
     $('#adminControls').style.display = 'block';
@@ -2842,24 +2759,19 @@ onAuthStateChanged(auth, async (user) => {
 
   document.getElementById('profileAdminPanel').style.display = 'none';
 
-  // refresh rest of app UI...
   await refreshFriends();
   await loadCommunities();
 
-  // NEW: wire Add friend button + load requests and live updates
   $('#addFriendBtn').onclick = ()=> sendFriendRequestByShortId($('#addByShort').value);
   await loadFriendRequests();
   onValue(ref(db, `friendRequests/${me.uid}`), ()=> { loadFriendRequests(); });
 
-  // NEW: Setup navigation
   setupNavigation();
   
-  // NEW: Initialize games
   initializeTicTacToe();
   $('#startTicTacToe').onclick = initializeTicTacToe;
   $('#resetTicTacToe').onclick = initializeTicTacToe;
 
-  // subscribe global announcement
   onValue(ref(db,'announcements/global'), snap=>{
     const b = $('#globalBanner');
     if(snap.exists()){
@@ -2872,7 +2784,6 @@ onAuthStateChanged(auth, async (user) => {
   });
 });
 
-/* ========================== PROFILE PANEL TOGGLE + LOGOUT ========================== */
 $('#navAvatar').onclick = () => {
   const panel = document.getElementById('profileAdminPanel');
   if(panel.style.display === 'none' || panel.style.display === ''){
