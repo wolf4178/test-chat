@@ -1492,6 +1492,112 @@ body.theme-light .profile-header {
   margin-top: 0.25rem;
 }
 
+/* NEW: Disappearing Messages Styles */
+.disappearing-message {
+  position: relative;
+  border: 1px dashed var(--warning);
+  background: rgba(255, 152, 0, 0.05) !important;
+}
+
+.disappearing-message .message-timer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: var(--warning);
+}
+
+.disappearing-message .timer-icon {
+  font-size: 0.8rem;
+}
+
+.disappearing-message.expiring {
+  animation: pulseWarning 1s infinite;
+}
+
+@keyframes pulseWarning {
+  0% { border-color: var(--warning); }
+  50% { border-color: var(--danger); }
+  100% { border-color: var(--warning); }
+}
+
+/* NEW: Forgot Password Styles */
+.forgot-password-container {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.forgot-password-link {
+  color: var(--brand);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.forgot-password-link:hover {
+  color: #6aa1ff;
+}
+
+.password-reset-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+.password-reset-content {
+  background: var(--elev);
+  border-radius: var(--radius);
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.password-reset-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* NEW: Password Reset Request Styles */
+.password-reset-request {
+  background: rgba(255, 152, 0, 0.1);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.password-reset-request .request-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.password-reset-request .user-details {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.password-reset-request .request-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 /* Enhanced Media Queries */
 @media (max-width: 768px) {
   .app {
@@ -1740,6 +1846,9 @@ body.theme-light .profile-header {
 <button id="registerBtn" class="btn ghost" style="flex:1">Register</button>
 <button id="googleBtn" class="btn ghost" style="flex:1">Sign in with Google</button>
 </div>
+<div class="forgot-password-container">
+  <span class="forgot-password-link" id="forgotPasswordLink">Forgot your password?</span>
+</div>
 <div id="authMsg" style="color:var(--muted);margin-top:.8rem;text-align:center;min-height:20px"></div>
 </section>
 
@@ -1880,6 +1989,14 @@ body.theme-light .profile-header {
               </div>
             </div>
 
+            <!-- NEW: Password Reset Requests Section -->
+            <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+              <div style="font-weight:700;margin-bottom:8px">Password Reset Requests</div>
+              <div id="passwordResetRequests" class="admin-log" style="max-height:150px">
+                <!-- Password reset requests will appear here -->
+              </div>
+            </div>
+
             <div>
               <button id="adminRefreshUsers" class="btn ghost" style="width:100%;margin-bottom:8px">Refresh Users</button>
               <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
@@ -1975,6 +2092,8 @@ body.theme-light .profile-header {
           <div style="display:flex;gap:4px">
             <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">🎤</button>
             <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">📹</button>
+            <!-- NEW: Disappearing Messages Toggle -->
+            <button id="disappearingToggle" class="btn ghost" title="Toggle disappearing messages">⏱️</button>
           </div>
         </div>
 
@@ -2132,6 +2251,19 @@ body.theme-light .profile-header {
         <span class="slider"></span>
       </label>
     </div>
+    
+    <!-- NEW: Disappearing Messages Settings -->
+    <div class="settings-item">
+      <div>Disappearing Messages</div>
+      <select id="disappearingTimeout" class="input" style="width:auto;padding:.5rem .8rem">
+        <option value="0">Off</option>
+        <option value="30000">30 seconds</option>
+        <option value="60000">1 minute</option>
+        <option value="300000">5 minutes</option>
+        <option value="3600000">1 hour</option>
+        <option value="86400000">24 hours</option>
+      </select>
+    </div>
   </div>
   
   <div class="card">
@@ -2233,11 +2365,24 @@ body.theme-light .profile-header {
 
 <div id="contextMenu" class="context-menu hidden"></div>
 
+<!-- NEW: Password Reset Modal -->
+<div id="passwordResetModal" class="password-reset-modal hidden">
+  <div class="password-reset-content">
+    <h3 style="text-align:center;margin-bottom:1.5rem;color:var(--brand)">Reset Password</h3>
+    <input id="resetEmail" class="input" placeholder="Enter your email" type="email" />
+    <div class="password-reset-actions">
+      <button id="cancelReset" class="btn ghost" style="flex:1">Cancel</button>
+      <button id="submitReset" class="btn" style="flex:1">Send Reset Link</button>
+    </div>
+    <div id="resetMsg" style="color:var(--muted);margin-top:.8rem;text-align:center;min-height:20px"></div>
+  </div>
+</div>
+
 <button id="scrollToBottom" class="scroll-to-bottom hidden" title="Scroll to bottom">↓</button>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
 import { getDatabase, ref, set, push, onValue, get, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
 import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js';
 
@@ -2312,6 +2457,10 @@ let ticTacToeGame = {
   gameActive: false,
   playerSymbol: 'X'
 };
+
+// NEW: Disappearing messages state
+let disappearingMessagesEnabled = false;
+let disappearingTimeout = 0; // in milliseconds
 
 // Enhanced Friend Request Features
 let notificationCount = 0;
@@ -2508,6 +2657,208 @@ async function loadActivityFeed() {
     `;
     container.appendChild(item);
   });
+}
+
+// NEW: Forgot Password Functionality
+function setupForgotPassword() {
+  $('#forgotPasswordLink').onclick = () => {
+    $('#passwordResetModal').classList.remove('hidden');
+  };
+  
+  $('#cancelReset').onclick = () => {
+    $('#passwordResetModal').classList.add('hidden');
+    $('#resetMsg').textContent = '';
+  };
+  
+  $('#submitReset').onclick = async () => {
+    const email = $('#resetEmail').value.trim();
+    if (!email) {
+      $('#resetMsg').textContent = 'Please enter your email';
+      return;
+    }
+    
+    try {
+      await sendPasswordResetEmail(auth, email);
+      
+      // Store password reset request for admin
+      if (isAdminUser) {
+        const requestId = push(ref(db, 'passwordResetRequests')).key;
+        await set(ref(db, `passwordResetRequests/${requestId}`), {
+          email,
+          timestamp: Date.now(),
+          status: 'pending'
+        });
+      }
+      
+      $('#resetMsg').textContent = 'Password reset email sent!';
+      toast('Password reset email sent! Check your inbox.', 5000, 'success');
+      
+      setTimeout(() => {
+        $('#passwordResetModal').classList.add('hidden');
+        $('#resetMsg').textContent = '';
+      }, 3000);
+    } catch (error) {
+      $('#resetMsg').textContent = error.message;
+      toast('Failed to send reset email: ' + error.message, 5000, 'error');
+    }
+  };
+}
+
+// NEW: Load password reset requests for admin
+async function loadPasswordResetRequests() {
+  if (!isAdminUser) return;
+  
+  const requestsRef = ref(db, 'passwordResetRequests');
+  onValue(requestsRef, (snapshot) => {
+    const requests = snapshot.val() || {};
+    const container = $('#passwordResetRequests');
+    container.innerHTML = '';
+    
+    Object.entries(requests)
+      .sort(([,a], [,b]) => b.timestamp - a.timestamp)
+      .forEach(([id, request]) => {
+        if (request.status === 'pending') {
+          const requestEl = document.createElement('div');
+          requestEl.className = 'password-reset-request';
+          requestEl.innerHTML = `
+            <div class="request-info">
+              <div class="user-details">
+                <div>
+                  <strong>${request.email}</strong>
+                  <div style="color:var(--muted);font-size:.8rem">${timeAgo(request.timestamp)} ago</div>
+                </div>
+              </div>
+              <div class="request-actions">
+                <button class="btn" data-action="approve" data-id="${id}">Approve</button>
+                <button class="btn ghost" data-action="deny" data-id="${id}">Deny</button>
+              </div>
+            </div>
+          `;
+          
+          container.appendChild(requestEl);
+        }
+      });
+    
+    // Add event listeners to buttons
+    container.querySelectorAll('button[data-action="approve"]').forEach(btn => {
+      btn.onclick = async () => {
+        const requestId = btn.dataset.id;
+        await update(ref(db, `passwordResetRequests/${requestId}`), { status: 'approved' });
+        toast('Password reset request approved', 3000, 'success');
+        addAdminLog('Password reset approved', `Email: ${requests[requestId].email}`);
+      };
+    });
+    
+    container.querySelectorAll('button[data-action="deny"]').forEach(btn => {
+      btn.onclick = async () => {
+        const requestId = btn.dataset.id;
+        await update(ref(db, `passwordResetRequests/${requestId}`), { status: 'denied' });
+        toast('Password reset request denied', 3000, 'info');
+        addAdminLog('Password reset denied', `Email: ${requests[requestId].email}`);
+      };
+    });
+  });
+}
+
+// NEW: Disappearing Messages Functions
+function setupDisappearingMessages() {
+  // Load user's disappearing messages setting
+  if (me && me.uid) {
+    const disappearingRef = ref(db, `users/${me.uid}/disappearingMessages`);
+    onValue(disappearingRef, (snapshot) => {
+      if (snapshot.exists()) {
+        disappearingTimeout = snapshot.val().timeout || 0;
+        disappearingMessagesEnabled = disappearingTimeout > 0;
+        
+        // Update UI
+        $('#disappearingTimeout').value = disappearingTimeout;
+        updateDisappearingToggle();
+      }
+    });
+  }
+  
+  // Settings change handler
+  $('#disappearingTimeout').onchange = async (e) => {
+    const timeout = parseInt(e.target.value);
+    disappearingTimeout = timeout;
+    disappearingMessagesEnabled = timeout > 0;
+    
+    if (me && me.uid) {
+      await update(ref(db, `users/${me.uid}/disappearingMessages`), {
+        timeout,
+        enabled: disappearingMessagesEnabled
+      });
+    }
+    
+    updateDisappearingToggle();
+    toast(`Disappearing messages ${disappearingMessagesEnabled ? 'enabled' : 'disabled'}`, 3000, 'success');
+  };
+  
+  // Chat toggle handler
+  $('#disappearingToggle').onclick = () => {
+    disappearingMessagesEnabled = !disappearingMessagesEnabled;
+    
+    if (me && me.uid) {
+      update(ref(db, `users/${me.uid}/disappearingMessages`), {
+        timeout: disappearingMessagesEnabled ? disappearingTimeout : 0,
+        enabled: disappearingMessagesEnabled
+      });
+    }
+    
+    updateDisappearingToggle();
+    toast(`Disappearing messages ${disappearingMessagesEnabled ? 'enabled' : 'disabled'} for this chat`, 3000, 'success');
+  };
+}
+
+function updateDisappearingToggle() {
+  const toggle = $('#disappearingToggle');
+  if (disappearingMessagesEnabled) {
+    toggle.style.background = 'var(--warning)';
+    toggle.style.color = 'white';
+    toggle.title = 'Disappearing messages: ON';
+  } else {
+    toggle.style.background = '';
+    toggle.style.color = '';
+    toggle.title = 'Disappearing messages: OFF';
+  }
+}
+
+// NEW: Schedule message deletion for disappearing messages
+function scheduleMessageDeletion(messageKey, chatId, timeout) {
+  if (timeout <= 0) return;
+  
+  setTimeout(async () => {
+    // Check if message still exists and hasn't been read by all recipients
+    const basePath = currentChat.uid 
+      ? `chats/${chatId}/messages/${messageKey}`
+      : `communityMessages/${chatId}/messages/${messageKey}`;
+    
+    const messageSnap = await get(ref(db, basePath));
+    if (messageSnap.exists()) {
+      const message = messageSnap.val();
+      
+      // Check if all recipients have read the message
+      const readsSnap = await get(ref(db, `reads/${chatId}/${messageKey}`));
+      if (readsSnap.exists()) {
+        const readers = Object.keys(readsSnap.val());
+        
+        // For DMs, check if both users have read it
+        if (currentChat.uid) {
+          const expectedReaders = [me.uid, currentChat.uid];
+          const allRead = expectedReaders.every(uid => readers.includes(uid));
+          
+          if (allRead) {
+            await remove(ref(db, basePath));
+            toast('Message disappeared', 2000, 'info');
+          }
+        } else {
+          // For groups, delete after timeout regardless of reads
+          await remove(ref(db, basePath));
+          toast('Message disappeared', 2000, 'info');
+        }
+      }
+    }
+  }, timeout);
 }
 
 // Enhanced Admin Features
@@ -2753,10 +3104,13 @@ function initializeEnhancedFeatures() {
   loadFriendSuggestions();
   updateFriendStats();
   loadActivityFeed();
+  setupForgotPassword();
+  setupDisappearingMessages();
   
   if (isAdminUser) {
     updateAdminStats();
     setInterval(updateAdminStats, 30000);
+    loadPasswordResetRequests();
     addAdminLog('Admin panel accessed');
   }
   
@@ -3235,6 +3589,40 @@ async function renderMessage(key, m, chatId) {
   div.className = `message-item ${m.from === me.uid ? 'own' : 'other'}`;
   div.setAttribute('data-message-id', key);
   
+  // NEW: Add disappearing message styling if applicable
+  if (m.disappearing && m.disappearingTimeout) {
+    div.classList.add('disappearing-message');
+    
+    // Calculate remaining time
+    const elapsed = Date.now() - m.ts;
+    const remaining = m.disappearingTimeout - elapsed;
+    
+    if (remaining > 0) {
+      const timerEl = document.createElement('div');
+      timerEl.className = 'message-timer';
+      
+      // Show warning if less than 10 seconds remain
+      if (remaining < 10000) {
+        div.classList.add('expiring');
+      }
+      
+      timerEl.innerHTML = `
+        <span class="timer-icon">⏱️</span>
+        <span>${Math.ceil(remaining / 1000)}s</span>
+      `;
+      
+      // Add timer to message
+      setTimeout(() => {
+        if (div.parentNode) {
+          const contentEl = div.querySelector('.message-content');
+          if (contentEl && !contentEl.querySelector('.message-timer')) {
+            contentEl.appendChild(timerEl);
+          }
+        }
+      }, 100);
+    }
+  }
+  
   setTimeout(() => {
     div.classList.add('new-message');
   }, 100);
@@ -3403,6 +3791,11 @@ async function renderMessage(key, m, chatId) {
   if(m.from !== me.uid){
     await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
   }
+  
+  // NEW: Schedule deletion for disappearing messages
+  if (m.disappearing && m.disappearingTimeout) {
+    scheduleMessageDeletion(key, chatId, m.disappearingTimeout);
+  }
 }
 
 function formatDuration(seconds) {
@@ -3480,6 +3873,13 @@ $('#sendBtn').onclick = async () => {
     audioURL: audioURL || null,
     audioDuration: audioDuration || null
   };
+  
+  // NEW: Add disappearing message properties if enabled
+  if (disappearingMessagesEnabled && disappearingTimeout > 0) {
+    payload.disappearing = true;
+    payload.disappearingTimeout = disappearingTimeout;
+  }
+  
   const key = push(ref(db)).key;
 
   if(currentChat.uid){
