@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>QuickChat — metoo Edition</title>
+<title>QuickChat — Enhanced Edition</title>
 <style>
-:root {
+:root { 
   --bg: #0b0f14;
   --elev: #111723;
   --border: #1b2435;
@@ -1673,10 +1673,10 @@ body.theme-light .profile-header {
 .fullscreen-chat#appUI > div > div:first-child { display:none; }
 .fullscreen-chat#appUI > div > div:last-child { width:100% !important; }
 
-/* DISCORD-STYLE FEATURES */
+/* QUICKCHAT-STYLE FEATURES */
 
-/* Discord-like Sidebar */
-.discord-sidebar {
+/* QuickChat-like Sidebar */
+.quickchat-sidebar {
   width: 72px;
   background: var(--elev);
   border-right: 1px solid var(--border);
@@ -1692,7 +1692,7 @@ body.theme-light .profile-header {
   z-index: 90;
 }
 
-.discord-server-icon {
+.quickchat-server-icon {
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -1707,17 +1707,17 @@ body.theme-light .profile-header {
   margin-bottom: 8px;
 }
 
-.discord-server-icon:hover {
+.quickchat-server-icon:hover {
   border-radius: 16px;
   background: var(--brand);
 }
 
-.discord-server-icon.active {
+.quickchat-server-icon.active {
   border-radius: 16px;
   background: var(--brand);
 }
 
-.discord-channel-sidebar {
+.quickchat-channel-sidebar {
   width: 240px;
   background: var(--elev);
   border-right: 1px solid var(--border);
@@ -1731,7 +1731,7 @@ body.theme-light .profile-header {
   overflow-y: auto;
 }
 
-.discord-server-header {
+.quickchat-server-header {
   padding: 16px;
   border-bottom: 1px solid var(--border);
   font-weight: 700;
@@ -1741,7 +1741,7 @@ body.theme-light .profile-header {
   justify-content: space-between;
 }
 
-.discord-channel-category {
+.quickchat-channel-category {
   padding: 8px 16px;
   color: var(--muted);
   font-size: 0.8rem;
@@ -1752,7 +1752,7 @@ body.theme-light .profile-header {
   justify-content: space-between;
 }
 
-.discord-channel-item {
+.quickchat-channel-item {
   padding: 6px 16px;
   display: flex;
   align-items: center;
@@ -1763,23 +1763,23 @@ body.theme-light .profile-header {
   transition: all 0.2s ease;
 }
 
-.discord-channel-item:hover {
+.quickchat-channel-item:hover {
   background: rgba(79, 140, 255, 0.1);
 }
 
-.discord-channel-item.active {
+.quickchat-channel-item.active {
   background: rgba(79, 140, 255, 0.2);
 }
 
-.discord-channel-icon {
+.quickchat-channel-icon {
   font-size: 1rem;
 }
 
-.discord-channel-name {
+.quickchat-channel-name {
   flex: 1;
 }
 
-.discord-member-sidebar {
+.quickchat-member-sidebar {
   width: 240px;
   background: var(--elev);
   border-left: 1px solid var(--border);
@@ -1793,14 +1793,14 @@ body.theme-light .profile-header {
   overflow-y: auto;
 }
 
-.discord-member-header {
+.quickchat-member-header {
   padding: 16px;
   border-bottom: 1px solid var(--border);
   font-weight: 700;
   font-size: 1.1rem;
 }
 
-.discord-member-item {
+.quickchat-member-item {
   padding: 8px 16px;
   display: flex;
   align-items: center;
@@ -1808,51 +1808,51 @@ body.theme-light .profile-header {
   transition: all 0.2s ease;
 }
 
-.discord-member-avatar {
+.quickchat-member-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
 }
 
-.discord-member-name {
+.quickchat-member-name {
   flex: 1;
   font-size: 0.9rem;
 }
 
-.discord-member-status {
+.quickchat-member-status {
   width: 8px;
   height: 8px;
   border-radius: 50%;
 }
 
-.discord-member-status.online {
+.quickchat-member-status.online {
   background: var(--success);
 }
 
-.discord-member-status.idle {
+.quickchat-member-status.idle {
   background: var(--warning);
 }
 
-.discord-member-status.dnd {
+.quickchat-member-status.dnd {
   background: var(--danger);
 }
 
-.discord-member-status.offline {
+.quickchat-member-status.offline {
   background: var(--muted);
 }
 
-/* Discord-like Message Styling */
-.discord-message {
+/* QuickChat-like Message Styling */
+.quickchat-message {
   display: flex;
   padding: 4px 16px;
   transition: all 0.2s ease;
 }
 
-.discord-message:hover {
+.quickchat-message:hover {
   background: rgba(79, 140, 255, 0.05);
 }
 
-.discord-message-avatar {
+.quickchat-message-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -1860,40 +1860,40 @@ body.theme-light .profile-header {
   flex-shrink: 0;
 }
 
-.discord-message-content {
+.quickchat-message-content {
   flex: 1;
 }
 
-.discord-message-header {
+.quickchat-message-header {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 4px;
 }
 
-.discord-message-author {
+.quickchat-message-author {
   font-weight: 600;
   color: var(--text);
 }
 
-.discord-message-timestamp {
+.quickchat-message-timestamp {
   font-size: 0.75rem;
   color: var(--muted);
 }
 
-.discord-message-text {
+.quickchat-message-text {
   line-height: 1.4;
   word-wrap: break-word;
 }
 
-.discord-message-reactions {
+.quickchat-message-reactions {
   display: flex;
   gap: 8px;
   margin-top: 8px;
   flex-wrap: wrap;
 }
 
-.discord-reaction {
+.quickchat-reaction {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1906,18 +1906,18 @@ body.theme-light .profile-header {
   transition: all 0.2s ease;
 }
 
-.discord-reaction:hover {
+.quickchat-reaction:hover {
   background: rgba(79, 140, 255, 0.1);
   border-color: var(--brand);
 }
 
-.discord-reaction.own {
+.quickchat-reaction.own {
   background: rgba(79, 140, 255, 0.2);
   border-color: var(--brand);
 }
 
-/* Discord-like Input Area */
-.discord-input-area {
+/* QuickChat-like Input Area */
+.quickchat-input-area {
   background: var(--elev);
   border-top: 1px solid var(--border);
   padding: 16px;
@@ -1928,7 +1928,7 @@ body.theme-light .profile-header {
   z-index: 88;
 }
 
-.discord-input-container {
+.quickchat-input-container {
   display: flex;
   align-items: center;
   background: var(--bg);
@@ -1937,7 +1937,7 @@ body.theme-light .profile-header {
   padding: 8px 16px;
 }
 
-.discord-input {
+.quickchat-input {
   flex: 1;
   background: transparent;
   border: none;
@@ -1947,12 +1947,12 @@ body.theme-light .profile-header {
   outline: none;
 }
 
-.discord-input-buttons {
+.quickchat-input-buttons {
   display: flex;
   gap: 8px;
 }
 
-.discord-input-button {
+.quickchat-input-button {
   background: none;
   border: none;
   color: var(--muted);
@@ -1963,13 +1963,13 @@ body.theme-light .profile-header {
   transition: all 0.2s ease;
 }
 
-.discord-input-button:hover {
+.quickchat-input-button:hover {
   color: var(--text);
   background: rgba(79, 140, 255, 0.1);
 }
 
-/* Discord-like Roles and Permissions */
-.discord-role-tag {
+/* QuickChat-like Roles and Permissions */
+.quickchat-role-tag {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 12px;
@@ -1978,39 +1978,39 @@ body.theme-light .profile-header {
   margin-left: 8px;
 }
 
-.discord-role-admin {
+.quickchat-role-admin {
   background: #f44336;
   color: white;
 }
 
-.discord-role-moderator {
+.quickchat-role-moderator {
   background: #ff9800;
   color: white;
 }
 
-.discord-role-member {
+.quickchat-role-member {
   background: #4caf50;
   color: white;
 }
 
-/* Discord-like Voice Channels */
-.discord-voice-channel {
+/* QuickChat-like Voice Channels */
+.quickchat-voice-channel {
   color: #4caf50;
 }
 
-.discord-voice-users {
+.quickchat-voice-users {
   padding: 8px 16px;
   border-top: 1px solid var(--border);
 }
 
-.discord-voice-user {
+.quickchat-voice-user {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 4px 0;
 }
 
-.discord-voice-indicator {
+.quickchat-voice-indicator {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -2018,8 +2018,8 @@ body.theme-light .profile-header {
   animation: pulse 2s infinite;
 }
 
-/* Discord-like Threads */
-.discord-thread-indicator {
+/* QuickChat-like Threads */
+.quickchat-thread-indicator {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -2029,12 +2029,12 @@ body.theme-light .profile-header {
   cursor: pointer;
 }
 
-.discord-thread-indicator:hover {
+.quickchat-thread-indicator:hover {
   color: var(--brand);
 }
 
-/* Discord-like User Popout */
-.discord-user-popout {
+/* QuickChat-like User Popout */
+.quickchat-user-popout {
   position: absolute;
   background: var(--elev);
   border: 1px solid var(--border);
@@ -2045,7 +2045,7 @@ body.theme-light .profile-header {
   animation: fadeInUp 0.2s ease-out;
 }
 
-.discord-user-popout-header {
+.quickchat-user-popout-header {
   background: var(--brand);
   padding: 16px;
   border-radius: 8px 8px 0 0;
@@ -2055,27 +2055,27 @@ body.theme-light .profile-header {
   gap: 12px;
 }
 
-.discord-user-popout-avatar {
+.quickchat-user-popout-avatar {
   width: 60px;
   height: 60px;
   border-radius: 50%;
   border: 4px solid rgba(255, 255, 255, 0.2);
 }
 
-.discord-user-popout-name {
+.quickchat-user-popout-name {
   font-weight: 700;
   font-size: 1.2rem;
 }
 
-.discord-user-popout-body {
+.quickchat-user-popout-body {
   padding: 16px;
 }
 
-.discord-user-popout-section {
+.quickchat-user-popout-section {
   margin-bottom: 16px;
 }
 
-.discord-user-popout-section-title {
+.quickchat-user-popout-section-title {
   font-size: 0.8rem;
   color: var(--muted);
   margin-bottom: 8px;
@@ -2083,14 +2083,14 @@ body.theme-light .profile-header {
   font-weight: 600;
 }
 
-.discord-user-popout-actions {
+.quickchat-user-popout-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-/* Discord-like Nitro Features */
-.discord-nitro-badge {
+/* QuickChat-like Premium Features */
+.quickchat-premium-badge {
   background: linear-gradient(45deg, #ff73fa, #8b46ff);
   color: white;
   padding: 2px 8px;
@@ -2100,7 +2100,7 @@ body.theme-light .profile-header {
   margin-left: 8px;
 }
 
-.discord-boost-badge {
+.quickchat-boost-badge {
   background: linear-gradient(45deg, #ff73fa, #8b46ff);
   color: white;
   padding: 2px 6px;
@@ -2109,8 +2109,8 @@ body.theme-light .profile-header {
   margin-left: 4px;
 }
 
-/* Discord-like Server Boost */
-.discord-boost-level {
+/* QuickChat-like Server Boost */
+.quickchat-boost-level {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2119,23 +2119,23 @@ body.theme-light .profile-header {
   border-top: 1px solid var(--border);
 }
 
-.discord-boost-level-icon {
+.quickchat-boost-level-icon {
   color: #ff73fa;
   font-size: 1.2rem;
 }
 
-.discord-boost-level-text {
+.quickchat-boost-level-text {
   flex: 1;
   font-size: 0.9rem;
 }
 
-.discord-boost-level-number {
+.quickchat-boost-level-number {
   font-weight: 700;
   color: #ff73fa;
 }
 
-/* Discord-like Emoji Picker */
-.discord-emoji-picker {
+/* QuickChat-like Emoji Picker */
+.quickchat-emoji-picker {
   position: absolute;
   bottom: 60px;
   right: 240px;
@@ -2150,35 +2150,35 @@ body.theme-light .profile-header {
   flex-direction: column;
 }
 
-.discord-emoji-picker.active {
+.quickchat-emoji-picker.active {
   display: flex;
 }
 
-.discord-emoji-picker-header {
+.quickchat-emoji-picker-header {
   padding: 16px;
   border-bottom: 1px solid var(--border);
   display: flex;
   gap: 8px;
 }
 
-.discord-emoji-picker-tab {
+.quickchat-emoji-picker-tab {
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.discord-emoji-picker-tab.active {
+.quickchat-emoji-picker-tab.active {
   background: var(--brand);
   color: white;
 }
 
-.discord-emoji-picker-search {
+.quickchat-emoji-picker-search {
   padding: 8px 16px;
   border-bottom: 1px solid var(--border);
 }
 
-.discord-emoji-picker-body {
+.quickchat-emoji-picker-body {
   flex: 1;
   overflow-y: auto;
   padding: 16px;
@@ -2187,7 +2187,7 @@ body.theme-light .profile-header {
   gap: 8px;
 }
 
-.discord-emoji-item {
+.quickchat-emoji-item {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 4px;
@@ -2196,17 +2196,17 @@ body.theme-light .profile-header {
   transition: all 0.2s ease;
 }
 
-.discord-emoji-item:hover {
+.quickchat-emoji-item:hover {
   background: var(--brand);
   transform: scale(1.2);
 }
 
-/* Discord-like Stage Channels */
-.discord-stage-channel {
+/* QuickChat-like Stage Channels */
+.quickchat-stage-channel {
   color: #ff9800;
 }
 
-.discord-stage-indicator {
+.quickchat-stage-indicator {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2215,17 +2215,17 @@ body.theme-light .profile-header {
   border-top: 1px solid var(--border);
 }
 
-.discord-stage-icon {
+.quickchat-stage-icon {
   color: #ff9800;
   font-size: 1.2rem;
 }
 
-.discord-stage-text {
+.quickchat-stage-text {
   flex: 1;
   font-size: 0.9rem;
 }
 
-.discord-stage-button {
+.quickchat-stage-button {
   background: #ff9800;
   color: white;
   border: none;
@@ -2236,25 +2236,25 @@ body.theme-light .profile-header {
   font-weight: 600;
 }
 
-/* Responsive adjustments for Discord features */
+/* Responsive adjustments for QuickChat features */
 @media (max-width: 1200px) {
-  .discord-channel-sidebar,
-  .discord-member-sidebar {
+  .quickchat-channel-sidebar,
+  .quickchat-member-sidebar {
     display: none;
   }
   
-  .discord-input-area {
+  .quickchat-input-area {
     left: 72px;
     right: 0;
   }
 }
 
 @media (max-width: 768px) {
-  .discord-sidebar {
+  .quickchat-sidebar {
     display: none;
   }
   
-  .discord-input-area {
+  .quickchat-input-area {
     left: 0;
   }
 }
@@ -2262,120 +2262,120 @@ body.theme-light .profile-header {
 </head>
 <body>
 <div class="app" id="app">
-<!-- Discord-style Sidebar -->
-<div class="discord-sidebar">
-  <div class="discord-server-icon active">QC</div>
-  <div class="discord-server-icon">F</div>
-  <div class="discord-server-icon">G</div>
-  <div class="discord-server-icon">+</div>
+<!-- QuickChat-style Sidebar -->
+<div class="quickchat-sidebar">
+  <div class="quickchat-server-icon active">QC</div>
+  <div class="quickchat-server-icon">F</div>
+  <div class="quickchat-server-icon">G</div>
+  <div class="quickchat-server-icon">+</div>
 </div>
 
-<!-- Discord-style Channel Sidebar -->
-<div class="discord-channel-sidebar">
-  <div class="discord-server-header">
+<!-- QuickChat-style Channel Sidebar -->
+<div class="quickchat-channel-sidebar">
+  <div class="quickchat-server-header">
     <span>QuickChat Server</span>
-    <button class="discord-input-button">🔔</button>
+    <button class="quickchat-input-button">🔔</button>
   </div>
   
-  <div class="discord-channel-category">
+  <div class="quickchat-channel-category">
     <span>TEXT CHANNELS</span>
-    <button class="discord-input-button">+</button>
+    <button class="quickchat-input-button">+</button>
   </div>
   
-  <div class="discord-channel-item active">
-    <span class="discord-channel-icon">#</span>
-    <span class="discord-channel-name">general</span>
+  <div class="quickchat-channel-item active">
+    <span class="quickchat-channel-icon">#</span>
+    <span class="quickchat-channel-name">general</span>
   </div>
   
-  <div class="discord-channel-item">
-    <span class="discord-channel-icon">#</span>
-    <span class="discord-channel-name">help</span>
+  <div class="quickchat-channel-item">
+    <span class="quickchat-channel-icon">#</span>
+    <span class="quickchat-channel-name">help</span>
   </div>
   
-  <div class="discord-channel-item">
-    <span class="discord-channel-icon">#</span>
-    <span class="discord-channel-name">off-topic</span>
+  <div class="quickchat-channel-item">
+    <span class="quickchat-channel-icon">#</span>
+    <span class="quickchat-channel-name">off-topic</span>
   </div>
   
-  <div class="discord-channel-category">
+  <div class="quickchat-channel-category">
     <span>VOICE CHANNELS</span>
-    <button class="discord-input-button">+</button>
+    <button class="quickchat-input-button">+</button>
   </div>
   
-  <div class="discord-channel-item discord-voice-channel">
-    <span class="discord-channel-icon">🔊</span>
-    <span class="discord-channel-name">General Voice</span>
+  <div class="quickchat-channel-item quickchat-voice-channel">
+    <span class="quickchat-channel-icon">🔊</span>
+    <span class="quickchat-channel-name">General Voice</span>
   </div>
   
-  <div class="discord-channel-item discord-voice-channel">
-    <span class="discord-channel-icon">🔊</span>
-    <span class="discord-channel-name">Gaming</span>
+  <div class="quickchat-channel-item quickchat-voice-channel">
+    <span class="quickchat-channel-icon">🔊</span>
+    <span class="quickchat-channel-name">Gaming</span>
   </div>
   
-  <div class="discord-boost-level">
-    <span class="discord-boost-level-icon">🚀</span>
-    <span class="discord-boost-level-text">Server Boost</span>
-    <span class="discord-boost-level-number">Level 1</span>
-  </div>
-</div>
-
-<!-- Discord-style Member Sidebar -->
-<div class="discord-member-sidebar">
-  <div class="discord-member-header">ONLINE — 3</div>
-  
-  <div class="discord-member-item">
-    <img class="discord-member-avatar" src="" alt="User" />
-    <span class="discord-member-name">You</span>
-    <div class="discord-member-status online"></div>
-  </div>
-  
-  <div class="discord-member-item">
-    <img class="discord-member-avatar" src="" alt="User" />
-    <span class="discord-member-name">John Doe</span>
-    <span class="discord-role-tag discord-role-admin">ADMIN</span>
-    <div class="discord-member-status online"></div>
-  </div>
-  
-  <div class="discord-member-item">
-    <img class="discord-member-avatar" src="" alt="User" />
-    <span class="discord-member-name">Jane Smith</span>
-    <span class="discord-role-tag discord-role-moderator">MOD</span>
-    <div class="discord-member-status idle"></div>
-  </div>
-  
-  <div class="discord-member-header">OFFLINE — 5</div>
-  
-  <div class="discord-member-item">
-    <img class="discord-member-avatar" src="" alt="User" />
-    <span class="discord-member-name">Bob Johnson</span>
-    <div class="discord-member-status offline"></div>
+  <div class="quickchat-boost-level">
+    <span class="quickchat-boost-level-icon">🚀</span>
+    <span class="quickchat-boost-level-text">Server Boost</span>
+    <span class="quickchat-boost-level-number">Level 1</span>
   </div>
 </div>
 
-<!-- Discord-style Input Area -->
-<div class="discord-input-area">
-  <div class="discord-input-container">
-    <button class="discord-input-button">➕</button>
-    <input type="text" class="discord-input" placeholder="Message #general" />
-    <div class="discord-input-buttons">
-      <button class="discord-input-button" id="discordEmojiButton">😀</button>
-      <button class="discord-input-button">🎁</button>
-      <button class="discord-input-button">🖼️</button>
+<!-- QuickChat-style Member Sidebar -->
+<div class="quickchat-member-sidebar">
+  <div class="quickchat-member-header">ONLINE — 3</div>
+  
+  <div class="quickchat-member-item">
+    <img class="quickchat-member-avatar" src="" alt="User" />
+    <span class="quickchat-member-name">You</span>
+    <div class="quickchat-member-status online"></div>
+  </div>
+  
+  <div class="quickchat-member-item">
+    <img class="quickchat-member-avatar" src="" alt="User" />
+    <span class="quickchat-member-name">John Doe</span>
+    <span class="quickchat-role-tag quickchat-role-admin">ADMIN</span>
+    <div class="quickchat-member-status online"></div>
+  </div>
+  
+  <div class="quickchat-member-item">
+    <img class="quickchat-member-avatar" src="" alt="User" />
+    <span class="quickchat-member-name">Jane Smith</span>
+    <span class="quickchat-role-tag quickchat-role-moderator">MOD</span>
+    <div class="quickchat-member-status idle"></div>
+  </div>
+  
+  <div class="quickchat-member-header">OFFLINE — 5</div>
+  
+  <div class="quickchat-member-item">
+    <img class="quickchat-member-avatar" src="" alt="User" />
+    <span class="quickchat-member-name">Bob Johnson</span>
+    <div class="quickchat-member-status offline"></div>
+  </div>
+</div>
+
+<!-- QuickChat-style Input Area -->
+<div class="quickchat-input-area">
+  <div class="quickchat-input-container">
+    <button class="quickchat-input-button">➕</button>
+    <input type="text" class="quickchat-input" placeholder="Message #general" />
+    <div class="quickchat-input-buttons">
+      <button class="quickchat-input-button" id="quickchatEmojiButton">😀</button>
+      <button class="quickchat-input-button">🎁</button>
+      <button class="quickchat-input-button">🖼️</button>
     </div>
   </div>
 </div>
 
-<!-- Discord Emoji Picker -->
-<div class="discord-emoji-picker" id="discordEmojiPicker">
-  <div class="discord-emoji-picker-header">
-    <div class="discord-emoji-picker-tab active">😀</div>
-    <div class="discord-emoji-picker-tab">🚀</div>
-    <div class="discord-emoji-picker-tab">🎉</div>
+<!-- QuickChat Emoji Picker -->
+<div class="quickchat-emoji-picker" id="quickchatEmojiPicker">
+  <div class="quickchat-emoji-picker-header">
+    <div class="quickchat-emoji-picker-tab active">😀</div>
+    <div class="quickchat-emoji-picker-tab">🚀</div>
+    <div class="quickchat-emoji-picker-tab">🎉</div>
   </div>
-  <div class="discord-emoji-picker-search">
+  <div class="quickchat-emoji-picker-search">
     <input type="text" class="input" placeholder="Search emojis..." />
   </div>
-  <div class="discord-emoji-picker-body">
+  <div class="quickchat-emoji-picker-body">
     <!-- Emojis will be populated by JavaScript -->
   </div>
 </div>
@@ -3624,23 +3624,23 @@ function initializeEnhancedFeatures() {
   };
 }
 
-// Discord-style features initialization
-function initializeDiscordFeatures() {
-  // Discord emoji picker
-  const emojiPicker = $('#discordEmojiPicker');
-  const emojiButton = $('#discordEmojiButton');
+// QuickChat-style features initialization
+function initializeQuickChatFeatures() {
+  // QuickChat emoji picker
+  const emojiPicker = $('#quickchatEmojiPicker');
+  const emojiButton = $('#quickchatEmojiButton');
   
   emojiButton.onclick = () => {
     emojiPicker.classList.toggle('active');
   };
   
   // Populate emoji picker
-  const emojiBody = emojiPicker.querySelector('.discord-emoji-picker-body');
+  const emojiBody = emojiPicker.querySelector('.quickchat-emoji-picker-body');
   const commonEmojis = ['😀', '😂', '🥰', '😎', '🤔', '😴', '😭', '😡', '👍', '👎', '❤️', '🔥', '🎉', '🙏', '💯', '🤝'];
   
   commonEmojis.forEach(emoji => {
     const emojiItem = document.createElement('div');
-    emojiItem.className = 'discord-emoji-item';
+    emojiItem.className = 'quickchat-emoji-item';
     emojiItem.textContent = emoji;
     emojiItem.onclick = () => {
       const msgInput = $('#msgInput');
@@ -3651,21 +3651,21 @@ function initializeDiscordFeatures() {
     emojiBody.appendChild(emojiItem);
   });
   
-  // Discord channel switching
-  $$('.discord-channel-item').forEach(channel => {
+  // QuickChat channel switching
+  $$('.quickchat-channel-item').forEach(channel => {
     channel.onclick = () => {
-      $$('.discord-channel-item').forEach(c => c.classList.remove('active'));
+      $$('.quickchat-channel-item').forEach(c => c.classList.remove('active'));
       channel.classList.add('active');
       
-      const channelName = channel.querySelector('.discord-channel-name').textContent;
+      const channelName = channel.querySelector('.quickchat-channel-name').textContent;
       toast(`Switched to #${channelName}`, 2000, 'success');
     };
   });
   
-  // Discord server switching
-  $$('.discord-server-icon').forEach(server => {
+  // QuickChat server switching
+  $$('.quickchat-server-icon').forEach(server => {
     server.onclick = () => {
-      $$('.discord-server-icon').forEach(s => s.classList.remove('active'));
+      $$('.quickchat-server-icon').forEach(s => s.classList.remove('active'));
       server.classList.add('active');
       
       const serverName = server.textContent;
@@ -4786,7 +4786,7 @@ onAuthStateChanged(auth, async (user) => {
   // Initialize enhanced features
   if (user) {
     initializeEnhancedFeatures();
-    initializeDiscordFeatures();
+    initializeQuickChatFeatures();
   }
 });
 
