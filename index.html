@@ -412,66 +412,6 @@ main {
   min-height: calc(100vh - 120px);
 }
 
-.game-container {
-  background: var(--elev);
-  border-radius: var(--radius);
-  padding: 1.2rem;
-  margin-bottom: 1rem;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.game-title {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  color: var(--brand);
-  font-weight: 700;
-}
-
-.tic-tac-toe {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin: 1rem 0;
-  max-width: 240px;
-  background: var(--border);
-  padding: 6px;
-  border-radius: var(--radius);
-}
-
-.ttt-cell {
-  width: 70px;
-  height: 70px;
-  background: var(--bg);
-  border: 2px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-}
-
-.ttt-cell:hover {
-  background: #0c1a30;
-  border-color: var(--brand);
-  transform: scale(1.05);
-}
-
-body.theme-light .ttt-cell:hover {
-  background: #edf2f7;
-}
-
-.ttt-cell.x {
-  color: var(--brand);
-}
-
-.ttt-cell.o {
-  color: var(--success);
-}
-
 .settings-section {
   margin-bottom: 1.5rem;
   animation: fadeInUp 0.5s ease-out;
@@ -889,81 +829,6 @@ body.theme-light .pinned-message {
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
   40% { transform: translateY(-5px); }
   60% { transform: translateY(-3px); }
-}
-
-.call-item {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-  transition: all 0.3s ease;
-  animation: slideInRight 0.4s ease-out;
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.call-item:hover {
-  background: #0c1a30;
-  border-radius: var(--radius);
-  transform: translateX(5px);
-}
-
-body.theme-light .call-item:hover {
-  background: #f7fafc;
-}
-
-.call-avatar {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  margin-right: 1rem;
-  border: 2px solid var(--border);
-}
-
-.call-details {
-  flex: 1;
-}
-
-.call-name {
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.call-info {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.call-status {
-  margin-left: 8px;
-  font-size: 0.8rem;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-.call-incoming {
-  background: rgba(76, 175, 80, 0.2);
-  color: var(--success);
-}
-
-.call-missed {
-  background: rgba(244, 67, 54, 0.2);
-  color: var(--danger);
-}
-
-.call-outgoing {
-  background: rgba(33, 150, 243, 0.2);
-  color: #2196f3;
 }
 
 /* NEW FRIEND REQUEST FEATURES */
@@ -1858,14 +1723,6 @@ body.theme-light .profile-header {
     <div class="nav-icon">💬</div>
     <div>Chats</div>
   </div>
-  <div class="nav-item" data-page="calls-page">
-    <div class="nav-icon">📞</div>
-    <div>Calls</div>
-  </div>
-  <div class="nav-item" data-page="games-page">
-    <div class="nav-icon">🎮</div>
-    <div>Games</div>
-  </div>
   <div class="nav-item" data-page="settings-page">
     <div class="nav-icon">⚙️</div>
     <div>Settings</div>
@@ -2122,108 +1979,6 @@ body.theme-light .profile-header {
   </div>
 </div>
 
-<div id="calls-page" class="page">
-  <div class="card">
-    <strong style="display:block;margin-bottom:1rem">Recent Calls</strong>
-    <div id="callHistory" class="list"></div>
-  </div>
-  
-  <div id="callsList">
-    <div class="call-item">
-      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user1" class="call-avatar" alt="User 1">
-      <div class="call-details">
-        <div class="call-name">John Doe</div>
-        <div class="call-info">
-          <span>Yesterday 14:30</span>
-          <span class="call-status call-outgoing">Outgoing</span>
-        </div>
-      </div>
-      <div style="font-size:1.2rem">📞</div>
-    </div>
-    
-    <div class="call-item">
-      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user2" class="call-avatar" alt="User 2">
-      <div class="call-details">
-        <div class="call-name">Jane Smith</div>
-        <div class="call-info">
-          <span>Today 09:15</span>
-          <span class="call-status call-incoming">Incoming</span>
-        </div>
-      </div>
-      <div style="font-size:1.2rem">📞</div>
-    </div>
-    
-    <div class="call-item">
-      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user3" class="call-avatar" alt="User 3">
-      <div class="call-details">
-        <div class="call-name">Alex Johnson</div>
-        <div class="call-info">
-          <span>Today 11:42</span>
-          <span class="call-status call-missed">Missed</span>
-        </div>
-      </div>
-      <div style="font-size:1.2rem">📞</div>
-    </div>
-  </div>
-</div>
-
-<div id="games-page" class="page">
-  <div class="card">
-    <strong style="display:block;margin-bottom:.8rem">In-Chat Games</strong>
-    <p style="color:var(--muted);margin:0">Play games with your friends directly in the chat!</p>
-  </div>
-  
-  <div class="game-container">
-    <div class="game-title">Tic Tac Toe</div>
-    <p style="color:var(--muted);margin-bottom:1rem">Challenge a friend to a game of Tic Tac Toe</p>
-    
-    <div class="tic-tac-toe">
-      <div class="ttt-cell" data-index="0"></div>
-      <div class="ttt-cell" data-index="1"></div>
-      <div class="ttt-cell" data-index="2"></div>
-      <div class="ttt-cell" data-index="3"></div>
-      <div class="ttt-cell" data-index="4"></div>
-      <div class="ttt-cell" data-index="5"></div>
-      <div class="ttt-cell" data-index="6"></div>
-      <div class="ttt-cell" data-index="7"></div>
-      <div class="ttt-cell" data-index="8"></div>
-    </div>
-    
-    <div id="gameStatus" style="margin:1rem 0;font-weight:600;color:var(--brand)">Your turn (X)</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn" id="startTicTacToe" style="flex:1">Start Game with Friend</button>
-      <button class="btn ghost" id="resetTicTacToe" style="flex:1">Reset Game</button>
-    </div>
-  </div>
-  
-  <div class="game-container">
-    <div class="game-title">Word Challenge</div>
-    <p style="color:var(--muted);margin-bottom:1rem">Test your vocabulary with friends</p>
-    <div id="wordGame">
-      <p style="margin:.5rem 0">Current word: <span id="currentWord" style="font-weight:600;color:var(--brand)">_____</span></p>
-      <input type="text" class="input" id="wordInput" placeholder="Enter a word">
-      <button class="btn" id="submitWord" style="width:100%;margin-top:8px">Submit Word</button>
-      <p id="wordScore" style="margin-top:8px;font-weight:600">Score: 0</p>
-    </div>
-  </div>
-  
-  <div class="game-container">
-    <div class="game-title">Quick Trivia</div>
-    <p style="color:var(--muted);margin-bottom:1rem">Answer trivia questions with friends</p>
-    <div id="triviaGame">
-      <p id="triviaQuestion" style="margin-bottom:1rem;font-style:italic">Question will appear here</p>
-      <div id="triviaOptions" style="display:grid;gap:8px;grid-template-columns:1fr 1fr">
-        <button class="btn ghost">Option 1</button>
-        <button class="btn ghost">Option 2</button>
-        <button class="btn ghost">Option 3</button>
-        <button class="btn ghost">Option 4</button>
-      </div>
-      <p id="triviaScore" style="margin-top:1rem;font-weight:600">Score: 0/0</p>
-    </div>
-    <button class="btn" id="startTrivia" style="width:100%;margin-top:8px">Start Trivia</button>
-  </div>
-</div>
-
 <div id="settings-page" class="page">
   <div class="card">
     <strong style="display:block;margin-bottom:1rem">Account Settings</strong>
@@ -2450,13 +2205,6 @@ let lastSendAt = 0;
 const SEND_COOLDOWN_MS = 1200;
 
 const EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🔥'];
-
-let ticTacToeGame = {
-  board: ['', '', '', '', '', '', '', '', ''],
-  currentPlayer: 'X',
-  gameActive: false,
-  playerSymbol: 'X'
-};
 
 // NEW: Disappearing messages state
 let disappearingMessagesEnabled = false;
@@ -4060,74 +3808,6 @@ document.addEventListener('visibilitychange', async () => {
   }
 });
 
-function initializeTicTacToe() {
-  const cells = $$('.ttt-cell');
-  cells.forEach(cell => {
-    cell.textContent = '';
-    cell.classList.remove('x', 'o');
-    cell.addEventListener('click', handleTicTacToeClick);
-  });
-  
-  ticTacToeGame = {
-    board: ['', '', '', '', '', '', '', '', ''],
-    currentPlayer: 'X',
-    gameActive: true,
-    playerSymbol: 'X'
-  };
-  
-  $('#gameStatus').textContent = 'Your turn (X)';
-  toast('Tic Tac Toe game started!', 2000, 'success');
-}
-
-function handleTicTacToeClick(e) {
-  const cell = e.target;
-  const index = parseInt(cell.dataset.index);
-  
-  if (ticTacToeGame.board[index] !== '' || !ticTacToeGame.gameActive) {
-    return;
-  }
-  
-  ticTacToeGame.board[index] = ticTacToeGame.currentPlayer;
-  cell.textContent = ticTacToeGame.currentPlayer;
-  cell.classList.add(ticTacToeGame.currentPlayer.toLowerCase());
-  
-  if (checkWin()) {
-    $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer} wins!`;
-    ticTacToeGame.gameActive = false;
-    toast(`Player ${ticTacToeGame.currentPlayer} wins!`, 3000, 'success');
-    return;
-  }
-  
-  if (checkDraw()) {
-    $('#gameStatus').textContent = 'Game ended in a draw!';
-    ticTacToeGame.gameActive = false;
-    toast('Game ended in a draw!', 3000, 'info');
-    return;
-  }
-  
-  ticTacToeGame.currentPlayer = ticTacToeGame.currentPlayer === 'X' ? 'O' : 'X';
-  $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer}'s turn`;
-}
-
-function checkWin() {
-  const winPatterns = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-  ];
-  
-  return winPatterns.some(pattern => {
-    const [a, b, c] = pattern;
-    return ticTacToeGame.board[a] !== '' && 
-           ticTacToeGame.board[a] === ticTacToeGame.board[b] && 
-           ticTacToeGame.board[a] === ticTacToeGame.board[c];
-  });
-}
-
-function checkDraw() {
-  return ticTacToeGame.board.every(cell => cell !== '');
-}
-
 function setupNavigation() {
   const navItems = $$('.nav-item');
   const pages = $$('.page');
@@ -4330,10 +4010,6 @@ onAuthStateChanged(auth, async (user) => {
   onValue(ref(db, `friendRequests/${me.uid}`), ()=> { loadFriendRequests(); });
 
   setupNavigation();
-  
-  initializeTicTacToe();
-  $('#startTicTacToe').onclick = initializeTicTacToe;
-  $('#resetTicTacToe').onclick = initializeTicTacToe;
 
   onValue(ref(db,'announcements/global'), snap=>{
     const b = $('#globalBanner');
