@@ -2258,6 +2258,40 @@ body.theme-light .profile-header {
     left: 0;
   }
 }
+
+/* NEW: Live Typing Display Styles */
+#liveTypingDisplay {
+  background: rgba(79, 140, 255, 0.1);
+  border: 1px solid var(--brand);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 5px 0;
+  color: var(--text);
+  font-style: italic;
+  border-left: 3px solid var(--brand);
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.live-typing-text {
+  color: var(--text);
+  font-style: normal;
+}
+
+.live-typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--brand);
+  margin-left: 2px;
+  animation: blink 1s infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
 </style>
 </head>
 <body>
@@ -2666,6 +2700,9 @@ body.theme-light .profile-header {
         <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.8rem;border-radius:var(--radius);position:relative">
         </div>
 
+        <!-- NEW: Live Typing Display Area -->
+        <div id="liveTypingDisplay" style="display: none;"></div>
+
         <div style="display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap">
           <input id="msgInput" class="input" placeholder="Type a message..." style="flex:1;min-width:200px" autocomplete="off" />
           <input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt" style="display:none" />
@@ -2914,8 +2951,201 @@ const EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🔥'
 let disappearingMessagesEnabled = false;
 let disappearingTimeout = 0; // in milliseconds
 
+// NEW: Live typing transmission state
+let lastSentText = '';
+let transmissionTimer = null;
+let liveTypingListener = null;
+
 // Enhanced Friend Request Features
 let notificationCount = 0;
+
+// NEW: Real-time character transmission functions
+function setupLiveTypingTransmission() {
+  // Listen for input events on message input
+  $('#msgInput').addEventListener('input', async (e) => {
+    if(!currentChat || !me) return;
+    
+    const currentText = e.target.value;
+    const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+    
+    // Send typing status (existing functionality)
+    try {
+      await set(typingRef(chatId, me.uid), true);
+    } catch(e) {}
+    
+    if(typingTimer) clearTimeout(typingTimer);
+    typingTimer = setTimeout(async () => {
+      try { await remove(typingRef(chatId, me.uid)); } catch(e) {}
+    }, 1800);
+    
+    // NEW: Real-time character transmission
+    if(currentText !== lastSentText) {
+      // Debounce to avoid too many Firebase writes
+      clearTimeout(transmissionTimer);
+      transmissionTimer = setTimeout(async () => {
+        try {
+          // Store the current text in Firebase for the other user to see
+          await set(ref(db, `liveTyping/${chatId}/${me.uid}`), {
+            text: currentText,
+            timestamp: Date.now(),
+            fromName: me.name,
+            fromAvatar: me.avatar
+          });
+          lastSentText = currentText;
+        } catch(error) {
+          console.error('Live typing error:', error);
+        }
+      }, 100); // Send after 100ms of no typing
+    }
+  });
+
+  // Clear live typing when message is sent
+  const originalSend = $('#sendBtn').onclick;
+  $('#sendBtn').onclick = async () => {
+    if(currentChat && me) {
+      const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+      await remove(ref(db, `liveTyping/${chatId}/${me.uid}`));
+      lastSentText = '';
+    }
+    return originalSend();
+  };
+}
+
+// NEW: Listen for live typing from others
+function setupLiveTypingListener(chatId) {
+  if (liveTypingListener) {
+    liveTypingListener(); // Remove previous listener
+  }
+  
+  const liveTypingRef = ref(db, `liveTyping/${chatId}`);
+  
+  liveTypingListener = onValue(liveTypingRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    
+    // Find other users' live typing (excluding yourself)
+    const otherUsers = Object.keys(data).filter(uid => uid !== me.uid);
+    
+    if (otherUsers.length > 0) {
+      const otherUserUid = otherUsers[0];
+      const liveData = data[otherUserUid];
+      
+      if (liveData && liveData.text && liveData.text.length > 0) {
+        // Show the live-typed text in a special area
+        showLiveTypedText(liveData.text, liveData.fromName);
+      } else {
+        hideLiveTypedText();
+      }
+    } else {
+      // No one is live typing
+      hideLiveTypedText();
+    }
+  });
+}
+
+// NEW: Display the live-typed text
+function showLiveTypedText(text, fromName) {
+  let liveTypingElement = $('#liveTypingDisplay');
+  
+  if (!liveTypingElement) {
+    // Create the live typing display element
+    liveTypingElement = document.createElement('div');
+    liveTypingElement.id = 'liveTypingDisplay';
+    liveTypingElement.style.cssText = `
+      background: rgba(79, 140, 255, 0.1);
+      border: 1px solid var(--brand);
+      border-radius: 10px;
+      padding: 10px;
+      margin: 5px 0;
+      color: var(--text);
+      font-style: italic;
+      border-left: 3px solid var(--brand);
+      display: none;
+    `;
+    
+    // Insert it above the message input
+    const msgInputContainer = $('#msgInput').parentNode;
+    msgInputContainer.parentNode.insertBefore(liveTypingElement, msgInputContainer);
+  }
+  
+  liveTypingElement.innerHTML = `
+    <div style="font-size: 0.8rem; color: var(--brand); margin-bottom: 4px;">
+      ${fromName} is typing...
+    </div>
+    <div class="live-typing-text">"${text}"<span class="live-typing-cursor"></span></div>
+  `;
+  liveTypingElement.style.display = 'block';
+}
+
+function hideLiveTypedText() {
+  const liveTypingElement = $('#liveTypingDisplay');
+  if (liveTypingElement) {
+    liveTypingElement.style.display = 'none';
+  }
+}
+
+// Update the subscribeMessages function to include live typing listener
+const originalSubscribeMessages = subscribeMessages;
+subscribeMessages = function(path, chatId, kind, peer) {
+  if(unsubMessages) unsubMessages();
+  const r = ref(db, path);
+  onValue(r, async snap => {
+    const data = snap.val() || {};
+    $('#messages').innerHTML = '';
+    const entries = Object.entries(data).sort((a,b)=>a[1].ts - b[1].ts);
+
+    let pinnedMessages = [];
+    let regularMessages = [];
+
+    for(const [key,m] of entries){
+      if (m.pinned) {
+        pinnedMessages.push([key, m]);
+      } else {
+        regularMessages.push([key, m]);
+      }
+    }
+
+    if (pinnedMessages.length > 0) {
+      const pinnedHeader = document.createElement('div');
+      pinnedHeader.textContent = '📌 Pinned Messages';
+      pinnedHeader.style.color = 'var(--muted)';
+      pinnedHeader.style.marginBottom = '8px';
+      $('#messages').appendChild(pinnedHeader);
+      
+      for(const [key,m] of pinnedMessages){
+        renderMessage(key, m, chatId);
+      }
+      
+      const divider = document.createElement('div');
+      divider.style.borderTop = '1px solid var(--border)';
+      divider.style.margin = '12px 0';
+      $('#messages').appendChild(divider);
+    }
+
+    for(const [key,m] of regularMessages){
+      renderMessage(key, m, chatId);
+    }
+
+    $('#messages').scrollTop = $('#messages').scrollHeight;
+  });
+
+  const tRef = ref(db, `typing/${chatId}`);
+  const offTyping = onValue(tRef, snap=>{
+    const obj = snap.val() || {};
+    const someoneElseTyping = Object.keys(obj).some(uid => uid !== me.uid && obj[uid] === true);
+    $('#typingIndicator').style.display = someoneElseTyping ? 'block' : 'none';
+  });
+
+  // NEW: Setup live typing listener
+  setupLiveTypingListener(chatId);
+
+  unsubMessages = ()=>{
+    offTyping();
+    if (liveTypingListener) {
+      liveTypingListener();
+      liveTypingListener = null;
+    }
+  };
+};
 
 function updateNotificationBadge() {
   const badge = $('#notificationBadge');
@@ -3558,6 +3788,7 @@ function initializeEnhancedFeatures() {
   loadActivityFeed();
   setupForgotPassword();
   setupDisappearingMessages();
+  setupLiveTypingTransmission(); // NEW: Initialize live typing
   
   if (isAdminUser) {
     updateAdminStats();
@@ -4038,62 +4269,7 @@ function showMessageContextMenu(e, message, messageKey, chatId) {
   }, 100);
 }
 
-function subscribeMessages(path, chatId, kind, peer){
-  if(unsubMessages) unsubMessages();
-  const r = ref(db, path);
-  onValue(r, async snap => {
-    const data = snap.val() || {};
-    $('#messages').innerHTML = '';
-    const entries = Object.entries(data).sort((a,b)=>a[1].ts - b[1].ts);
-
-    let pinnedMessages = [];
-    let regularMessages = [];
-
-    for(const [key,m] of entries){
-      if (m.pinned) {
-        pinnedMessages.push([key, m]);
-      } else {
-        regularMessages.push([key, m]);
-      }
-    }
-
-    if (pinnedMessages.length > 0) {
-      const pinnedHeader = document.createElement('div');
-      pinnedHeader.textContent = '📌 Pinned Messages';
-      pinnedHeader.style.color = 'var(--muted)';
-      pinnedHeader.style.marginBottom = '8px';
-      $('#messages').appendChild(pinnedHeader);
-      
-      for(const [key,m] of pinnedMessages){
-        renderMessage(key, m, chatId);
-      }
-      
-      const divider = document.createElement('div');
-      divider.style.borderTop = '1px solid var(--border)';
-      divider.style.margin = '12px 0';
-      $('#messages').appendChild(divider);
-    }
-
-    for(const [key,m] of regularMessages){
-      renderMessage(key, m, chatId);
-    }
-
-    $('#messages').scrollTop = $('#messages').scrollHeight;
-  });
-
-  const tRef = ref(db, `typing/${chatId}`);
-  const offTyping = onValue(tRef, snap=>{
-    const obj = snap.val() || {};
-    const someoneElseTyping = Object.keys(obj).some(uid => uid !== me.uid && obj[uid] === true);
-    $('#typingIndicator').style.display = someoneElseTyping ? 'block' : 'none';
-  });
-
-  unsubMessages = ()=>{
-    offTyping();
-  };
-}
-
-async function renderMessage(key, m, chatId) {
+function renderMessage(key, m, chatId) {
   const div = document.createElement('div'); 
   div.className = `message-item ${m.from === me.uid ? 'own' : 'other'}`;
   div.setAttribute('data-message-id', key);
@@ -4395,10 +4571,16 @@ $('#sendBtn').onclick = async () => {
     await set(ref(db, `chats/${chatId}/messages/${key}`), payload);
     await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
     try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
+    // NEW: Clear live typing when message is sent
+    await remove(ref(db, `liveTyping/${chatId}/${me.uid}`));
+    lastSentText = '';
   } else if(currentChat.id){
     await set(ref(db, `communityMessages/${chatId}/messages/${key}`), payload);
     await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
     try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
+    // NEW: Clear live typing when message is sent
+    await remove(ref(db, `liveTyping/${chatId}/${me.uid}`));
+    lastSentText = '';
   }
 
   $('#msgInput').value = '';
