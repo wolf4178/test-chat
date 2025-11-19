@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#4f8cff" />
+<meta name="description" content="QuickChat - Real-time messaging app with enhanced features" />
 <title>QuickChat — Enhanced Edition</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" href="icons/icon-192x192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+
 <style>
 :root {
   --bg: #0b0f14;
@@ -1567,6 +1573,55 @@ input:checked + .slider:before {
 .fullscreen-chat#appUI > div { display:flex; flex-direction:column; } 
 .fullscreen-chat#appUI > div > div:first-child { display:none; }
 .fullscreen-chat#appUI > div > div:last-child { width:100% !important; }
+
+/* PWA Install Prompt */
+#installPrompt {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  z-index: 10000;
+  max-width: 400px;
+  width: 90%;
+  backdrop-filter: blur(10px);
+}
+
+#installPrompt.hidden {
+  display: none;
+}
+
+.install-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.install-buttons .btn {
+  flex: 1;
+}
+
+/* Offline Indicator */
+#offlineIndicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--danger);
+  color: white;
+  text-align: center;
+  padding: 0.5rem;
+  z-index: 10001;
+  font-size: 0.9rem;
+}
+
+#offlineIndicator.hidden {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -1595,6 +1650,21 @@ input:checked + .slider:before {
 </header>
 
 <div id="globalBanner" class="hidden" style="background:#0c2140;border-bottom:1px solid var(--border);padding:.5rem;text-align:center;color:#dfefff"></div>
+
+<!-- Offline Indicator -->
+<div id="offlineIndicator" class="hidden">
+  ⚠️ You are currently offline. Some features may not work.
+</div>
+
+<!-- PWA Install Prompt -->
+<div id="installPrompt" class="hidden">
+  <div style="font-weight:700;margin-bottom:8px">Install QuickChat</div>
+  <div style="color:var(--muted);font-size:0.9rem">Install this app on your device for a better experience</div>
+  <div class="install-buttons">
+    <button id="installCancel" class="btn ghost">Not Now</button>
+    <button id="installConfirm" class="btn">Install</button>
+  </div>
+</div>
 
 <main>
 <section id="auth" class="card" style="max-width:720px;margin:2rem auto;animation:fadeInUp 0.6s ease-out">
@@ -2108,6 +2178,65 @@ input:checked + .slider:before {
 
 <!-- POP-UP WINDOW CONTAINER -->
 <div id="popupContainer"></div>
+
+<script>
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js')
+      .then(function(registration) {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch(function(error) {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+const installPrompt = document.getElementById('installPrompt');
+const installConfirm = document.getElementById('installConfirm');
+const installCancel = document.getElementById('installCancel');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installPrompt.classList.remove('hidden');
+});
+
+installConfirm.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    }
+    deferredPrompt = null;
+    installPrompt.classList.add('hidden');
+  }
+});
+
+installCancel.addEventListener('click', () => {
+  installPrompt.classList.add('hidden');
+});
+
+// Offline Detection
+window.addEventListener('online', () => {
+  document.getElementById('offlineIndicator').classList.add('hidden');
+  toast('Connection restored', 2000, 'success');
+});
+
+window.addEventListener('offline', () => {
+  document.getElementById('offlineIndicator').classList.remove('hidden');
+  toast('You are offline', 3000, 'warning');
+});
+
+// Check initial connection status
+if (!navigator.onLine) {
+  document.getElementById('offlineIndicator').classList.remove('hidden');
+}
+</script>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
