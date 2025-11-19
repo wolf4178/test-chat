@@ -1277,6 +1277,140 @@ input:checked + .slider:before {
   margin: 4px 0;
 }
 
+/* POP-UP WINDOW STYLES */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.popup-window {
+  background: var(--elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: var(--shadow);
+  animation: popupSlideIn 0.3s ease-out;
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.popup-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--elev) 0%, #0e1420 100%);
+}
+
+.popup-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--brand);
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.popup-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.popup-content {
+  padding: 1.5rem;
+}
+
+.popup-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.popup-message {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.popup-input {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.popup-confirm {
+  background: var(--brand);
+  color: white;
+}
+
+.popup-cancel {
+  background: var(--border);
+  color: var(--text);
+}
+
+.popup-list {
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 1rem 0;
+}
+
+.popup-list-item {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.popup-list-item:hover {
+  background: var(--border);
+}
+
+.popup-list-item:last-child {
+  border-bottom: none;
+}
+
 @media (max-width: 768px) {
   .app {
     font-size: 14px;
@@ -1318,6 +1452,11 @@ input:checked + .slider:before {
   .notification-dropdown {
     width: 280px;
     right: -50px;
+  }
+  
+  .popup-window {
+    width: 95%;
+    margin: 1rem;
   }
 }
 
@@ -1967,6 +2106,9 @@ input:checked + .slider:before {
 
 <button id="scrollToBottom" class="scroll-to-bottom hidden" title="Scroll to bottom">↓</button>
 
+<!-- POP-UP WINDOW CONTAINER -->
+<div id="popupContainer"></div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
@@ -1993,6 +2135,187 @@ const storage = getStorage(app);
 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
+
+// POP-UP WINDOW SYSTEM
+class PopupManager {
+  constructor() {
+    this.container = $('#popupContainer');
+    this.activePopups = [];
+  }
+
+  // Create a new popup window
+  createPopup(options = {}) {
+    const {
+      title = 'Popup',
+      message = '',
+      type = 'info', // info, confirm, input, list
+      inputPlaceholder = '',
+      listItems = [],
+      confirmText = 'OK',
+      cancelText = 'Cancel',
+      onConfirm = () => {},
+      onCancel = () => {},
+      onClose = () => {},
+      width = '500px'
+    } = options;
+
+    const popupId = 'popup-' + Date.now();
+    const popup = document.createElement('div');
+    popup.className = 'popup-overlay';
+    popup.id = popupId;
+    
+    popup.innerHTML = `
+      <div class="popup-window" style="max-width: ${width}">
+        <div class="popup-header">
+          <div class="popup-title">${title}</div>
+          <button class="popup-close">&times;</button>
+        </div>
+        <div class="popup-content">
+          ${message ? `<div class="popup-message">${message}</div>` : ''}
+          ${type === 'input' ? `<input type="text" class="input popup-input" placeholder="${inputPlaceholder}" />` : ''}
+          ${type === 'list' && listItems.length > 0 ? `
+            <div class="popup-list">
+              ${listItems.map(item => `<div class="popup-list-item" data-value="${item.value}">${item.label}</div>`).join('')}
+            </div>
+          ` : ''}
+          <div class="popup-buttons">
+            ${type === 'confirm' || type === 'input' || type === 'list' ? `
+              <button class="btn popup-cancel">${cancelText}</button>
+            ` : ''}
+            <button class="btn popup-confirm">${confirmText}</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.container.appendChild(popup);
+    this.activePopups.push(popupId);
+
+    // Add event listeners
+    const closeBtn = popup.querySelector('.popup-close');
+    const confirmBtn = popup.querySelector('.popup-confirm');
+    const cancelBtn = popup.querySelector('.popup-cancel');
+    const input = popup.querySelector('.popup-input');
+    const listItemsEl = popup.querySelectorAll('.popup-list-item');
+
+    const closePopup = () => {
+      popup.remove();
+      this.activePopups = this.activePopups.filter(id => id !== popupId);
+      onClose();
+    };
+
+    closeBtn.onclick = closePopup;
+
+    confirmBtn.onclick = () => {
+      let value = null;
+      if (type === 'input') {
+        value = input ? input.value : '';
+      }
+      onConfirm(value);
+      closePopup();
+    };
+
+    if (cancelBtn) {
+      cancelBtn.onclick = () => {
+        onCancel();
+        closePopup();
+      };
+    }
+
+    if (listItemsEl.length > 0) {
+      listItemsEl.forEach(item => {
+        item.onclick = () => {
+          onConfirm(item.dataset.value);
+          closePopup();
+        };
+      });
+    }
+
+    // Close on overlay click
+    popup.onclick = (e) => {
+      if (e.target === popup) {
+        onCancel();
+        closePopup();
+      }
+    };
+
+    // Focus input if present
+    if (input) {
+      setTimeout(() => input.focus(), 100);
+    }
+
+    return popupId;
+  }
+
+  // Show info popup
+  info(title, message, confirmText = 'OK') {
+    return this.createPopup({
+      title,
+      message,
+      type: 'info',
+      confirmText,
+      onConfirm: () => {}
+    });
+  }
+
+  // Show confirmation popup
+  confirm(title, message, confirmText = 'Yes', cancelText = 'No') {
+    return new Promise((resolve) => {
+      this.createPopup({
+        title,
+        message,
+        type: 'confirm',
+        confirmText,
+        cancelText,
+        onConfirm: () => resolve(true),
+        onCancel: () => resolve(false)
+      });
+    });
+  }
+
+  // Show input popup
+  input(title, message, placeholder = '', confirmText = 'OK', cancelText = 'Cancel') {
+    return new Promise((resolve) => {
+      this.createPopup({
+        title,
+        message,
+        type: 'input',
+        inputPlaceholder: placeholder,
+        confirmText,
+        cancelText,
+        onConfirm: (value) => resolve(value),
+        onCancel: () => resolve(null)
+      });
+    });
+  }
+
+  // Show list selection popup
+  list(title, message, items, confirmText = 'Select') {
+    return new Promise((resolve) => {
+      this.createPopup({
+        title,
+        message,
+        type: 'list',
+        listItems: items,
+        confirmText,
+        onConfirm: (value) => resolve(value),
+        onCancel: () => resolve(null)
+      });
+    });
+  }
+
+  // Close all popups
+  closeAll() {
+    this.activePopups.forEach(id => {
+      const popup = document.getElementById(id);
+      if (popup) popup.remove();
+    });
+    this.activePopups = [];
+  }
+}
+
+// Initialize popup manager
+const popupManager = new PopupManager();
 
 function toast(msg, t = 3000, type = 'info') {
   const d = document.createElement('div');
@@ -3834,7 +4157,13 @@ $('#navAvatar').onclick = () => {
 };
 
 $('#logoutBtn').onclick = async () => {
-  const ok = confirm('Are you sure you want to sign out?');
+  const ok = await popupManager.confirm(
+    'Logout Confirmation',
+    'Are you sure you want to sign out?',
+    'Yes, Logout',
+    'Cancel'
+  );
+  
   if(ok) {
     await signOut(auth);
     toast('Signed out successfully', 2000, 'success');
@@ -3864,6 +4193,17 @@ if (localStorage.getItem('darkMode') === 'enabled') {
 }
 
 updateToggleButtonText();
+
+// DEMO: Show a welcome popup when the user logs in
+setTimeout(() => {
+  if (me) {
+    popupManager.info(
+      'Welcome to QuickChat!',
+      'You can now start chatting with your friends. Try the new popup features for notifications and confirmations!',
+      'Get Started'
+    );
+  }
+}, 1000);
 </script>
 
 </body>
