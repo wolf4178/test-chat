@@ -1,11 +1,15 @@
- <!DOCTYPE html>
+ 
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>QuickChat — Enhanced Edition</title>
 <style>
-:root { 
+:root {
   --bg: #0b0f14;
   --elev: #111723;
   --border: #1b2435;
@@ -27,15 +31,6 @@
 
 body.theme-high { --bg:#05070b; --elev:#0a1120; --border:#172135; --text:#eaf2ff; --muted:#9fb1cc; --brand:#4f8cff }
 body.theme-dim { --bg:#0b0f14; --elev:#111723; --border:#1b2435; --text:#e6eefc; --muted:#98a7c0; --brand:#4f8cff }
-body.theme-light {
-  --bg: #f5f7fa;
-  --elev: #ffffff;
-  --border: #e1e5ee;
-  --text: #2d3748;
-  --muted: #718096;
-  --brand: #4f8cff;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
 
 html, body {
   height: 100%;
@@ -63,10 +58,6 @@ header {
   box-shadow: var(--shadow);
   position: relative;
   z-index: 100;
-}
-
-body.theme-light header {
-  background: linear-gradient(135deg, var(--elev) 0%, #f0f4ff 100%);
 }
 
 .title {
@@ -118,10 +109,6 @@ body.theme-light header {
   margin: .4rem 0;
   font-size: 0.95rem;
   transition: all 0.3s ease;
-}
-
-body.theme-light .input {
-  background: #ffffff;
 }
 
 .input:focus {
@@ -196,10 +183,6 @@ body.theme-light .input {
   animation: slideInLeft 0.4s ease-out;
 }
 
-body.theme-light .item {
-  background: #f8fafc;
-}
-
 @keyframes slideInLeft {
   from {
     opacity: 0;
@@ -215,10 +198,6 @@ body.theme-light .item {
   background: #0c1a30;
   border-color: var(--brand);
   transform: translateX(5px);
-}
-
-body.theme-light .item:hover {
-  background: #edf2f7;
 }
 
 .avatar {
@@ -245,10 +224,6 @@ body.theme-light .item:hover {
   scroll-behavior: smooth;
   flex: 1;
   min-height: 200px;
-}
-
-body.theme-light #messages {
-  background: #f0f4ff;
 }
 
 #messages::-webkit-scrollbar {
@@ -295,17 +270,9 @@ body.theme-light #messages {
   margin-left: 2rem;
 }
 
-body.theme-light .message-item.own {
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-}
-
 .message-item.other {
   background: #071328;
   margin-right: 2rem;
-}
-
-body.theme-light .message-item.other {
-  background: #ffffff;
 }
 
 .message-content {
@@ -412,6 +379,62 @@ main {
   min-height: calc(100vh - 120px);
 }
 
+.game-container {
+  background: var(--elev);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.game-title {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.tic-tac-toe {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 1rem 0;
+  max-width: 240px;
+  background: var(--border);
+  padding: 6px;
+  border-radius: var(--radius);
+}
+
+.ttt-cell {
+  width: 70px;
+  height: 70px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.ttt-cell:hover {
+  background: #0c1a30;
+  border-color: var(--brand);
+  transform: scale(1.05);
+}
+
+.ttt-cell.x {
+  color: var(--brand);
+}
+
+.ttt-cell.o {
+  color: var(--success);
+}
+
 .settings-section {
   margin-bottom: 1.5rem;
   animation: fadeInUp 0.5s ease-out;
@@ -429,10 +452,6 @@ main {
 .settings-item:hover {
   background: #0c1a30;
   border-radius: var(--radius);
-}
-
-body.theme-light .settings-item:hover {
-  background: #f7fafc;
 }
 
 .settings-item:last-child {
@@ -808,10 +827,6 @@ input:checked + .slider:before {
   animation: pulseGlow 2s infinite;
 }
 
-body.theme-light .pinned-message {
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
-}
-
 @keyframes pulseGlow {
   0% { box-shadow: 0 0 5px rgba(79, 140, 255, 0.3); }
   50% { box-shadow: 0 0 15px rgba(79, 140, 255, 0.6); }
@@ -829,6 +844,77 @@ body.theme-light .pinned-message {
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
   40% { transform: translateY(-5px); }
   60% { transform: translateY(-3px); }
+}
+
+.call-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+  animation: slideInRight 0.4s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.call-item:hover {
+  background: #0c1a30;
+  border-radius: var(--radius);
+  transform: translateX(5px);
+}
+
+.call-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  border: 2px solid var(--border);
+}
+
+.call-details {
+  flex: 1;
+}
+
+.call-name {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.call-info {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.call-status {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.call-incoming {
+  background: rgba(76, 175, 80, 0.2);
+  color: var(--success);
+}
+
+.call-missed {
+  background: rgba(244, 67, 54, 0.2);
+  color: var(--danger);
+}
+
+.call-outgoing {
+  background: rgba(33, 150, 243, 0.2);
+  color: #2196f3;
 }
 
 /* NEW FRIEND REQUEST FEATURES */
@@ -865,17 +951,9 @@ body.theme-light .pinned-message {
   transition: all 0.3s ease;
 }
 
-body.theme-light .suggestion-item {
-  background: #f8fafc;
-}
-
 .suggestion-item:hover {
   background: #0c1a30;
   transform: translateX(5px);
-}
-
-body.theme-light .suggestion-item:hover {
-  background: #edf2f7;
 }
 
 .suggestion-actions {
@@ -901,10 +979,6 @@ body.theme-light .suggestion-item:hover {
   border: 1px solid var(--border);
 }
 
-body.theme-light .stat-card {
-  background: linear-gradient(135deg, var(--elev), #f0f4ff);
-}
-
 .stat-number {
   font-size: 1.5rem;
   font-weight: 700;
@@ -924,10 +998,6 @@ body.theme-light .stat-card {
   border-radius: var(--radius);
   padding: 1rem;
   margin-bottom: 1rem;
-}
-
-body.theme-light .admin-dashboard {
-  background: linear-gradient(135deg, #f0f4ff, #e6eeff);
 }
 
 .admin-stats {
@@ -972,10 +1042,6 @@ body.theme-light .admin-dashboard {
   border-radius: var(--radius);
   padding: 0.8rem;
   font-size: 0.85rem;
-}
-
-body.theme-light .admin-log {
-  background: #ffffff;
 }
 
 .log-entry {
@@ -1100,10 +1166,6 @@ body.theme-light .admin-log {
   border-left: 3px solid var(--brand);
 }
 
-body.theme-light .activity-item {
-  background: #f8fafc;
-}
-
 .activity-avatar {
   width: 32px;
   height: 32px;
@@ -1119,351 +1181,6 @@ body.theme-light .activity-item {
   color: var(--muted);
 }
 
-/* NEW ENHANCEMENTS */
-
-/* Enhanced Message Status */
-.message-status {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 4px;
-  font-size: 0.7rem;
-  color: var(--muted);
-}
-
-/* Enhanced File Upload */
-.file-upload-area {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 2rem;
-  text-align: center;
-  margin: 1rem 0;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.file-upload-area:hover {
-  border-color: var(--brand);
-  background: rgba(79, 140, 255, 0.05);
-}
-
-.file-upload-area.dragover {
-  border-color: var(--brand);
-  background: rgba(79, 140, 255, 0.1);
-}
-
-/* Enhanced Mobile Responsiveness */
-.mobile-header {
-  display: none;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  background: var(--elev);
-  border-bottom: 1px solid var(--border);
-}
-
-.mobile-menu-btn {
-  background: none;
-  border: none;
-  color: var(--text);
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-/* Enhanced Chat Bubbles */
-.chat-bubble {
-  max-width: 80%;
-  padding: 12px 16px;
-  border-radius: 18px;
-  margin: 4px 0;
-  position: relative;
-  word-wrap: break-word;
-}
-
-.chat-bubble.own {
-  background: linear-gradient(135deg, var(--brand), #3a7cff);
-  color: white;
-  margin-left: auto;
-  border-bottom-right-radius: 4px;
-}
-
-.chat-bubble.other {
-  background: var(--elev);
-  border: 1px solid var(--border);
-  margin-right: auto;
-  border-bottom-left-radius: 4px;
-}
-
-.chat-bubble .timestamp {
-  font-size: 0.7rem;
-  opacity: 0.7;
-  margin-top: 4px;
-  text-align: right;
-}
-
-/* Enhanced User Profile */
-.profile-header {
-  text-align: center;
-  padding: 2rem 1rem;
-  background: linear-gradient(135deg, var(--elev), #0c1a30);
-  border-radius: var(--radius);
-  margin-bottom: 1rem;
-}
-
-body.theme-light .profile-header {
-  background: linear-gradient(135deg, var(--elev), #f0f4ff);
-}
-
-.profile-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 4px solid var(--brand);
-  margin: 0 auto 1rem;
-}
-
-.profile-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.profile-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background: var(--elev);
-  border: 1px solid var(--border);
-  font-size: 0.9rem;
-}
-
-/* Enhanced Loading States */
-.skeleton {
-  background: linear-gradient(90deg, var(--border) 25%, var(--elev) 50%, var(--border) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-  border-radius: 4px;
-}
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.skeleton-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-.skeleton-text {
-  height: 12px;
-  margin: 4px 0;
-}
-
-.skeleton-text.short {
-  width: 60%;
-}
-
-.skeleton-text.medium {
-  width: 80%;
-}
-
-/* Enhanced Scrollbar */
-.enhanced-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-
-.enhanced-scrollbar::-webkit-scrollbar-track {
-  background: var(--bg);
-  border-radius: 4px;
-}
-
-.enhanced-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-}
-
-.enhanced-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--brand);
-}
-
-/* Enhanced Animations */
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-.slide-up {
-  animation: slideUp 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* Enhanced Button Variants */
-.btn.outline {
-  background: transparent;
-  border: 2px solid var(--brand);
-  color: var(--brand);
-}
-
-.btn.outline:hover {
-  background: var(--brand);
-  color: white;
-}
-
-.btn.danger {
-  background: var(--danger);
-}
-
-.btn.danger:hover {
-  background: #d32f2f;
-  transform: translateY(-2px);
-}
-
-.btn.success {
-  background: var(--success);
-}
-
-.btn.success:hover {
-  background: #388e3c;
-  transform: translateY(-2px);
-}
-
-/* Enhanced Form Elements */
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.form-hint {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-top: 0.25rem;
-}
-
-/* NEW: Disappearing Messages Styles */
-.disappearing-message {
-  position: relative;
-  border: 1px dashed var(--warning);
-  background: rgba(255, 152, 0, 0.05) !important;
-}
-
-.disappearing-message .message-timer {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 4px;
-  font-size: 0.7rem;
-  color: var(--warning);
-}
-
-.disappearing-message .timer-icon {
-  font-size: 0.8rem;
-}
-
-.disappearing-message.expiring {
-  animation: pulseWarning 1s infinite;
-}
-
-@keyframes pulseWarning {
-  0% { border-color: var(--warning); }
-  50% { border-color: var(--danger); }
-  100% { border-color: var(--warning); }
-}
-
-/* NEW: Forgot Password Styles */
-.forgot-password-container {
-  text-align: center;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-.forgot-password-link {
-  color: var(--brand);
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 0.9rem;
-}
-
-.forgot-password-link:hover {
-  color: #6aa1ff;
-}
-
-.password-reset-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  backdrop-filter: blur(5px);
-}
-
-.password-reset-content {
-  background: var(--elev);
-  border-radius: var(--radius);
-  padding: 2rem;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: var(--shadow);
-  animation: fadeInUp 0.3s ease-out;
-}
-
-.password-reset-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-/* NEW: Password Reset Request Styles */
-.password-reset-request {
-  background: rgba(255, 152, 0, 0.1);
-  border: 1px solid var(--warning);
-  border-radius: var(--radius);
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.password-reset-request .request-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.8rem;
-}
-
-.password-reset-request .user-details {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.password-reset-request .request-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* Enhanced Media Queries */
 @media (max-width: 768px) {
   .app {
     font-size: 14px;
@@ -1505,63 +1222,6 @@ body.theme-light .profile-header {
   .notification-dropdown {
     width: 280px;
     right: -50px;
-  }
-  
-  .mobile-header {
-    display: flex;
-  }
-  
-  .desktop-only {
-    display: none !important;
-  }
-  
-  .chat-bubble {
-    max-width: 90%;
-  }
-  
-  .message-item.own {
-    margin-left: 1rem;
-  }
-  
-  .message-item.other {
-    margin-right: 1rem;
-  }
-  
-  #chats-page > div {
-    flex-direction: column;
-  }
-  
-  #chats-page > div > div {
-    width: 100% !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .app {
-    font-size: 13px;
-  }
-  
-  .card {
-    padding: 0.6rem;
-  }
-  
-  .btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-  }
-  
-  .input {
-    padding: 0.6rem;
-  }
-  
-  .profile-avatar {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .notification-dropdown {
-    width: 250px;
-    right: -80px;
   }
 }
 
@@ -1672,714 +1332,10 @@ body.theme-light .profile-header {
 .fullscreen-chat#appUI > div { display:flex; flex-direction:column; } 
 .fullscreen-chat#appUI > div > div:first-child { display:none; }
 .fullscreen-chat#appUI > div > div:last-child { width:100% !important; }
-
-/* QUICKCHAT-STYLE FEATURES */
-
-/* QuickChat-like Sidebar */
-.quickchat-sidebar {
-  width: 72px;
-  background: var(--elev);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 0;
-  gap: 8px;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 90;
-}
-
-.quickchat-server-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--brand);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 8px;
-}
-
-.quickchat-server-icon:hover {
-  border-radius: 16px;
-  background: var(--brand);
-}
-
-.quickchat-server-icon.active {
-  border-radius: 16px;
-  background: var(--brand);
-}
-
-.quickchat-channel-sidebar {
-  width: 240px;
-  background: var(--elev);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 72px;
-  top: 0;
-  bottom: 0;
-  z-index: 89;
-  overflow-y: auto;
-}
-
-.quickchat-server-header {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  font-weight: 700;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.quickchat-channel-category {
-  padding: 8px 16px;
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.quickchat-channel-item {
-  padding: 6px 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin: 0 8px;
-  transition: all 0.2s ease;
-}
-
-.quickchat-channel-item:hover {
-  background: rgba(79, 140, 255, 0.1);
-}
-
-.quickchat-channel-item.active {
-  background: rgba(79, 140, 255, 0.2);
-}
-
-.quickchat-channel-icon {
-  font-size: 1rem;
-}
-
-.quickchat-channel-name {
-  flex: 1;
-}
-
-.quickchat-member-sidebar {
-  width: 240px;
-  background: var(--elev);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 89;
-  overflow-y: auto;
-}
-
-.quickchat-member-header {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.quickchat-member-item {
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.quickchat-member-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
-
-.quickchat-member-name {
-  flex: 1;
-  font-size: 0.9rem;
-}
-
-.quickchat-member-status {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.quickchat-member-status.online {
-  background: var(--success);
-}
-
-.quickchat-member-status.idle {
-  background: var(--warning);
-}
-
-.quickchat-member-status.dnd {
-  background: var(--danger);
-}
-
-.quickchat-member-status.offline {
-  background: var(--muted);
-}
-
-/* QuickChat-like Message Styling */
-.quickchat-message {
-  display: flex;
-  padding: 4px 16px;
-  transition: all 0.2s ease;
-}
-
-.quickchat-message:hover {
-  background: rgba(79, 140, 255, 0.05);
-}
-
-.quickchat-message-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 16px;
-  flex-shrink: 0;
-}
-
-.quickchat-message-content {
-  flex: 1;
-}
-
-.quickchat-message-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.quickchat-message-author {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.quickchat-message-timestamp {
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-
-.quickchat-message-text {
-  line-height: 1.4;
-  word-wrap: break-word;
-}
-
-.quickchat-message-reactions {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-}
-
-.quickchat-reaction {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: var(--elev);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quickchat-reaction:hover {
-  background: rgba(79, 140, 255, 0.1);
-  border-color: var(--brand);
-}
-
-.quickchat-reaction.own {
-  background: rgba(79, 140, 255, 0.2);
-  border-color: var(--brand);
-}
-
-/* QuickChat-like Input Area */
-.quickchat-input-area {
-  background: var(--elev);
-  border-top: 1px solid var(--border);
-  padding: 16px;
-  position: fixed;
-  bottom: 0;
-  left: 312px;
-  right: 240px;
-  z-index: 88;
-}
-
-.quickchat-input-container {
-  display: flex;
-  align-items: center;
-  background: var(--bg);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  padding: 8px 16px;
-}
-
-.quickchat-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: 0.95rem;
-  padding: 8px 0;
-  outline: none;
-}
-
-.quickchat-input-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.quickchat-input-button {
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.quickchat-input-button:hover {
-  color: var(--text);
-  background: rgba(79, 140, 255, 0.1);
-}
-
-/* QuickChat-like Roles and Permissions */
-.quickchat-role-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-left: 8px;
-}
-
-.quickchat-role-admin {
-  background: #f44336;
-  color: white;
-}
-
-.quickchat-role-moderator {
-  background: #ff9800;
-  color: white;
-}
-
-.quickchat-role-member {
-  background: #4caf50;
-  color: white;
-}
-
-/* QuickChat-like Voice Channels */
-.quickchat-voice-channel {
-  color: #4caf50;
-}
-
-.quickchat-voice-users {
-  padding: 8px 16px;
-  border-top: 1px solid var(--border);
-}
-
-.quickchat-voice-user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 0;
-}
-
-.quickchat-voice-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #4caf50;
-  animation: pulse 2s infinite;
-}
-
-/* QuickChat-like Threads */
-.quickchat-thread-indicator {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 8px;
-  font-size: 0.8rem;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.quickchat-thread-indicator:hover {
-  color: var(--brand);
-}
-
-/* QuickChat-like User Popout */
-.quickchat-user-popout {
-  position: absolute;
-  background: var(--elev);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  width: 300px;
-  z-index: 1000;
-  box-shadow: var(--shadow);
-  animation: fadeInUp 0.2s ease-out;
-}
-
-.quickchat-user-popout-header {
-  background: var(--brand);
-  padding: 16px;
-  border-radius: 8px 8px 0 0;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.quickchat-user-popout-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.2);
-}
-
-.quickchat-user-popout-name {
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-
-.quickchat-user-popout-body {
-  padding: 16px;
-}
-
-.quickchat-user-popout-section {
-  margin-bottom: 16px;
-}
-
-.quickchat-user-popout-section-title {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.quickchat-user-popout-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* QuickChat-like Premium Features */
-.quickchat-premium-badge {
-  background: linear-gradient(45deg, #ff73fa, #8b46ff);
-  color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  margin-left: 8px;
-}
-
-.quickchat-boost-badge {
-  background: linear-gradient(45deg, #ff73fa, #8b46ff);
-  color: white;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  margin-left: 4px;
-}
-
-/* QuickChat-like Server Boost */
-.quickchat-boost-level {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: rgba(255, 115, 250, 0.1);
-  border-top: 1px solid var(--border);
-}
-
-.quickchat-boost-level-icon {
-  color: #ff73fa;
-  font-size: 1.2rem;
-}
-
-.quickchat-boost-level-text {
-  flex: 1;
-  font-size: 0.9rem;
-}
-
-.quickchat-boost-level-number {
-  font-weight: 700;
-  color: #ff73fa;
-}
-
-/* QuickChat-like Emoji Picker */
-.quickchat-emoji-picker {
-  position: absolute;
-  bottom: 60px;
-  right: 240px;
-  width: 350px;
-  height: 400px;
-  background: var(--elev);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  z-index: 1000;
-  display: none;
-  flex-direction: column;
-}
-
-.quickchat-emoji-picker.active {
-  display: flex;
-}
-
-.quickchat-emoji-picker-header {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  gap: 8px;
-}
-
-.quickchat-emoji-picker-tab {
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quickchat-emoji-picker-tab.active {
-  background: var(--brand);
-  color: white;
-}
-
-.quickchat-emoji-picker-search {
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.quickchat-emoji-picker-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 8px;
-}
-
-.quickchat-emoji-item {
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  text-align: center;
-  transition: all 0.2s ease;
-}
-
-.quickchat-emoji-item:hover {
-  background: var(--brand);
-  transform: scale(1.2);
-}
-
-/* QuickChat-like Stage Channels */
-.quickchat-stage-channel {
-  color: #ff9800;
-}
-
-.quickchat-stage-indicator {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: rgba(255, 152, 0, 0.1);
-  border-top: 1px solid var(--border);
-}
-
-.quickchat-stage-icon {
-  color: #ff9800;
-  font-size: 1.2rem;
-}
-
-.quickchat-stage-text {
-  flex: 1;
-  font-size: 0.9rem;
-}
-
-.quickchat-stage-button {
-  background: #ff9800;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-/* Responsive adjustments for QuickChat features */
-@media (max-width: 1200px) {
-  .quickchat-channel-sidebar,
-  .quickchat-member-sidebar {
-    display: none;
-  }
-  
-  .quickchat-input-area {
-    left: 72px;
-    right: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .quickchat-sidebar {
-    display: none;
-  }
-  
-  .quickchat-input-area {
-    left: 0;
-  }
-}
 </style>
 </head>
 <body>
 <div class="app" id="app">
-<!-- QuickChat-style Sidebar -->
-<div class="quickchat-sidebar">
-  <div class="quickchat-server-icon active">QC</div>
-  <div class="quickchat-server-icon">F</div>
-  <div class="quickchat-server-icon">G</div>
-  <div class="quickchat-server-icon">+</div>
-</div>
-
-<!-- QuickChat-style Channel Sidebar -->
-<div class="quickchat-channel-sidebar">
-  <div class="quickchat-server-header">
-    <span>QuickChat Server</span>
-    <button class="quickchat-input-button">🔔</button>
-  </div>
-  
-  <div class="quickchat-channel-category">
-    <span>TEXT CHANNELS</span>
-    <button class="quickchat-input-button">+</button>
-  </div>
-  
-  <div class="quickchat-channel-item active">
-    <span class="quickchat-channel-icon">#</span>
-    <span class="quickchat-channel-name">general</span>
-  </div>
-  
-  <div class="quickchat-channel-item">
-    <span class="quickchat-channel-icon">#</span>
-    <span class="quickchat-channel-name">help</span>
-  </div>
-  
-  <div class="quickchat-channel-item">
-    <span class="quickchat-channel-icon">#</span>
-    <span class="quickchat-channel-name">off-topic</span>
-  </div>
-  
-  <div class="quickchat-channel-category">
-    <span>VOICE CHANNELS</span>
-    <button class="quickchat-input-button">+</button>
-  </div>
-  
-  <div class="quickchat-channel-item quickchat-voice-channel">
-    <span class="quickchat-channel-icon">🔊</span>
-    <span class="quickchat-channel-name">General Voice</span>
-  </div>
-  
-  <div class="quickchat-channel-item quickchat-voice-channel">
-    <span class="quickchat-channel-icon">🔊</span>
-    <span class="quickchat-channel-name">Gaming</span>
-  </div>
-  
-  <div class="quickchat-boost-level">
-    <span class="quickchat-boost-level-icon">🚀</span>
-    <span class="quickchat-boost-level-text">Server Boost</span>
-    <span class="quickchat-boost-level-number">Level 1</span>
-  </div>
-</div>
-
-<!-- QuickChat-style Member Sidebar -->
-<div class="quickchat-member-sidebar">
-  <div class="quickchat-member-header">ONLINE — 3</div>
-  
-  <div class="quickchat-member-item">
-    <img class="quickchat-member-avatar" src="" alt="User" />
-    <span class="quickchat-member-name">You</span>
-    <div class="quickchat-member-status online"></div>
-  </div>
-  
-  <div class="quickchat-member-item">
-    <img class="quickchat-member-avatar" src="" alt="User" />
-    <span class="quickchat-member-name">John Doe</span>
-    <span class="quickchat-role-tag quickchat-role-admin">ADMIN</span>
-    <div class="quickchat-member-status online"></div>
-  </div>
-  
-  <div class="quickchat-member-item">
-    <img class="quickchat-member-avatar" src="" alt="User" />
-    <span class="quickchat-member-name">Jane Smith</span>
-    <span class="quickchat-role-tag quickchat-role-moderator">MOD</span>
-    <div class="quickchat-member-status idle"></div>
-  </div>
-  
-  <div class="quickchat-member-header">OFFLINE — 5</div>
-  
-  <div class="quickchat-member-item">
-    <img class="quickchat-member-avatar" src="" alt="User" />
-    <span class="quickchat-member-name">Bob Johnson</span>
-    <div class="quickchat-member-status offline"></div>
-  </div>
-</div>
-
-<!-- QuickChat-style Input Area -->
-<div class="quickchat-input-area">
-  <div class="quickchat-input-container">
-    <button class="quickchat-input-button">➕</button>
-    <input type="text" class="quickchat-input" placeholder="Message #general" />
-    <div class="quickchat-input-buttons">
-      <button class="quickchat-input-button" id="quickchatEmojiButton">😀</button>
-      <button class="quickchat-input-button">🎁</button>
-      <button class="quickchat-input-button">🖼️</button>
-    </div>
-  </div>
-</div>
-
-<!-- QuickChat Emoji Picker -->
-<div class="quickchat-emoji-picker" id="quickchatEmojiPicker">
-  <div class="quickchat-emoji-picker-header">
-    <div class="quickchat-emoji-picker-tab active">😀</div>
-    <div class="quickchat-emoji-picker-tab">🚀</div>
-    <div class="quickchat-emoji-picker-tab">🎉</div>
-  </div>
-  <div class="quickchat-emoji-picker-search">
-    <input type="text" class="input" placeholder="Search emojis..." />
-  </div>
-  <div class="quickchat-emoji-picker-body">
-    <!-- Emojis will be populated by JavaScript -->
-  </div>
-</div>
-
 <header>
 <div class="title">QuickChat</div>
 <div style="flex:1"></div>
@@ -2398,7 +1354,7 @@ body.theme-light .profile-header {
 </div>
 
 <img id="navAvatar" class="avatar" src="" alt="me" style="width:36px;height:36px;border:1px solid var(--border);cursor:pointer" title="Toggle Profile Menu"/>
-<button id="darkModeToggle" class="btn ghost" title="Toggle Dark Mode" style="padding:0.3rem 0.6rem;">Light Mode</button>
+<button id="darkModeToggle" class="btn ghost" title="Toggle Dark Mode" style="padding:0.3rem 0.6rem;">Dark Mode</button>
 <button id="logoutBtn" class="btn ghost" title="Logout" style="padding:0.3rem 0.6rem;margin-left:8px;">Logout</button>
 </div>
 </header>
@@ -2415,9 +1371,6 @@ body.theme-light .profile-header {
 <button id="registerBtn" class="btn ghost" style="flex:1">Register</button>
 <button id="googleBtn" class="btn ghost" style="flex:1">Sign in with Google</button>
 </div>
-<div class="forgot-password-container">
-  <span class="forgot-password-link" id="forgotPasswordLink">Forgot your password?</span>
-</div>
 <div id="authMsg" style="color:var(--muted);margin-top:.8rem;text-align:center;min-height:20px"></div>
 </section>
 
@@ -2426,6 +1379,14 @@ body.theme-light .profile-header {
   <div class="nav-item active" data-page="chats-page">
     <div class="nav-icon">💬</div>
     <div>Chats</div>
+  </div>
+  <div class="nav-item" data-page="calls-page">
+    <div class="nav-icon">📞</div>
+    <div>Calls</div>
+  </div>
+  <div class="nav-item" data-page="games-page">
+    <div class="nav-icon">🎮</div>
+    <div>Games</div>
   </div>
   <div class="nav-item" data-page="settings-page">
     <div class="nav-icon">⚙️</div>
@@ -2550,14 +1511,6 @@ body.theme-light .profile-header {
               </div>
             </div>
 
-            <!-- NEW: Password Reset Requests Section -->
-            <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
-              <div style="font-weight:700;margin-bottom:8px">Password Reset Requests</div>
-              <div id="passwordResetRequests" class="admin-log" style="max-height:150px">
-                <!-- Password reset requests will appear here -->
-              </div>
-            </div>
-
             <div>
               <button id="adminRefreshUsers" class="btn ghost" style="width:100%;margin-bottom:8px">Refresh Users</button>
               <div id="adminUsersList" style="max-height:220px;overflow:auto;margin-top:8px"></div>
@@ -2653,8 +1606,6 @@ body.theme-light .profile-header {
           <div style="display:flex;gap:4px">
             <button id="audioCallBtn" class="btn ghost" title="Audio call (planned)">🎤</button>
             <button id="videoCallBtn" class="btn ghost" title="Video call (planned)">📹</button>
-            <!-- NEW: Disappearing Messages Toggle -->
-            <button id="disappearingToggle" class="btn ghost" title="Toggle disappearing messages">⏱️</button>
           </div>
         </div>
 
@@ -2680,6 +1631,108 @@ body.theme-light .profile-header {
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div id="calls-page" class="page">
+  <div class="card">
+    <strong style="display:block;margin-bottom:1rem">Recent Calls</strong>
+    <div id="callHistory" class="list"></div>
+  </div>
+  
+  <div id="callsList">
+    <div class="call-item">
+      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user1" class="call-avatar" alt="User 1">
+      <div class="call-details">
+        <div class="call-name">John Doe</div>
+        <div class="call-info">
+          <span>Yesterday 14:30</span>
+          <span class="call-status call-outgoing">Outgoing</span>
+        </div>
+      </div>
+      <div style="font-size:1.2rem">📞</div>
+    </div>
+    
+    <div class="call-item">
+      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user2" class="call-avatar" alt="User 2">
+      <div class="call-details">
+        <div class="call-name">Jane Smith</div>
+        <div class="call-info">
+          <span>Today 09:15</span>
+          <span class="call-status call-incoming">Incoming</span>
+        </div>
+      </div>
+      <div style="font-size:1.2rem">📞</div>
+    </div>
+    
+    <div class="call-item">
+      <img src="https://api.dicebear.com/8.x/thumbs/svg?seed=user3" class="call-avatar" alt="User 3">
+      <div class="call-details">
+        <div class="call-name">Alex Johnson</div>
+        <div class="call-info">
+          <span>Today 11:42</span>
+          <span class="call-status call-missed">Missed</span>
+        </div>
+      </div>
+      <div style="font-size:1.2rem">📞</div>
+    </div>
+  </div>
+</div>
+
+<div id="games-page" class="page">
+  <div class="card">
+    <strong style="display:block;margin-bottom:.8rem">In-Chat Games</strong>
+    <p style="color:var(--muted);margin:0">Play games with your friends directly in the chat!</p>
+  </div>
+  
+  <div class="game-container">
+    <div class="game-title">Tic Tac Toe</div>
+    <p style="color:var(--muted);margin-bottom:1rem">Challenge a friend to a game of Tic Tac Toe</p>
+    
+    <div class="tic-tac-toe">
+      <div class="ttt-cell" data-index="0"></div>
+      <div class="ttt-cell" data-index="1"></div>
+      <div class="ttt-cell" data-index="2"></div>
+      <div class="ttt-cell" data-index="3"></div>
+      <div class="ttt-cell" data-index="4"></div>
+      <div class="ttt-cell" data-index="5"></div>
+      <div class="ttt-cell" data-index="6"></div>
+      <div class="ttt-cell" data-index="7"></div>
+      <div class="ttt-cell" data-index="8"></div>
+    </div>
+    
+    <div id="gameStatus" style="margin:1rem 0;font-weight:600;color:var(--brand)">Your turn (X)</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="startTicTacToe" style="flex:1">Start Game with Friend</button>
+      <button class="btn ghost" id="resetTicTacToe" style="flex:1">Reset Game</button>
+    </div>
+  </div>
+  
+  <div class="game-container">
+    <div class="game-title">Word Challenge</div>
+    <p style="color:var(--muted);margin-bottom:1rem">Test your vocabulary with friends</p>
+    <div id="wordGame">
+      <p style="margin:.5rem 0">Current word: <span id="currentWord" style="font-weight:600;color:var(--brand)">_____</span></p>
+      <input type="text" class="input" id="wordInput" placeholder="Enter a word">
+      <button class="btn" id="submitWord" style="width:100%;margin-top:8px">Submit Word</button>
+      <p id="wordScore" style="margin-top:8px;font-weight:600">Score: 0</p>
+    </div>
+  </div>
+  
+  <div class="game-container">
+    <div class="game-title">Quick Trivia</div>
+    <p style="color:var(--muted);margin-bottom:1rem">Answer trivia questions with friends</p>
+    <div id="triviaGame">
+      <p id="triviaQuestion" style="margin-bottom:1rem;font-style:italic">Question will appear here</p>
+      <div id="triviaOptions" style="display:grid;gap:8px;grid-template-columns:1fr 1fr">
+        <button class="btn ghost">Option 1</button>
+        <button class="btn ghost">Option 2</button>
+        <button class="btn ghost">Option 3</button>
+        <button class="btn ghost">Option 4</button>
+      </div>
+      <p id="triviaScore" style="margin-top:1rem;font-weight:600">Score: 0/0</p>
+    </div>
+    <button class="btn" id="startTrivia" style="width:100%;margin-top:8px">Start Trivia</button>
   </div>
 </div>
 
@@ -2709,19 +1762,6 @@ body.theme-light .profile-header {
         <input type="checkbox" checked>
         <span class="slider"></span>
       </label>
-    </div>
-    
-    <!-- NEW: Disappearing Messages Settings -->
-    <div class="settings-item">
-      <div>Disappearing Messages</div>
-      <select id="disappearingTimeout" class="input" style="width:auto;padding:.5rem .8rem">
-        <option value="0">Off</option>
-        <option value="30000">30 seconds</option>
-        <option value="60000">1 minute</option>
-        <option value="300000">5 minutes</option>
-        <option value="3600000">1 hour</option>
-        <option value="86400000">24 hours</option>
-      </select>
     </div>
   </div>
   
@@ -2824,24 +1864,11 @@ body.theme-light .profile-header {
 
 <div id="contextMenu" class="context-menu hidden"></div>
 
-<!-- NEW: Password Reset Modal -->
-<div id="passwordResetModal" class="password-reset-modal hidden">
-  <div class="password-reset-content">
-    <h3 style="text-align:center;margin-bottom:1.5rem;color:var(--brand)">Reset Password</h3>
-    <input id="resetEmail" class="input" placeholder="Enter your email" type="email" />
-    <div class="password-reset-actions">
-      <button id="cancelReset" class="btn ghost" style="flex:1">Cancel</button>
-      <button id="submitReset" class="btn" style="flex:1">Send Reset Link</button>
-    </div>
-    <div id="resetMsg" style="color:var(--muted);margin-top:.8rem;text-align:center;min-height:20px"></div>
-  </div>
-</div>
-
 <button id="scrollToBottom" class="scroll-to-bottom hidden" title="Scroll to bottom">↓</button>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js';
 import { getDatabase, ref, set, push, onValue, get, update, remove } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js';
 import { getStorage, ref as sref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js';
 
@@ -2910,9 +1937,12 @@ const SEND_COOLDOWN_MS = 1200;
 
 const EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🔥'];
 
-// NEW: Disappearing messages state
-let disappearingMessagesEnabled = false;
-let disappearingTimeout = 0; // in milliseconds
+let ticTacToeGame = {
+  board: ['', '', '', '', '', '', '', '', ''],
+  currentPlayer: 'X',
+  gameActive: false,
+  playerSymbol: 'X'
+};
 
 // Enhanced Friend Request Features
 let notificationCount = 0;
@@ -3109,208 +2139,6 @@ async function loadActivityFeed() {
     `;
     container.appendChild(item);
   });
-}
-
-// NEW: Forgot Password Functionality
-function setupForgotPassword() {
-  $('#forgotPasswordLink').onclick = () => {
-    $('#passwordResetModal').classList.remove('hidden');
-  };
-  
-  $('#cancelReset').onclick = () => {
-    $('#passwordResetModal').classList.add('hidden');
-    $('#resetMsg').textContent = '';
-  };
-  
-  $('#submitReset').onclick = async () => {
-    const email = $('#resetEmail').value.trim();
-    if (!email) {
-      $('#resetMsg').textContent = 'Please enter your email';
-      return;
-    }
-    
-    try {
-      await sendPasswordResetEmail(auth, email);
-      
-      // Store password reset request for admin
-      if (isAdminUser) {
-        const requestId = push(ref(db, 'passwordResetRequests')).key;
-        await set(ref(db, `passwordResetRequests/${requestId}`), {
-          email,
-          timestamp: Date.now(),
-          status: 'pending'
-        });
-      }
-      
-      $('#resetMsg').textContent = 'Password reset email sent!';
-      toast('Password reset email sent! Check your inbox.', 5000, 'success');
-      
-      setTimeout(() => {
-        $('#passwordResetModal').classList.add('hidden');
-        $('#resetMsg').textContent = '';
-      }, 3000);
-    } catch (error) {
-      $('#resetMsg').textContent = error.message;
-      toast('Failed to send reset email: ' + error.message, 5000, 'error');
-    }
-  };
-}
-
-// NEW: Load password reset requests for admin
-async function loadPasswordResetRequests() {
-  if (!isAdminUser) return;
-  
-  const requestsRef = ref(db, 'passwordResetRequests');
-  onValue(requestsRef, (snapshot) => {
-    const requests = snapshot.val() || {};
-    const container = $('#passwordResetRequests');
-    container.innerHTML = '';
-    
-    Object.entries(requests)
-      .sort(([,a], [,b]) => b.timestamp - a.timestamp)
-      .forEach(([id, request]) => {
-        if (request.status === 'pending') {
-          const requestEl = document.createElement('div');
-          requestEl.className = 'password-reset-request';
-          requestEl.innerHTML = `
-            <div class="request-info">
-              <div class="user-details">
-                <div>
-                  <strong>${request.email}</strong>
-                  <div style="color:var(--muted);font-size:.8rem">${timeAgo(request.timestamp)} ago</div>
-                </div>
-              </div>
-              <div class="request-actions">
-                <button class="btn" data-action="approve" data-id="${id}">Approve</button>
-                <button class="btn ghost" data-action="deny" data-id="${id}">Deny</button>
-              </div>
-            </div>
-          `;
-          
-          container.appendChild(requestEl);
-        }
-      });
-    
-    // Add event listeners to buttons
-    container.querySelectorAll('button[data-action="approve"]').forEach(btn => {
-      btn.onclick = async () => {
-        const requestId = btn.dataset.id;
-        await update(ref(db, `passwordResetRequests/${requestId}`), { status: 'approved' });
-        toast('Password reset request approved', 3000, 'success');
-        addAdminLog('Password reset approved', `Email: ${requests[requestId].email}`);
-      };
-    });
-    
-    container.querySelectorAll('button[data-action="deny"]').forEach(btn => {
-      btn.onclick = async () => {
-        const requestId = btn.dataset.id;
-        await update(ref(db, `passwordResetRequests/${requestId}`), { status: 'denied' });
-        toast('Password reset request denied', 3000, 'info');
-        addAdminLog('Password reset denied', `Email: ${requests[requestId].email}`);
-      };
-    });
-  });
-}
-
-// NEW: Disappearing Messages Functions
-function setupDisappearingMessages() {
-  // Load user's disappearing messages setting
-  if (me && me.uid) {
-    const disappearingRef = ref(db, `users/${me.uid}/disappearingMessages`);
-    onValue(disappearingRef, (snapshot) => {
-      if (snapshot.exists()) {
-        disappearingTimeout = snapshot.val().timeout || 0;
-        disappearingMessagesEnabled = disappearingTimeout > 0;
-        
-        // Update UI
-        $('#disappearingTimeout').value = disappearingTimeout;
-        updateDisappearingToggle();
-      }
-    });
-  }
-  
-  // Settings change handler
-  $('#disappearingTimeout').onchange = async (e) => {
-    const timeout = parseInt(e.target.value);
-    disappearingTimeout = timeout;
-    disappearingMessagesEnabled = timeout > 0;
-    
-    if (me && me.uid) {
-      await update(ref(db, `users/${me.uid}/disappearingMessages`), {
-        timeout,
-        enabled: disappearingMessagesEnabled
-      });
-    }
-    
-    updateDisappearingToggle();
-    toast(`Disappearing messages ${disappearingMessagesEnabled ? 'enabled' : 'disabled'}`, 3000, 'success');
-  };
-  
-  // Chat toggle handler
-  $('#disappearingToggle').onclick = () => {
-    disappearingMessagesEnabled = !disappearingMessagesEnabled;
-    
-    if (me && me.uid) {
-      update(ref(db, `users/${me.uid}/disappearingMessages`), {
-        timeout: disappearingMessagesEnabled ? disappearingTimeout : 0,
-        enabled: disappearingMessagesEnabled
-      });
-    }
-    
-    updateDisappearingToggle();
-    toast(`Disappearing messages ${disappearingMessagesEnabled ? 'enabled' : 'disabled'} for this chat`, 3000, 'success');
-  };
-}
-
-function updateDisappearingToggle() {
-  const toggle = $('#disappearingToggle');
-  if (disappearingMessagesEnabled) {
-    toggle.style.background = 'var(--warning)';
-    toggle.style.color = 'white';
-    toggle.title = 'Disappearing messages: ON';
-  } else {
-    toggle.style.background = '';
-    toggle.style.color = '';
-    toggle.title = 'Disappearing messages: OFF';
-  }
-}
-
-// NEW: Schedule message deletion for disappearing messages
-function scheduleMessageDeletion(messageKey, chatId, timeout) {
-  if (timeout <= 0) return;
-  
-  setTimeout(async () => {
-    // Check if message still exists and hasn't been read by all recipients
-    const basePath = currentChat.uid 
-      ? `chats/${chatId}/messages/${messageKey}`
-      : `communityMessages/${chatId}/messages/${messageKey}`;
-    
-    const messageSnap = await get(ref(db, basePath));
-    if (messageSnap.exists()) {
-      const message = messageSnap.val();
-      
-      // Check if all recipients have read the message
-      const readsSnap = await get(ref(db, `reads/${chatId}/${messageKey}`));
-      if (readsSnap.exists()) {
-        const readers = Object.keys(readsSnap.val());
-        
-        // For DMs, check if both users have read it
-        if (currentChat.uid) {
-          const expectedReaders = [me.uid, currentChat.uid];
-          const allRead = expectedReaders.every(uid => readers.includes(uid));
-          
-          if (allRead) {
-            await remove(ref(db, basePath));
-            toast('Message disappeared', 2000, 'info');
-          }
-        } else {
-          // For groups, delete after timeout regardless of reads
-          await remove(ref(db, basePath));
-          toast('Message disappeared', 2000, 'info');
-        }
-      }
-    }
-  }, timeout);
 }
 
 // Enhanced Admin Features
@@ -3556,13 +2384,10 @@ function initializeEnhancedFeatures() {
   loadFriendSuggestions();
   updateFriendStats();
   loadActivityFeed();
-  setupForgotPassword();
-  setupDisappearingMessages();
   
   if (isAdminUser) {
     updateAdminStats();
     setInterval(updateAdminStats, 30000);
-    loadPasswordResetRequests();
     addAdminLog('Admin panel accessed');
   }
   
@@ -3622,63 +2447,6 @@ function initializeEnhancedFeatures() {
       toast('Chat cleared', 2000, 'success');
     }
   };
-}
-
-// QuickChat-style features initialization
-function initializeQuickChatFeatures() {
-  // QuickChat emoji picker
-  const emojiPicker = $('#quickchatEmojiPicker');
-  const emojiButton = $('#quickchatEmojiButton');
-  
-  emojiButton.onclick = () => {
-    emojiPicker.classList.toggle('active');
-  };
-  
-  // Populate emoji picker
-  const emojiBody = emojiPicker.querySelector('.quickchat-emoji-picker-body');
-  const commonEmojis = ['😀', '😂', '🥰', '😎', '🤔', '😴', '😭', '😡', '👍', '👎', '❤️', '🔥', '🎉', '🙏', '💯', '🤝'];
-  
-  commonEmojis.forEach(emoji => {
-    const emojiItem = document.createElement('div');
-    emojiItem.className = 'quickchat-emoji-item';
-    emojiItem.textContent = emoji;
-    emojiItem.onclick = () => {
-      const msgInput = $('#msgInput');
-      msgInput.value += emoji;
-      emojiPicker.classList.remove('active');
-      msgInput.focus();
-    };
-    emojiBody.appendChild(emojiItem);
-  });
-  
-  // QuickChat channel switching
-  $$('.quickchat-channel-item').forEach(channel => {
-    channel.onclick = () => {
-      $$('.quickchat-channel-item').forEach(c => c.classList.remove('active'));
-      channel.classList.add('active');
-      
-      const channelName = channel.querySelector('.quickchat-channel-name').textContent;
-      toast(`Switched to #${channelName}`, 2000, 'success');
-    };
-  });
-  
-  // QuickChat server switching
-  $$('.quickchat-server-icon').forEach(server => {
-    server.onclick = () => {
-      $$('.quickchat-server-icon').forEach(s => s.classList.remove('active'));
-      server.classList.add('active');
-      
-      const serverName = server.textContent;
-      toast(`Switched to ${serverName === 'QC' ? 'QuickChat' : serverName} server`, 2000, 'success');
-    };
-  });
-  
-  // Close emoji picker when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!emojiPicker.contains(e.target) && e.target !== emojiButton) {
-      emojiPicker.classList.remove('active');
-    }
-  });
 }
 
 // Existing functions from original code
@@ -4098,40 +2866,6 @@ async function renderMessage(key, m, chatId) {
   div.className = `message-item ${m.from === me.uid ? 'own' : 'other'}`;
   div.setAttribute('data-message-id', key);
   
-  // NEW: Add disappearing message styling if applicable
-  if (m.disappearing && m.disappearingTimeout) {
-    div.classList.add('disappearing-message');
-    
-    // Calculate remaining time
-    const elapsed = Date.now() - m.ts;
-    const remaining = m.disappearingTimeout - elapsed;
-    
-    if (remaining > 0) {
-      const timerEl = document.createElement('div');
-      timerEl.className = 'message-timer';
-      
-      // Show warning if less than 10 seconds remain
-      if (remaining < 10000) {
-        div.classList.add('expiring');
-      }
-      
-      timerEl.innerHTML = `
-        <span class="timer-icon">⏱️</span>
-        <span>${Math.ceil(remaining / 1000)}s</span>
-      `;
-      
-      // Add timer to message
-      setTimeout(() => {
-        if (div.parentNode) {
-          const contentEl = div.querySelector('.message-content');
-          if (contentEl && !contentEl.querySelector('.message-timer')) {
-            contentEl.appendChild(timerEl);
-          }
-        }
-      }, 100);
-    }
-  }
-  
   setTimeout(() => {
     div.classList.add('new-message');
   }, 100);
@@ -4300,11 +3034,6 @@ async function renderMessage(key, m, chatId) {
   if(m.from !== me.uid){
     await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
   }
-  
-  // NEW: Schedule deletion for disappearing messages
-  if (m.disappearing && m.disappearingTimeout) {
-    scheduleMessageDeletion(key, chatId, m.disappearingTimeout);
-  }
 }
 
 function formatDuration(seconds) {
@@ -4382,13 +3111,6 @@ $('#sendBtn').onclick = async () => {
     audioURL: audioURL || null,
     audioDuration: audioDuration || null
   };
-  
-  // NEW: Add disappearing message properties if enabled
-  if (disappearingMessagesEnabled && disappearingTimeout > 0) {
-    payload.disappearing = true;
-    payload.disappearingTimeout = disappearingTimeout;
-  }
-  
   const key = push(ref(db)).key;
 
   if(currentChat.uid){
@@ -4568,6 +3290,74 @@ document.addEventListener('visibilitychange', async () => {
     await update(ref(db,'users/'+me.uid), { online:true, lastSeen: Date.now() });
   }
 });
+
+function initializeTicTacToe() {
+  const cells = $$('.ttt-cell');
+  cells.forEach(cell => {
+    cell.textContent = '';
+    cell.classList.remove('x', 'o');
+    cell.addEventListener('click', handleTicTacToeClick);
+  });
+  
+  ticTacToeGame = {
+    board: ['', '', '', '', '', '', '', '', ''],
+    currentPlayer: 'X',
+    gameActive: true,
+    playerSymbol: 'X'
+  };
+  
+  $('#gameStatus').textContent = 'Your turn (X)';
+  toast('Tic Tac Toe game started!', 2000, 'success');
+}
+
+function handleTicTacToeClick(e) {
+  const cell = e.target;
+  const index = parseInt(cell.dataset.index);
+  
+  if (ticTacToeGame.board[index] !== '' || !ticTacToeGame.gameActive) {
+    return;
+  }
+  
+  ticTacToeGame.board[index] = ticTacToeGame.currentPlayer;
+  cell.textContent = ticTacToeGame.currentPlayer;
+  cell.classList.add(ticTacToeGame.currentPlayer.toLowerCase());
+  
+  if (checkWin()) {
+    $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer} wins!`;
+    ticTacToeGame.gameActive = false;
+    toast(`Player ${ticTacToeGame.currentPlayer} wins!`, 3000, 'success');
+    return;
+  }
+  
+  if (checkDraw()) {
+    $('#gameStatus').textContent = 'Game ended in a draw!';
+    ticTacToeGame.gameActive = false;
+    toast('Game ended in a draw!', 3000, 'info');
+    return;
+  }
+  
+  ticTacToeGame.currentPlayer = ticTacToeGame.currentPlayer === 'X' ? 'O' : 'X';
+  $('#gameStatus').textContent = `Player ${ticTacToeGame.currentPlayer}'s turn`;
+}
+
+function checkWin() {
+  const winPatterns = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
+  ];
+  
+  return winPatterns.some(pattern => {
+    const [a, b, c] = pattern;
+    return ticTacToeGame.board[a] !== '' && 
+           ticTacToeGame.board[a] === ticTacToeGame.board[b] && 
+           ticTacToeGame.board[a] === ticTacToeGame.board[c];
+  });
+}
+
+function checkDraw() {
+  return ticTacToeGame.board.every(cell => cell !== '');
+}
 
 function setupNavigation() {
   const navItems = $$('.nav-item');
@@ -4771,6 +3561,10 @@ onAuthStateChanged(auth, async (user) => {
   onValue(ref(db, `friendRequests/${me.uid}`), ()=> { loadFriendRequests(); });
 
   setupNavigation();
+  
+  initializeTicTacToe();
+  $('#startTicTacToe').onclick = initializeTicTacToe;
+  $('#resetTicTacToe').onclick = initializeTicTacToe;
 
   onValue(ref(db,'announcements/global'), snap=>{
     const b = $('#globalBanner');
@@ -4786,7 +3580,6 @@ onAuthStateChanged(auth, async (user) => {
   // Initialize enhanced features
   if (user) {
     initializeEnhancedFeatures();
-    initializeQuickChatFeatures();
   }
 });
 
@@ -4810,28 +3603,23 @@ $('#logoutBtn').onclick = async () => {
 const darkModeToggle = document.getElementById('darkModeToggle');
 
 function updateToggleButtonText() {
-  if (document.body.classList.contains('theme-light')) {
-    darkModeToggle.textContent = 'Dark Mode';
-  } else {
-    darkModeToggle.textContent = 'Light Mode';
-  }
+  darkModeToggle.textContent = document.body.classList.contains('theme-dim') ? 'Light Mode' : 'Dark Mode';
 }
 
 darkModeToggle.onclick = () => {
-  if (document.body.classList.contains('theme-light')) {
-    document.body.classList.remove('theme-light');
-    localStorage.removeItem('lightMode');
+  document.body.classList.toggle('theme-dim');
+  if (document.body.classList.contains('theme-dim')) {
+    localStorage.setItem('darkMode', 'enabled');
     toast('Dark mode enabled', 2000, 'success');
   } else {
-    document.body.classList.add('theme-light');
-    localStorage.setItem('lightMode', 'enabled');
+    localStorage.removeItem('darkMode');
     toast('Light mode enabled', 2000, 'success');
   }
   updateToggleButtonText();
 };
 
-if (localStorage.getItem('lightMode') === 'enabled') {
-  document.body.classList.add('theme-light');
+if (localStorage.getItem('darkMode') === 'enabled') {
+  document.body.classList.add('theme-dim');
 }
 
 updateToggleButtonText();
