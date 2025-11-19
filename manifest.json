@@ -1,21 +1,19 @@
 {
-  "name": "QuickChat",
-  "short_name": "QuickChat",
-  "description": "Real-time messaging app",
-  "start_url": "/",
+  "name": "Test Chat",
+  "short_name": "Chat",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#0b0f14",
-  "theme_color": "#4f8cff",
-  "orientation": "portrait",
-  "scope": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#3367D6",
+  "description": "A simple chat application.",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192x192/4f8cff/ffffff?text=QC",
+      "src": "images/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://via.placeholder.com/512x512/4f8cff/ffffff?text=QC", 
+      "src": "images/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
