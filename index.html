@@ -1,7 +1,3 @@
- 
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1181,6 +1177,106 @@ input:checked + .slider:before {
   color: var(--muted);
 }
 
+/* REAL-TIME CHARACTER TRANSMISSION STYLES */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(79, 140, 255, 0.1);
+  border-radius: var(--radius);
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.typing-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+  animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { 
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.character-transmission {
+  position: relative;
+  display: inline-block;
+}
+
+.character-pulse {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand);
+  animation: pulse 1.5s infinite;
+  top: -4px;
+  right: -4px;
+}
+
+.transmission-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.transmission-progress {
+  width: 60px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.transmission-progress-bar {
+  height: 100%;
+  background: var(--brand);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+.message-transmission {
+  position: relative;
+  border-left: 2px solid var(--brand);
+  padding-left: 8px;
+  margin: 4px 0;
+}
+
 @media (max-width: 768px) {
   .app {
     font-size: 14px;
@@ -1617,17 +1713,22 @@ input:checked + .slider:before {
         <div id="messages" style="margin-top:.6rem;max-height:360px;overflow:auto;background:#071022;padding:.8rem;border-radius:var(--radius);position:relative">
         </div>
 
+        <!-- Real-time Character Transmission Indicator -->
+        <div id="typingIndicator" class="typing-indicator hidden">
+          <img id="typingAvatar" class="typing-avatar" src="" alt="typing user">
+          <div id="typingText">Someone is typing</div>
+          <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+
         <div style="display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap">
           <input id="msgInput" class="input" placeholder="Type a message..." style="flex:1;min-width:200px" autocomplete="off" />
           <input id="fileInput" type="file" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt" style="display:none" />
           <button id="attachBtn" class="btn ghost" title="Attach file">📎</button>
           <button id="sendBtn" class="btn">Send</button>
-        </div>
-        <div id="typingIndicator" style="color:var(--muted);margin-top:.6rem;display:none;font-style:italic">
-          <span class="typing-dots">
-            <span></span><span></span><span></span>
-          </span>
-          Someone is typing...
         </div>
       </div>
     </div>
@@ -2449,6 +2550,207 @@ function initializeEnhancedFeatures() {
   };
 }
 
+// REAL-TIME CHARACTER TRANSMISSION FEATURES
+function setupRealTimeTransmission() {
+  // Enhanced typing indicator with character transmission
+  const msgInput = $('#msgInput');
+  const typingIndicator = $('#typingIndicator');
+  
+  let lastTypingUpdate = 0;
+  const TYPING_UPDATE_INTERVAL = 500; // Update every 500ms
+  
+  msgInput.addEventListener('input', async () => {
+    if (!currentChat || !me) return;
+    
+    const now = Date.now();
+    if (now - lastTypingUpdate < TYPING_UPDATE_INTERVAL) return;
+    lastTypingUpdate = now;
+    
+    const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+    
+    try {
+      // Set typing status with character count
+      const charCount = msgInput.value.length;
+      await set(typingRef(chatId, me.uid), {
+        typing: true,
+        charCount: charCount,
+        timestamp: now
+      });
+    } catch (e) {
+      console.error('Error setting typing status:', e);
+    }
+    
+    if (typingTimer) clearTimeout(typingTimer);
+    typingTimer = setTimeout(async () => {
+      try { 
+        await remove(typingRef(chatId, me.uid)); 
+      } catch (e) {
+        console.error('Error clearing typing status:', e);
+      }
+    }, 2000);
+  });
+  
+  // Listen for typing events from other users
+  if (currentChat) {
+    const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+    const typingRefPath = ref(db, `typing/${chatId}`);
+    
+    onValue(typingRefPath, (snapshot) => {
+      const typingData = snapshot.val() || {};
+      const otherUsersTyping = Object.entries(typingData)
+        .filter(([uid, data]) => uid !== me.uid && data.typing)
+        .map(([uid, data]) => ({ uid, ...data }));
+      
+      if (otherUsersTyping.length > 0) {
+        // Show typing indicator with enhanced information
+        const firstUser = otherUsersTyping[0];
+        
+        // Get user info for the typing user
+        const userRef = ref(db, `users/${firstUser.uid}`);
+        get(userRef).then((userSnap) => {
+          if (userSnap.exists()) {
+            const user = userSnap.val();
+            
+            // Update typing indicator
+            $('#typingAvatar').src = user.avatar || defaultAvatar(user.uid);
+            $('#typingText').textContent = `${user.name || 'Someone'} is typing`;
+            
+            // Show enhanced typing information
+            if (firstUser.charCount > 0) {
+              const progressBar = document.createElement('div');
+              progressBar.className = 'transmission-progress';
+              progressBar.innerHTML = '<div class="transmission-progress-bar" style="width: ' + 
+                Math.min(firstUser.charCount * 2, 100) + '%"></div>';
+              
+              // Add or update progress bar
+              const existingProgress = typingIndicator.querySelector('.transmission-progress');
+              if (existingProgress) {
+                existingProgress.innerHTML = progressBar.innerHTML;
+              } else {
+                typingIndicator.appendChild(progressBar);
+              }
+            }
+            
+            typingIndicator.classList.remove('hidden');
+          }
+        });
+      } else {
+        typingIndicator.classList.add('hidden');
+      }
+    });
+  }
+}
+
+// Enhanced message sending with transmission status
+async function sendMessageWithTransmission() {
+  const now = Date.now();
+  if (now - lastSendAt < SEND_COOLDOWN_MS) { 
+    toast('Slow down a bit…', 2000, 'warning'); 
+    return; 
+  }
+  lastSendAt = now;
+
+  const text = $('#msgInput').value.trim();
+  if (!currentChat || (!text && !pendingFile)) return;
+
+  // Show transmission status
+  const transmissionStatus = document.createElement('div');
+  transmissionStatus.className = 'transmission-status';
+  transmissionStatus.innerHTML = `
+    <div class="character-pulse"></div>
+    <span>Sending message...</span>
+    <div class="transmission-progress">
+      <div class="transmission-progress-bar" style="width: 0%"></div>
+    </div>
+  `;
+  
+  const messagesContainer = $('#messages');
+  messagesContainer.appendChild(transmissionStatus);
+  
+  // Simulate transmission progress
+  let progress = 0;
+  const progressInterval = setInterval(() => {
+    progress += 10;
+    const progressBar = transmissionStatus.querySelector('.transmission-progress-bar');
+    if (progressBar) {
+      progressBar.style.width = progress + '%';
+    }
+    if (progress >= 100) {
+      clearInterval(progressInterval);
+    }
+  }, 50);
+
+  let imageURL = null;
+  let audioURL = null;
+  let audioDuration = null;
+  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
+
+  if (pendingFile) {
+    try {
+      if (pendingFile.type.startsWith('audio/')) {
+        const filePath = `uploads/${me.uid}/${chatId}/audio/${Date.now()}_${pendingFile.name}`;
+        const sr = sref(storage, filePath);
+        await uploadBytes(sr, pendingFile);
+        audioURL = await getDownloadURL(sr);
+        
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(pendingFile);
+        await new Promise(resolve => {
+          audio.addEventListener('loadedmetadata', () => {
+            audioDuration = audio.duration;
+            resolve();
+          });
+        });
+      } else {
+        const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile.name}`;
+        const sr = sref(storage, filePath);
+        await uploadBytes(sr, pendingFile);
+        imageURL = await getDownloadURL(sr);
+      }
+    } catch(e) {
+      toast('Upload failed: ' + e.message, 3000, 'error');
+      console.error(e);
+    }
+  }
+
+  const payload = { 
+    from: me.uid, 
+    fromName: me.name, 
+    fromAvatar: me.avatar,
+    text: text || '', 
+    ts: Date.now(), 
+    imageURL: imageURL || null,
+    audioURL: audioURL || null,
+    audioDuration: audioDuration || null
+  };
+  const key = push(ref(db)).key;
+
+  if (currentChat.uid) {
+    await set(ref(db, `chats/${chatId}/messages/${key}`), payload);
+    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+    try { 
+      await remove(typingRef(chatId, me.uid)); 
+    } catch(_) {}
+  } else if (currentChat.id) {
+    await set(ref(db, `communityMessages/${chatId}/messages/${key}`), payload);
+    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
+    try { 
+      await remove(typingRef(chatId, me.uid)); 
+    } catch(_) {}
+  }
+
+  // Remove transmission status
+  clearInterval(progressInterval);
+  transmissionStatus.remove();
+  
+  $('#msgInput').value = '';
+  if (pendingFile) { 
+    pendingFile = null; 
+    $('#fileInput').value = ''; 
+    toast('Message sent!', 2000, 'success'); 
+  }
+}
+
 // Existing functions from original code
 $('#loginBtn').onclick = async () => {
   try {
@@ -2677,6 +2979,9 @@ function openChatPanel(peer){
   $('#chatTitle').textContent = peer.name || peer.id || 'Chat';
   $('#chatAvatar').src = peer.avatar || defaultAvatar(peer.uid || peer.id);
   $('#messages').innerHTML = '';
+  
+  // Setup real-time character transmission for this chat
+  setupRealTimeTransmission();
 }
 
 const chatBackBtn = $('#chatBackBtn');
@@ -3060,72 +3365,8 @@ $('#fileInput').onchange = (e)=> {
   if(pendingFile) toast('File selected: '+pendingFile.name, 2000, 'success');
 };
 
-$('#sendBtn').onclick = async () => {
-  const now = Date.now();
-  if(now - lastSendAt < SEND_COOLDOWN_MS){ toast('Slow down a bit…', 2000, 'warning'); return; }
-  lastSendAt = now;
-
-  const text = $('#msgInput').value.trim();
-  if(!currentChat || (!text && !pendingFile)) return;
-
-  let imageURL = null;
-  let audioURL = null;
-  let audioDuration = null;
-  const chatId = currentChat.uid ? roomIdFor(me.uid, currentChat.uid) : currentChat.id;
-
-  if(pendingFile){
-    try {
-      if (pendingFile.type.startsWith('audio/')) {
-        const filePath = `uploads/${me.uid}/${chatId}/audio/${Date.now()}_${pendingFile.name}`;
-        const sr = sref(storage, filePath);
-        await uploadBytes(sr, pendingFile);
-        audioURL = await getDownloadURL(sr);
-        
-        const audio = new Audio();
-        audio.src = URL.createObjectURL(pendingFile);
-        await new Promise(resolve => {
-          audio.addEventListener('loadedmetadata', () => {
-            audioDuration = audio.duration;
-            resolve();
-          });
-        });
-      } else {
-        const filePath = `uploads/${me.uid}/${chatId}/${Date.now()}_${pendingFile.name}`;
-        const sr = sref(storage, filePath);
-        await uploadBytes(sr, pendingFile);
-        imageURL = await getDownloadURL(sr);
-      }
-    } catch(e) {
-      toast('Upload failed: ' + e.message, 3000, 'error');
-      console.error(e);
-    }
-  }
-
-  const payload = { 
-    from: me.uid, 
-    fromName: me.name, 
-    fromAvatar: me.avatar,
-    text: text || '', 
-    ts: Date.now(), 
-    imageURL: imageURL || null,
-    audioURL: audioURL || null,
-    audioDuration: audioDuration || null
-  };
-  const key = push(ref(db)).key;
-
-  if(currentChat.uid){
-    await set(ref(db, `chats/${chatId}/messages/${key}`), payload);
-    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
-    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
-  } else if(currentChat.id){
-    await set(ref(db, `communityMessages/${chatId}/messages/${key}`), payload);
-    await set(ref(db, `reads/${chatId}/${key}/${me.uid}`), true);
-    try { await remove(typingRef(chatId, me.uid)); } catch(_) {}
-  }
-
-  $('#msgInput').value = '';
-  if(pendingFile){ pendingFile = null; $('#fileInput').value=''; toast('Message sent!', 2000, 'success'); }
-};
+// Updated send button to use enhanced transmission
+$('#sendBtn').onclick = sendMessageWithTransmission;
 
 $('#messageSearch').addEventListener('input', async (e) => {
   const query = e.target.value.trim().toLowerCase();
@@ -3623,17 +3864,6 @@ if (localStorage.getItem('darkMode') === 'enabled') {
 }
 
 updateToggleButtonText();
-
-const msgInput = document.getElementById('msgInput');
-const typingIndicator = document.getElementById('typingIndicator');
-
-msgInput.addEventListener('input', () => {
-  typingIndicator.style.display = 'block';
-  clearTimeout(msgInput._typingTimeout);
-  msgInput._typingTimeout = setTimeout(() => {
-    typingIndicator.style.display = 'none';
-  }, 1000);
-});
 </script>
 
 </body>
