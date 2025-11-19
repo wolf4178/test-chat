@@ -1415,6 +1415,41 @@ input:checked + .slider:before {
   border-bottom: none;
 }
 
+/* QR CODE STYLES */
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: var(--elev);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+.qr-code {
+  width: 200px;
+  height: 200px;
+  background: white;
+  padding: 10px;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.qr-instructions {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.qr-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 768px) {
   .app {
     font-size: 14px;
@@ -1461,6 +1496,11 @@ input:checked + .slider:before {
   .popup-window {
     width: 95%;
     margin: 1rem;
+  }
+  
+  .qr-code {
+    width: 150px;
+    height: 150px;
   }
 }
 
@@ -1736,6 +1776,23 @@ input:checked + .slider:before {
           </div>
         </div>
 
+        <!-- QR Code Section -->
+        <div style="margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+          <strong style="display:block;margin-bottom:8px">My QR Code</strong>
+          <div class="qr-container">
+            <div id="myQrCode" class="qr-code">
+              <!-- QR Code will be generated here -->
+            </div>
+            <div class="qr-instructions">
+              Share this QR code with friends to let them add you
+            </div>
+            <div class="qr-actions">
+              <button id="shareQrBtn" class="btn ghost">Share QR</button>
+              <button id="downloadQrBtn" class="btn">Download QR</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Enhanced Admin Panel -->
         <div id="adminControls" style="display:none; border-top: 1px solid var(--border); padding-top:15px; margin-top: 15px;">
           <div style="font-weight:700; margin-bottom:12px;color:var(--brand)">Admin Panel 👑</div>
@@ -1828,7 +1885,10 @@ input:checked + .slider:before {
         <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
           <input id="addByShort" class="input" placeholder="Enter 5-digit ID" style="flex:1;min-width:150px" />
           <button id="addFriendBtn" class="btn">Add</button>
-          <button id="findFriendsBtn" class="btn ghost">Find Friends</button>
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
+          <button id="scanQrBtn" class="btn ghost" style="flex:1">Scan QR Code</button>
+          <button id="showMyQrBtn" class="btn ghost" style="flex:1">My QR Code</button>
         </div>
         <div id="friendRequestMsg" style="color:var(--muted);margin-top:.6rem;text-align:center"></div>
       </div>
@@ -1866,15 +1926,6 @@ input:checked + .slider:before {
         </div>
       </div>
 
-      <!-- Friend Suggestions -->
-      <div class="card" style="margin-bottom:.8rem">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
-          <strong>Friend Suggestions</strong>
-          <button id="refreshSuggestions" class="btn ghost" style="padding:0.3rem 0.6rem">Refresh</button>
-        </div>
-        <div id="friendSuggestions" class="friend-suggestions"></div>
-      </div>
-
       <!-- Friends List -->
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
@@ -1882,12 +1933,6 @@ input:checked + .slider:before {
           <div id="myShort" style="color:var(--muted);font-size:.9rem"></div>
         </div>
         <div id="friendsList" class="list" style="margin-top:.6rem;max-height:280px;overflow:auto"></div>
-      </div>
-
-      <!-- Friend Activity Feed -->
-      <div class="card" style="margin-top:.8rem">
-        <strong style="display:block;margin-bottom:.8rem">Friend Activity</strong>
-        <div id="activityFeed" class="activity-feed"></div>
       </div>
 
       <div class="card" style="margin-top:.8rem">
@@ -2176,6 +2221,29 @@ input:checked + .slider:before {
 
 <!-- POP-UP WINDOW CONTAINER -->
 <div id="popupContainer"></div>
+
+<!-- QR Code Scanner Modal -->
+<div id="qrScannerModal" class="popup-overlay hidden">
+  <div class="popup-window">
+    <div class="popup-header">
+      <div class="popup-title">Scan QR Code</div>
+      <button class="popup-close" id="closeQrScanner">&times;</button>
+    </div>
+    <div class="popup-content">
+      <div id="qrScanner" style="width: 100%; height: 300px; background: var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+        <div style="text-align: center; color: var(--muted);">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">📷</div>
+          <div>QR Scanner would appear here</div>
+          <div style="font-size: 0.8rem; margin-top: 0.5rem;">In a real implementation, this would use the device camera</div>
+        </div>
+      </div>
+      <div class="popup-buttons">
+        <button class="btn popup-cancel" id="cancelQrScan">Cancel</button>
+        <button class="btn popup-confirm" id="simulateQrScan">Simulate Scan</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // PWA Service Worker Registration
@@ -2495,6 +2563,104 @@ let ticTacToeGame = {
   playerSymbol: 'X'
 };
 
+// QR Code functionality
+function generateQRCode(text, elementId) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  
+  // In a real implementation, you would use a QR code library like qrcode.js
+  // For this example, we'll create a simple visual representation
+  element.innerHTML = '';
+  element.style.display = 'flex';
+  element.style.alignItems = 'center';
+  element.style.justifyContent = 'center';
+  element.style.flexDirection = 'column';
+  element.style.background = 'white';
+  element.style.padding = '20px';
+  
+  const qrVisual = document.createElement('div');
+  qrVisual.style.width = '160px';
+  qrVisual.style.height = '160px';
+  qrVisual.style.background = 'linear-gradient(45deg, #333, #555)';
+  qrVisual.style.display = 'flex';
+  qrVisual.style.alignItems = 'center';
+  qrVisual.style.justifyContent = 'center';
+  qrVisual.style.color = 'white';
+  qrVisual.style.fontWeight = 'bold';
+  qrVisual.style.fontSize = '14px';
+  qrVisual.style.textAlign = 'center';
+  qrVisual.style.borderRadius = '8px';
+  qrVisual.textContent = 'QR Code';
+  
+  const qrText = document.createElement('div');
+  qrText.style.marginTop = '10px';
+  qrText.style.fontSize = '12px';
+  qrText.style.color = '#333';
+  qrText.style.textAlign = 'center';
+  qrText.textContent = `ID: ${text}`;
+  
+  element.appendChild(qrVisual);
+  element.appendChild(qrText);
+}
+
+function downloadQRCode() {
+  toast('QR code download functionality would be implemented here', 3000, 'info');
+}
+
+function shareQRCode() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Add me on QuickChat',
+      text: `My QuickChat ID is: ${me.shortId}`,
+      url: window.location.href
+    }).catch(() => {
+      toast('Sharing cancelled', 2000, 'info');
+    });
+  } else {
+    // Fallback: copy to clipboard
+    navigator.clipboard.writeText(me.shortId).then(() => {
+      toast('ID copied to clipboard!', 2000, 'success');
+    }).catch(() => {
+      toast('Failed to copy ID', 2000, 'error');
+    });
+  }
+}
+
+function showQRScanner() {
+  $('#qrScannerModal').classList.remove('hidden');
+}
+
+function hideQRScanner() {
+  $('#qrScannerModal').classList.add('hidden');
+}
+
+function simulateQRScan() {
+  const simulatedId = String(10000 + Math.floor(Math.random() * 90000));
+  $('#addByShort').value = simulatedId;
+  hideQRScanner();
+  toast(`Simulated scanning QR code with ID: ${simulatedId}`, 3000, 'success');
+}
+
+// Initialize QR code functionality
+function initializeQRCode() {
+  $('#showMyQrBtn').onclick = () => {
+    if (me && me.shortId) {
+      generateQRCode(me.shortId, 'myQrCode');
+      // Show the profile panel to display the QR code
+      document.getElementById('profileAdminPanel').style.display = 'block';
+    } else {
+      toast('Please wait for your profile to load', 2000, 'warning');
+    }
+  };
+  
+  $('#scanQrBtn').onclick = showQRScanner;
+  $('#downloadQrBtn').onclick = downloadQRCode;
+  $('#shareQrBtn').onclick = shareQRCode;
+  $('#closeQrScanner').onclick = hideQRScanner;
+  $('#cancelQrScan').onclick = hideQRScanner;
+  $('#simulateQrScan').onclick = simulateQRScan;
+}
+
 // Enhanced Friend Request Features
 let notificationCount = 0;
 
@@ -2562,64 +2728,6 @@ async function loadNotifications() {
   });
 }
 
-// Friend Suggestions
-async function loadFriendSuggestions() {
-  if (!me || !me.uid) return;
-  
-  const suggestionsRef = ref(db, 'users');
-  const friendsRef = ref(db, `friends/${me.uid}`);
-  
-  const [usersSnap, friendsSnap] = await Promise.all([
-    get(suggestionsRef),
-    get(friendsRef)
-  ]);
-  
-  if (!usersSnap.exists()) return;
-  
-  const allUsers = usersSnap.val();
-  const myFriends = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : [];
-  const myRequests = await getFriendRequests();
-  
-  const suggestions = Object.values(allUsers).filter(user => 
-    user.uid !== me.uid && 
-    !myFriends.includes(user.uid) &&
-    !myRequests.outgoing.includes(user.uid) &&
-    !myRequests.incoming.includes(user.uid)
-  ).slice(0, 5);
-  
-  const container = $('#friendSuggestions');
-  container.innerHTML = '';
-  
-  if (suggestions.length === 0) {
-    container.innerHTML = '<div style="color:var(--muted);text-align:center;padding:1rem">No suggestions available</div>';
-    return;
-  }
-  
-  suggestions.forEach(user => {
-    const item = document.createElement('div');
-    item.className = 'suggestion-item';
-    item.innerHTML = `
-      <img class="avatar" src="${user.avatar || defaultAvatar(user.uid)}" />
-      <div style="flex:1">
-        <div style="font-weight:700">${user.name || user.email}</div>
-        <div style="color:var(--muted);font-size:.85rem">
-          <span class="status-indicator status-${user.status || (user.online ? 'online' : 'offline')}"></span>
-          ${user.status || (user.online ? 'online' : 'offline')}
-        </div>
-      </div>
-      <div class="suggestion-actions">
-        <button class="btn" data-action="add">Add</button>
-      </div>
-    `;
-    
-    item.querySelector('button').onclick = () => {
-      sendFriendRequestByShortId(user.shortId);
-    };
-    
-    container.appendChild(item);
-  });
-}
-
 // Enhanced Friend Statistics
 async function updateFriendStats() {
   if (!me || !me.uid) return;
@@ -2646,50 +2754,6 @@ async function updateFriendStats() {
   $('#totalFriends').textContent = friends.length;
   $('#onlineFriends').textContent = onlineCount;
   $('#pendingRequests').textContent = Object.keys(requests.incoming || {}).length;
-}
-
-// Friend Activity Feed
-async function loadActivityFeed() {
-  if (!me || !me.uid) return;
-  
-  const friendsRef = ref(db, `friends/${me.uid}`);
-  const friendsSnap = await get(friendsRef);
-  
-  if (!friendsSnap.exists()) return;
-  
-  const friendIds = Object.keys(friendsSnap.val());
-  const activities = [];
-  
-  for (const friendId of friendIds) {
-    const userSnap = await get(ref(db, `users/${friendId}`));
-    if (userSnap.exists()) {
-      const user = userSnap.val();
-      activities.push({
-        type: 'status',
-        user: user,
-        message: `${user.name} is now ${user.status}`,
-        timestamp: user.lastSeen || Date.now()
-      });
-    }
-  }
-  
-  activities.sort((a, b) => b.timestamp - a.timestamp);
-  
-  const container = $('#activityFeed');
-  container.innerHTML = '';
-  
-  activities.slice(0, 10).forEach(activity => {
-    const item = document.createElement('div');
-    item.className = 'activity-item';
-    item.innerHTML = `
-      <img class="avatar activity-avatar" src="${activity.user.avatar || defaultAvatar(activity.user.uid)}" />
-      <div class="activity-content">
-        <div>${activity.message}</div>
-        <div class="activity-time">${timeAgo(activity.timestamp)} ago</div>
-      </div>
-    `;
-    container.appendChild(item);
-  });
 }
 
 // Enhanced Admin Features
@@ -2888,7 +2952,6 @@ async function sendFriendRequestByShortId(shortId){
   toast('Friend request sent!', 3000, 'success');
   await loadFriendRequests();
   await updateFriendStats();
-  await loadFriendSuggestions();
 }
 
 // Enhanced accept friend request with notifications
@@ -2909,8 +2972,6 @@ async function acceptFriendRequest(reqId, fromUid){
   await refreshFriends();
   await loadFriendRequests();
   await updateFriendStats();
-  await loadActivityFeed();
-  await loadFriendSuggestions();
 }
 
 // Get friend requests for statistics
@@ -2932,9 +2993,7 @@ async function getFriendRequests() {
 // Initialize enhanced features when user logs in
 function initializeEnhancedFeatures() {
   loadNotifications();
-  loadFriendSuggestions();
   updateFriendStats();
-  loadActivityFeed();
   
   if (isAdminUser) {
     updateAdminStats();
@@ -2959,16 +3018,6 @@ function initializeEnhancedFeatures() {
   document.addEventListener('click', () => {
     $('#notificationDropdown').style.display = 'none';
   });
-  
-  $('#findFriendsBtn').onclick = () => {
-    loadFriendSuggestions();
-    toast('Refreshing friend suggestions...', 2000, 'info');
-  };
-  
-  $('#refreshSuggestions').onclick = () => {
-    loadFriendSuggestions();
-    toast('Refreshing suggestions...', 2000, 'info');
-  };
   
   $$('.filter-btn').forEach(btn => {
     btn.onclick = () => {
@@ -4271,6 +4320,7 @@ onAuthStateChanged(auth, async (user) => {
   // Initialize enhanced features
   if (user) {
     initializeEnhancedFeatures();
+    initializeQRCode();
   }
 });
 
@@ -4326,7 +4376,7 @@ setTimeout(() => {
   if (me) {
     popupManager.info(
       'Welcome to QuickChat!',
-      'You can now start chatting with your friends. Try the new popup features for notifications and confirmations!',
+      'You can now start chatting with your friends. Add friends using their 5-digit ID or by scanning their QR code!',
       'Get Started'
     );
   }
